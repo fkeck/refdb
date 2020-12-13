@@ -1,0 +1,29 @@
+Package: refdb
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Authors@R: 
+    c(person(given = "Francois",
+             family = "Keck",
+             role = c("aut", "cre", "cph"),
+             email = "francois.keck@gmail.com",
+             comment = c(ORCID = "0000-0002-3323-4167"))
+    )
+Maintainer: Francois Keck <francois.keck@gmail.com>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL-3
+URL: https://fkeck.github.io/refdb/
+BugReports: https://github.com/fkeck/refdb/issues
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.1.0)
+Imports:
+    tibble,
+    readr,
+    dplyr,
+    stringr,
+    tidyr,
+    rentrez,
+    xml2,
+    bioseq
