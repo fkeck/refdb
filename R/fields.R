@@ -21,6 +21,10 @@ refdb_set_fields <- function(x,
                                   taxonomy = taxonomy,
                                   sequence = sequence,
                                   marker = marker)
+
+  x[, unlist(attr(x, "refdb_fields"))] <-
+    sapply(x[, unlist(attr(x, "refdb_fields"))], as.character)
+
   return(x)
 }
 
@@ -69,4 +73,5 @@ check_fields <- function(x,
          " -- See function `refdb_set_fields` and `refdb_add_field`.")
   }
 
+  invisible()
 }
