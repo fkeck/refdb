@@ -90,3 +90,53 @@ ncbi_taxo_rank <- function() {
     "family",
     "genus")
 }
+
+
+valid_taxo_rank <- function() {
+  c(
+    "domain",
+    "superkingdom",
+    "kingdom",
+    "subkingdom",
+    "infrakingdom",
+    "phylum",
+    "subphylum",
+    "infradivision",
+    "superclass",
+    "class",
+    "subclass",
+    "infraclass",
+    "subterclass",
+    "parvclass",
+    "megacohort",
+    "supercohort",
+    "cohort",
+    "subcohort",
+    "infracohort",
+    "superorder",
+    "order",
+    "suborder",
+    "infraorder",
+    "parvorder",
+    "superfamily",
+    "family",
+    "subfamily",
+    "supertribe",
+    "tribe",
+    "subtribe",
+    "genus",
+    "subgenus",
+    "section",
+    "subsection",
+    "series",
+    "species",
+    "infraspecies",
+    "subspecies",
+    "variety",
+    "subvariety",
+    "stirp",
+    "form",
+    "subform"
+  )
+}
+
