@@ -1,6 +1,29 @@
 
-# Use NA to ignore, use NULL to remove
 
+#' Associate columns to fields
+#'
+#' Associate columns to fields so they are recognized
+#' and appropriately treated by refdb functions.
+#'
+#' @param x a reference database (tibble).
+#' @param source name of the column which contains the data source.
+#' @param id name of the column which contains the record IDs.
+#' @param organism  name of the column which contains the names of the organisms.
+#' @param taxonomy a vector of column names
+#' @param sequence of the column which contains the sequences.
+#' @param marker of the column which contains marker names.
+#'
+#' @details
+#' TODO
+#' taxonomy reordering
+#'
+#' NA to ignore, NULL to delete
+#'
+#' @return
+#' The function returns x with updated attributes.
+#'
+#' @export
+#'
 refdb_set_fields <- function(x,
                              source = NA,
                              id = NA,
