@@ -1,6 +1,17 @@
 
 
 
+#' Replace the current taxonomy using the NCBI Taxonomy database
+#'
+#' @param x a reference database (tibble) with one or several columns
+#' giving the taxonomy of each record and explicitly
+#' indicated in the field taxonomy. See \link{refdb_set_fields}.
+#'
+#' @return The reference database with the NCBI taxonomy
+#' (the original taxonomy is removed).
+#' @export
+#'
+#'
 refdb_ncbi_taxonomy <- function(x) {
 
   ncbi_taxo <- ncbi_taxo_rank()
@@ -75,6 +86,11 @@ refdb_ncbi_taxonomy <- function(x) {
 }
 
 
+
+#' Taxonomic ranks of the NCBI Taxonomy database
+#'
+#' @return a vector of ordered ranks
+#'
 ncbi_taxo_rank <- function() {
   c("superkingdom",
     "kingdom",
@@ -92,6 +108,14 @@ ncbi_taxo_rank <- function() {
 }
 
 
+#' Ranks considered as valid by refdb
+#'
+#' @return a vector of ordered ranks
+#' @export
+#'
+#' @references This is a simplified version of the
+#' list \code{rank_ref} available in \pkg{taxize}.
+#'
 valid_taxo_rank <- function() {
   c(
     "domain",
