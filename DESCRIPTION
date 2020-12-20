@@ -25,5 +25,14 @@ Imports:
     stringr,
     tidyr,
     rentrez,
+    bold,
+    taxize,
     xml2,
-    bioseq
+    bioseq,
+    igraph,
+    ggplot2,
+    ggraph,
+    yaml,
+    ape
+    
+    
