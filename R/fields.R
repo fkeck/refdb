@@ -38,7 +38,7 @@ refdb_set_fields <- function(x,
   }
 
   error_field_col <- function(x, field, col) {
-    if(!source %in% colnames(x)) {
+    if(!col %in% colnames(x)) {
       stop("The value ", col, " used for ", field,
            " does not match with any column of x.")
     }
@@ -69,6 +69,8 @@ refdb_set_fields <- function(x,
       stop("The values: ", setdiff(taxonomy, colnames(x)),
            " used for taxonomy do not match with any column of x.")
     }
+
+    names(taxonomy) <- stringr::str_to_lower(names(taxonomy))
 
     if(!all(names(taxonomy) %in% valid_taxo_rank())) {
       stop("Taxonomic ranks are not valid. The `taxonomy` object must be a named vector. Use valid_taxo_rank() to find valid ranks.")
@@ -128,10 +130,10 @@ check_fields <- function(x,
                                   "taxonomy", "sequence", "marker")) {
   fields <- attributes(x)$refdb_fields
 
-  diff <- setdiff(names(fields), what)
+  diff <- setdiff(what, names(fields))
   if(length(diff) > 0) {
     stop("Missing field: ", diff,
-         " -- See function `refdb_set_fields`.")
+         " -- See function `refdb_set_fields` to set fields.")
   }
 
   diff <- setdiff(unlist(fields[what]), colnames(x))
