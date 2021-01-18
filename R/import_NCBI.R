@@ -15,6 +15,7 @@
 #' This function wraps the functions of the rentrez
 #' package to interface with the NCBI's EUtils API.
 #'
+#' TODO
 #' Base nucleotide and taxonomy.
 #'
 #' Batch download

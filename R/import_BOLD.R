@@ -43,7 +43,7 @@ refdb_import_BOLD <- function(taxon = NULL,
 
   if(query_stats$order$count > 1 & query_stats$total_records > 5000) {
 
-    # split by order strategy
+    # TODO split by order strategy
 
   } else {
     cat("Downloading", query_stats$total_records, "sequences from BOLD...\n")

@@ -9,7 +9,6 @@
 #' or \code{"all"} (see Details).
 #'
 #' @details
-#'
 #' Columns are merged only if they are associated to the same field.
 #'
 #' The \code{keep} argument determines which columns are returned as follow.
