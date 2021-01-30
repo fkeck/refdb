@@ -30,7 +30,8 @@ refdb_set_fields <- function(x,
                              organism = NA,
                              taxonomy = NA,
                              sequence = NA,
-                             marker = NA) {
+                             marker = NA,
+                             reference = NA) {
 
   fields_list <- attr(x, "refdb_fields")
   if(is.null(fields_list)) {
@@ -83,13 +84,22 @@ refdb_set_fields <- function(x,
   if (!is.na(sequence)) {
     error_field_col(x, "sequence", sequence)
     fields_list$sequence <- sequence
-    x[, sequence] <- as.character(x[, sequence, drop = TRUE])
+    x[, sequence] <- bioseq::as_dna(as.character(x[, sequence, drop = TRUE]))
   }
 
   if (!is.na(marker)) {
     error_field_col(x, "marker", marker)
     fields_list$marker <- marker
     x[, marker] <- as.character(x[, marker, drop = TRUE])
+  }
+
+  if (!all(is.na(reference))) {
+
+    if(!all(reference %in% colnames(x))) {
+      stop("The values: ", setdiff(reference, colnames(x)),
+           " used for reference do not match with any column of x.")
+    }
+    fields_list$reference <- reference
   }
 
   attr(x, "refdb_fields") <- fields_list
@@ -132,14 +142,15 @@ check_fields <- function(x,
 
   diff <- setdiff(what, names(fields))
   if(length(diff) > 0) {
-    stop("Missing field: ", diff,
-         " -- See function `refdb_set_fields` to set fields.")
+    stop("Missing field: ", paste(diff, collapse = ", "),
+         "\n-- See function `refdb_set_fields` to set fields.")
   }
 
   diff <- setdiff(unlist(fields[what]), colnames(x))
   if(length(diff) > 0) {
-    stop("Some declared fields associated to non-existing columns: ", diff,
-         " -- See function `refdb_set_fields`.")
+    stop("Some declared fields associated to non-existing columns: ",
+         paste(diff, collapse = ", "),
+         "\n-- See function `refdb_set_fields`.")
   }
 
   invisible()
