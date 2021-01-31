@@ -9,15 +9,19 @@
 #' @param source name of the column which contains the data source.
 #' @param id name of the column which contains the record IDs.
 #' @param organism  name of the column which contains the names of the organisms.
-#' @param taxonomy a vector of column names
-#' @param sequence of the column which contains the sequences.
-#' @param marker of the column which contains marker names.
+#' @param taxonomy a vector of column names.
+#' @param sequence name of the column which contains the sequences.
+#' @param marker name of the column which contains marker names.
+#' @param reference a vector of column names.
+#' @param config_yaml a file path to a YAML file
 #'
 #' @details
 #' TODO
 #' taxonomy reordering
 #'
 #' NA to ignore, NULL to delete
+#'
+#' fields set using config_yaml always overwrite those set by arguments
 #'
 #' @return
 #' The function returns x with updated attributes.
