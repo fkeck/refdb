@@ -31,7 +31,18 @@ refdb_set_fields <- function(x,
                              taxonomy = NA,
                              sequence = NA,
                              marker = NA,
-                             reference = NA) {
+                             reference = NA,
+                             config_yaml = NULL) {
+
+  if (!is.null(config_yaml)) {
+
+    yml <- yaml::read_yaml("git_ignore/yaml_bold.yml")
+    yml <- lapply(yml, unlist)
+
+    for (i in seq_along(yml)) {
+      assign(names(yml)[i], yml[[i]])
+    }
+  }
 
   fields_list <- attr(x, "refdb_fields")
   if(is.null(fields_list)) {
