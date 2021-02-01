@@ -2,8 +2,10 @@
 
 #' Download and import BOLD records
 #'
-#' This function wraps functions of the \pkg{bold}
-#' package to interface with the BOLD API.
+#' This function allows to search and download data
+#' from the the BOLD database.
+#' Additionally it allows to convert the BOLD taxonomic classification
+#' into the NCBI classification using the NCBI Taxonomy database.
 #'
 #' @param taxon,ids,bin,container,institutions,researchers,geo terms
 #' used to search the BOLD database. See \link[bold]{bold_seqspec} from
@@ -13,6 +15,11 @@
 #' @param full if \code{TRUE} the complete data are returned for every records.
 #' If \code{FALSE} (the default) only a subset of the most
 #' important columns is returned.
+#'
+#' @details
+#' This function uses several functions of the \pkg{bold}
+#' package to interface with the BOLD API. The NCBI Taxonomy
+#' database is queried using the \pkg{rentrez} package.
 #'
 #' @return A tibble.
 #'
