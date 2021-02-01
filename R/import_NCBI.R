@@ -12,15 +12,8 @@
 #' the most important fields is included in the result.
 #'
 #' @details
-#' This function wraps the functions of the rentrez
+#' This function uses several functions of the \pkg{rentrez}
 #' package to interface with the NCBI's EUtils API.
-#'
-#' TODO
-#' Base nucleotide and taxonomy.
-#'
-#' Batch download
-#'
-#'
 #'
 #' @return A tibble.
 #' @export
@@ -65,14 +58,16 @@ refdb_import_NCBI <- function(query, full = FALSE) {
                                    suffix = c("", "_taxonomy"))
 
     NCBI_table <- tibble::tibble(source = "NCBI", NCBI_table)
+    NCBI_table <- dplyr::mutate(NCBI_table, species = organism)
+    # Maybe clean species column here
 
     if(full == FALSE) {
       NCBI_table <- dplyr::select(NCBI_table, source, id, gene, sequence,
                                   superkingdom, kingdom, phylum, subphylum,
                                   class, subclass, infraclass,
                                   order, suborder, infraorder,
-                                  superfamily, family, genus,
-                                  organism, country_location, lat_lon)
+                                  superfamily, family, genus, species,
+                                  country_location, lat_lon)
     }
 
     # Write header
@@ -96,7 +91,6 @@ refdb_import_NCBI <- function(query, full = FALSE) {
   out <- refdb_set_fields(out,
                           source = "source",
                           id = "id",
-                          organism = "organism",
                           taxonomy = c(superkingdom = "superkingdom",
                                        kingdom = "kingdom",
                                        phylum = "phylum",
@@ -109,7 +103,8 @@ refdb_import_NCBI <- function(query, full = FALSE) {
                                        infraorder = "infraorder",
                                        superfamily = "superfamily",
                                        family = "family",
-                                       genus = "genus"),
+                                       genus = "genus",
+                                       species = "species"),
                           sequence = "sequence",
                           marker = "gene")
 
