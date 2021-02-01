@@ -24,7 +24,7 @@
 #' fields set using config_yaml always overwrite those set by arguments
 #'
 #' @return
-#' The function returns x with updated attributes.
+#' The function returns \code{x} with updated attributes.
 #'
 #' @export
 #'
@@ -40,7 +40,7 @@ refdb_set_fields <- function(x,
 
   if (!is.null(config_yaml)) {
 
-    yml <- yaml::read_yaml("git_ignore/yaml_bold.yml")
+    yml <- yaml::read_yaml(config_yaml)
     yml <- lapply(yml, unlist)
 
     for (i in seq_along(yml)) {
@@ -123,22 +123,58 @@ refdb_set_fields <- function(x,
 }
 
 
-# refdb_add_field <- function(x,
-#                             field_name,
-#                             col_name,
-#                             col_value = NULL) {
-#   if(is.null(col_value)){
-#     stopifnot(col_name %in% colnames(x))
-#   } else {
-#     x[[col_name]] <- col_value
-#   }
-#
-#   fields <- attr(x, "refdb_fields")
-#   fields[[field_name]] <- col_name
-#   attr(x, "refdb_fields") <- fields
-#
-#   return(x)
-# }
+
+
+#' Functions to set fields for various databases
+#'
+#' @param x a reference database.
+#'
+#' @return
+#' The function returns \code{x} with updated attributes.
+#'
+#' @export
+#'
+#' @name fields_dbs
+#'
+NULL
+
+#' @rdname fields_dbs
+refdb_set_fields_BOLD <- function(x) {
+  if(!"source" %in% colnames(x)) {
+    x <- tibble::tibble(source = "BOLD", x)
+  }
+  refdb_set_fields(x, config_yaml = system.file("extdata", "yaml_bold.yml",
+                                                package = "refdb"))
+}
+
+#' @rdname fields_dbs
+refdb_set_fields_MIDORI <- function(x) {
+  if(!"source" %in% colnames(x)) {
+    x <- tibble::tibble(source = "MIDORI", x)
+  }
+  refdb_set_fields(x, config_yaml = system.file("extdata", "yaml_midori.yml",
+                                                package = "refdb"))
+}
+
+
+#' @rdname fields_dbs
+refdb_set_fields_PR2 <- function(x) {
+  if(!"source" %in% colnames(x)) {
+    x <- tibble::tibble(source = "PR2", x)
+  }
+  refdb_set_fields(x, config_yaml = system.file("extdata", "yaml_pr2.yml",
+                                                package = "refdb"))
+}
+
+#' @rdname fields_dbs
+refdb_set_fields_diatbarcode <- function(x) {
+  if(!"source" %in% colnames(x)) {
+    x <- tibble::tibble(source = "Diat.barcode", x)
+  }
+  refdb_set_fields(x, config_yaml = system.file("extdata", "yaml_diatbarcode.yml",
+                                                package = "refdb"))
+}
+
 
 
 
@@ -151,7 +187,7 @@ refdb_set_fields <- function(x,
 #' Invisible or error.
 #'
 check_fields <- function(x,
-                         what = c("source", "id", "organism",
+                         what = c("source", "id",
                                   "taxonomy", "sequence", "marker")) {
   fields <- attributes(x)$refdb_fields
 
