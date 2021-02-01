@@ -14,6 +14,7 @@
 #'
 refdb_ncbi_taxonomy <- function(x) {
 
+  check_fields(x, "taxonomy")
   ncbi_taxo <- ncbi_taxo_rank()
   x_taxo <- attributes(x)$refdb_fields$taxonomy
   x_taxo_sel <- x_taxo[na.exclude(match(ncbi_taxo, names(x_taxo)))]
@@ -110,7 +111,7 @@ ncbi_taxo_rank <- function() {
 
 #' Ranks considered as valid by refdb
 #'
-#' @return a vector of ordered ranks
+#' @return a vector of ordered ranks.
 #' @export
 #'
 #' @references This is a simplified version of the
