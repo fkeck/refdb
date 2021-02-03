@@ -206,3 +206,24 @@ check_fields <- function(x,
 
   invisible()
 }
+
+
+
+
+
+#' Write fields to a file
+#'
+#' This function can be used to save fields defined
+#' using e.g. \code{refdb_set_fields} to a file.
+#' Data are saved in YAML and can be read again using the
+#' \code{config_yaml} argument of \code{refdb_set_fields}.
+#'
+#' @param x a reference database with some fields to be saved.
+#' @param file a path to the file to write.
+#'
+#' @export
+#'
+refdb_write_fields <- function(x, file) {
+  yaml::write_yaml(attributes(x)$refdb_fields, file = file)
+}
+
