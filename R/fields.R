@@ -93,7 +93,7 @@ refdb_set_fields <- function(x,
     }
     taxo_order <- match(names(taxonomy), valid_taxo_rank())
     fields_list$taxonomy <- taxonomy[order(taxo_order, na.last = NA)]
-    x[, taxonomy] <- apply(x[, taxonomy], 2, as.character)
+    x[, taxonomy] <- lapply(x[, taxonomy], as.character)
   }
 
   if (!is.na(sequence)) {
