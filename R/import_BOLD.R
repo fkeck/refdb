@@ -21,6 +21,12 @@
 #' package to interface with the BOLD API. The NCBI Taxonomy
 #' database is queried using the \pkg{rentrez} package.
 #'
+#' @section Large requests
+#' As detailed in the manual of bold_seqspec, some large requests
+#' (e.g. high ranked taxa) can lead to errors. In that case one
+#' strategy can be to sequentially download data for lower rank
+#' taxa. See \url{https://docs.ropensci.org/bold/#large-data}.
+#'
 #' @return A tibble.
 #'
 #' @seealso link[bold]{bold_stats} and \link[bold]{bold_seqspec}
@@ -48,23 +54,30 @@ refdb_import_BOLD <- function(taxon = NULL,
                                   researchers = researchers,
                                   geo = geo)
 
-  if(query_stats$order$count > 1 & query_stats$total_records > 5000) {
+  if(query_stats$total_records == 0) {
+    cat("No sequence found\n")
+    return(NULL)
+  }
 
-    # TODO split by order strategy
+  cat("Downloading", query_stats$total_records, "sequences from BOLD...\n")
 
-  } else {
-    cat("Downloading", query_stats$total_records, "sequences from BOLD...\n")
-
+  tryCatch(
     recs <- bold::bold_seqspec(taxon = taxon,
                                ids = ids,
                                bin = bin,
                                container = container,
                                institutions = institutions,
                                researchers = researchers,
-                               geo = geo)
+                               geo = geo),
+    error = function(c) {
+      stop(
+      "\nAn error occured while trying to download data from BOLD servers\n",
+      "For large requests check the manual (?refdb_import_BOLD).\n"
+      )
+    }
+  )
+  out <- tibble::as_tibble(recs)
 
-    out <- tibble::as_tibble(recs)
-  }
 
   out <- tibble::tibble(source = "BOLD", out)
 
@@ -100,3 +113,28 @@ refdb_import_BOLD <- function(taxon = NULL,
 }
 
 
+# Attempt to implement data collection recursively in the taxonomy
+# Not working yet!
+# bold_seqspec_large <- function(taxon, ncbi_taxo, full) {
+#
+#   query_stats <- bold::bold_stats(taxon = taxon)
+#
+#   tax_levels <- c("order", "family", "genus", "species")
+#   top_tax <- sapply(query_stats[tax_levels], function(x) x$count)
+#
+#   if(top_tax["order"] > 1) {
+#     down_to_tax <- "order"
+#   } else {
+#     top_tax <- dplyr::last(names(which(top_tax == min(top_tax))))
+#     down_to_tax <- tax_levels[which(tax_levels == top_tax) + 1]
+#   }
+#
+#   suppressMessages(
+#     tax_ds <- taxize::downstream(taxon, db = "bold", downto = "genus")
+#   )
+#
+#   out <- lapply(tax_ds[[taxon]]$name, refdb_import_BOLD,
+#                 ncbi_taxo = ncbi_taxo,
+#                 full = full)
+#   dplyr::bind_rows(out)
+# }
