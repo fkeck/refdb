@@ -64,6 +64,7 @@ refdb_ncbi_taxonomy <- function(x) {
       lvl = lvl + 1
     }
   }
+  cat("\n\n")
 
   # Collect taxonomy for IDs
   bt_taxo <- get_ncbi_taxonomy(ncbi_ids)
