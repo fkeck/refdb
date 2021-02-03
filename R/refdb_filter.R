@@ -5,7 +5,11 @@
 #' @param x a reference database
 #'
 #' @return a numeric vector
-#'
+#' @name filter_scores
+NULL
+
+
+#' @rdname filter_scores
 .filter_seq_length <- function(x) {
   check_fields(x, "sequence")
   col <- attributes(x)$refdb$sequence
@@ -16,21 +20,21 @@
   check_fields(x, "sequence")
   col <- attributes(x)$refdb$sequence
   bioseq::seq_count_pattern(x[[col]], pattern = list(char))
-}
+} # Returns number of ambiguous char
 
 .filter_seq_homopolymers <- function(x) {
   check_fields(x, "sequence")
   col <- attributes(x)$refdb$sequence
   res <- bioseq::seq_extract_pattern(x[[col]], pattern = "(.)\\1+")
-  lapply(res, function(x) sort(unique(nchar(x))))
-}
+  sapply(res, function(x) max(sort(unique(nchar(x)))))
+} # Returns length of longest homopolymer
 
 .filter_seq_duplicates <- function(x) {
   check_fields(x, what = c("sequence", "taxonomy"))
   col <- c(attributes(x)$refdb$sequence,
            attributes(x)$refdb$taxonomy)
   !duplicated.data.frame(x[, col])
-}
+} # Return logical vector: FALSE are duplicates
 
 .filter_seq_stopcodon <- function(x, code, codon_frame = NA) {
   check_fields(x, "sequence")
@@ -91,8 +95,7 @@
   }
 
   return(res)
-
-}
+} # Return number of stop codons
 
 
 .filter_tax_precision <- function(x) {
@@ -106,10 +109,10 @@
   })
 
   apply(as.data.frame(x_val), 1, max)
-}
+} # Return taxonomic precision (number of last taxonomic column)
+  # High value indicate more precise identification
 
-
-.filter_ref_focus <- function(x) {
+.filter_ref_scope <- function(x) {
   check_fields(x, c("taxonomy", "reference"))
   col_tax <- attributes(x)$refdb$taxonomy
   col_ref <- attributes(x)$refdb$reference
@@ -121,8 +124,12 @@
                        dplyr::across(.cols = dplyr::all_of(unname(col_tax)),
                                      .fns = dplyr::n_distinct))
 
-  apply(dat[, col_tax], 1, function(x) sum(x > 1))
-}
+  res <- apply(dat[, col_tax], 1, function(x) sum(x > 1))
+  res[is.na(dat[[col_ref]])] <- NA
+  length(col_tax) - res
+} # Return the study taxonomic scope (number of last taxonomic column)
+# High value indicate more narrow studies
+# Returns NA if reference is NA
 
 ###############################
 
@@ -145,7 +152,7 @@ refdb_filter_seq_ambiguous <- function(x, max_ambig = 3, char = "N") {
 
 refdb_filter_seq_homopolymers <- function(x, max_len = 16) {
   flt <- .filter_seq_homopolymers(x)
-  sel <- sapply(flt, max) <= max_len
+  sel <- flt <= max_len
   x[sel, ]
 }
 
@@ -190,17 +197,31 @@ refdb_filter_tax_precision <- function(x, min_tax) {
 
   min_tax <- which(min_tax == attributes(x)$refdb$taxonomy)
   sel <- flt >= min_tax
-
   x[sel, ]
 }
 
 
-refdb_filter_ref_focus <- function(x, min_tax) {
-  flt <- .filter_ref_precision(x)
+#' Filter records by taxonomic scope of studies
+#'
+#' @param x a reference database (tibble).
+#' @param max_tax the maximum taxonomic focus of the study.
+#'
+#' @details
+#' A reference field (one ore more columns) must be set to use
+#' this function. If reference is not available (NA) for a record,
+#' the record is not dropped.
+#'
+#' @return
+#' a reference database (tibble).
+#'
+#' @export
+#'
+refdb_filter_ref_scope <- function(x, max_tax) {
+  flt <- .filter_ref_scope(x)
 
   min_tax <- which(min_tax == attributes(x)$refdb$taxonomy)
   sel <- flt >= min_tax
-
+  sel[is.na(sel)] <- TRUE
   x[sel, ]
 }
 
@@ -214,3 +235,7 @@ refdb_filter_ref_focus <- function(x, min_tax) {
 #
 # #Require external RDP software
 # refdb_filter_seq_selfassign(x, max_dist, exec)
+
+
+
+
