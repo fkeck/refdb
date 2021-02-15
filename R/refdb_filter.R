@@ -98,6 +98,25 @@ NULL
 } # Return number of stop codons
 
 
+
+.filter_seq_primer <- function(x, primer) {
+  check_fields(x, "sequence")
+  col <- attributes(x)$refdb$sequence
+
+  dna_seq <- x[[col]]
+  dna_seq <- bioseq::seq_remove_pattern(dna_seq, pattern = "-")
+
+  strd <- bioseq:::seq_afind(dna_seq, bioseq::as_dna(primer))
+
+  res <- apply(strd$distance, 1, min) /
+    nchar(apply(cbind(1:nrow(strd$distance),
+                      apply(strd$distance, 1, which.min)),
+                1, function(x) strd$match[x[[1]], x[[2]]]))
+  return(res)
+} # Return distance to primer (frequency of character [0-1])
+
+
+
 .filter_tax_precision <- function(x) {
   check_fields(x, "taxonomy")
   col <- attributes(x)$refdb$taxonomy
@@ -131,6 +150,96 @@ NULL
 # High value indicate more narrow studies
 # Returns NA if reference is NA
 
+
+
+.filter_seq_dist <- function(x) {
+  check_fields(x, c("taxonomy", "sequence"))
+  x <- refdb_clean_tax_NA(x)
+  x_tax <- x[, attributes(x)$refdb_fields$taxonomy]
+  x_seq <- x[, attributes(x)$refdb_fields$sequence, drop = TRUE]
+  x_tax_precision <- .filter_tax_precision(x)
+  g <- igraph_from_taxo(x)
+
+  seq_in_out <- cbind(stringr::str_locate(x_seq, "^[-N]+")[, 2],
+                      stringr::str_locate(x_seq, "[-N]+$")[, 1])
+  seq_in_out[, 1][is.na(seq_in_out[, 1])] <- 1
+  seq_in_out[, 2][is.na(seq_in_out[, 2])] <- nchar(x_seq[1])
+
+  out <- vector(mode = "logical", length = length(x_seq))
+
+  for(i in seq_along(x_seq)) {
+    i_seq <- x_seq[i]
+    i_seq_in_out <- seq_in_out[i, ]
+    i_tax <- unlist(x_tax[i, ])
+    i_tax_precision <- x_tax_precision[i]
+
+    if(length(unique(unlist(x_tax[, 1]))) > 1) {
+      i_tax_path <- c("Root", i_tax)
+    } else {
+      i_tax_path <- i_tax
+    }
+    i_tax_path <- paste(i_tax_path, collapse = ">")
+    i_tax_path <- stringr::str_remove(i_tax_path, pattern = "(>NA)+$")
+
+
+    sample_idx <- intersect(
+      which(seq_in_out[, 1] <= i_seq_in_out[1]),
+      which(seq_in_out[, 2] >= i_seq_in_out[2])
+    )
+    sample_idx <- intersect(
+      sample_idx,
+      which(x_tax_precision == i_tax_precision)
+    )
+    if(length(sample_idx) < 100 | is.na(x_seq[i])) {
+      out[i] <- 0
+      next
+    }
+    sample_idx <- sample(sample_idx, size = 100)
+    sample_tax_path <- x_tax[sample_idx, ]
+    if(length(unique(unlist(x_tax[, 1]))) > 1) {
+      sample_tax_path <- tibble::tibble(Root = "Root", sample_tax_path)
+    }
+
+    sample_tax_path <- apply(x_tax[sample_idx, ], 1,
+                             function(x) {
+                               res <- paste(x, collapse = ">")
+                               res <- stringr::str_remove(res, pattern = "(>NA)+$")
+                               })
+
+    sample_seq <- x_seq[sample_idx]
+
+    tax_dist_i <- igraph::distances(graph = g,
+                                    v = which(igraph::V(g)$name == i_tax_path),
+                                    to = which(igraph::V(g)$name %in%  sample_tax_path))
+
+    tax_dist_i <- tax_dist_i[ , sample_tax_path, drop = TRUE]
+
+    seq_dist_i <- ape::dist.dna(bioseq::as_DNAbin(c(i_seq, sample_seq)),
+                                model = "raw", as.matrix = TRUE)[-1, 1]
+
+    sel <- seq_dist_i < quantile(seq_dist_i, probs = 0.95)
+
+    seq_dist_i <- seq_dist_i[sel]
+    tax_dist_i <- tax_dist_i[sel]
+
+    median_seq_dist <- tapply(seq_dist_i, tax_dist_i, median)
+    out[i] <- sum(median_seq_dist[1] > median_seq_dist[-1])
+
+    if(all(tax_dist_i == tax_dist_i[1]) | all(seq_dist_i == seq_dist_i[1])) {
+      out[i] <- 0
+      next
+    }
+
+    if(cor.test(tax_dist_i, seq_dist_i)$conf.int[1] > 0) {
+      out[i] <- 0
+    }
+
+    if(out[i] > 2) plot(tax_dist_i, seq_dist_i, main = i)
+
+    cat("\rProcessing sequences: ", i, " (", floor(i/length(x_seq)*100), "%)", rep(" ", 40), sep = "")
+  }
+
+}
 ###############################
 
 
@@ -192,6 +301,28 @@ refdb_filter_seq_stopcodon <- function(x, max_stop = 0, code, codon_frame = NA) 
 }
 
 
+
+refdb_filter_seq_primer <- function(x, primer_forward = NULL,
+                                    primer_reverse = NULL,
+                                    max_error_forward = 0.1,
+                                    max_error_reverse = 0.1) {
+  sel <- rep(TRUE, nrow(x))
+
+  if(!is.null(primer_forward)) {
+    flt_fwd <- .filter_seq_primer(x, primer = primer_forward)
+    sel <- sel & (flt_fwd <= max_error_forward)
+  }
+
+  if(!is.null(primer_reverse)) {
+    flt_rev <- .filter_seq_primer(x, primer = primer_reverse)
+    sel <- sel & (flt_rev <= max_error_reverse)
+  }
+
+  x[sel, ]
+}
+
+
+
 refdb_filter_tax_precision <- function(x, min_tax) {
   flt <- .filter_tax_precision(x)
 
@@ -225,7 +356,14 @@ refdb_filter_ref_scope <- function(x, max_tax) {
   x[sel, ]
 }
 
-# refdb_filter_seq_primer()
+
+refdb_filter_seq_dist <- function(x, max_dist){
+
+}
+
+
+
+#
 
 # #Require alignment:
 # refdb_filter_seq_dist(x, max_dist)
