@@ -1,0 +1,14 @@
+source: source
+id: sequence_id
+taxonomy:
+- kingdom: kingdom_following_algaebase_2018
+- subkingdom: subkingdom_following_algaebase_2018
+- phylum: phylum_following_algaebase_2018
+- class: class_following_round_crawford_mann_1990
+- order: order_following_round_crawford_mann_1990
+- family: family_following_round_crawford_mann_1990
+- genus: genus
+- species: species
+sequence: sequence
+marker: amplified_region
+

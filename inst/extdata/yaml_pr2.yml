@@ -1,0 +1,13 @@
+source: source
+id: pr2_accession
+taxonomy:			
+- kingdom: kingdom
+- infrakingdom: supergroup
+- phylum: division
+- class: class
+- order: order
+- family: family
+- genus: genus
+- species: species
+sequence: sequence
+marker: gene
