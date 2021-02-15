@@ -147,15 +147,6 @@ refdb_set_fields_BOLD <- function(x) {
                                                 package = "refdb"))
 }
 
-#' @rdname fields_dbs
-refdb_set_fields_MIDORI <- function(x) {
-  if(!"source" %in% colnames(x)) {
-    x <- tibble::tibble(source = "MIDORI", x)
-  }
-  refdb_set_fields(x, config_yaml = system.file("extdata", "yaml_midori.yml",
-                                                package = "refdb"))
-}
-
 
 #' @rdname fields_dbs
 refdb_set_fields_PR2 <- function(x) {
