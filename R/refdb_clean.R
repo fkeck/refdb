@@ -1,20 +1,5 @@
 
 
-#' Remove illegal characters from genetic sequences
-#'
-#' @param x a reference database with a defined sequence field.
-#'
-#' @return
-#' A reference database.
-#' @export
-#'
-refdb_clean_seq_remove_illegal <- function(x) {
-  check_fields(x, "sequence")
-  col <- attributes(x)$refdb$sequence
-  x[[col]] <- bioseq::as_dna(x[[col]])
-  return(x)
-}
-
 
 #' Remove gaps from genetic sequences
 #'
@@ -66,13 +51,22 @@ refdb_clean_seq_remove_sideN <- function(x, side = "both") {
 #' A reference database.
 #' @export
 #'
-refdb_clean_seq_crop_region <- function(x, pattern_in, pattern_out) {
+refdb_clean_seq_crop_primers <- function(x,
+                                         pattern_in,
+                                         pattern_out,
+                                         max_error_in = 0.1,
+                                         max_error_out = 0.1,
+                                         include_primers = TRUE) {
+
   check_fields(x, "sequence")
   col <- attributes(x)$refdb$sequence
 
   x[[col]] <- bioseq::seq_crop_pattern(x[[col]],
                                        pattern_in = pattern_in,
-                                       pattern_out = pattern_out)
+                                       pattern_out = pattern_out,
+                                       max_error_in = max_error_in,
+                                       max_error_out = max_error_out,
+                                       include_patterns = include_primers)
   return(x)
 }
 
