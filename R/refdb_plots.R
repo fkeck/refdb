@@ -85,29 +85,36 @@ igraph_from_taxo <- function(x, cols = NULL) {
 #' Represent the hierarchical structure of the taxonomic information
 #' of a reference database as a set of nested rectangles (treemap).
 #'
-#' @param x
-#' @param cols a vector of column names to include in the treemap.
-#' If not provided, the function tries to find a relevant subset of columns.
-#' @param freq_labels Use these parameters to adjust the number of labels printed
+#' @param x a reference database.
+#' @param cols a vector of column names referring to taxonomic levels
+#' to include in the treemap. If not provided (\code{NULL})
+#' the function tries to find a relevant subset of columns.
+#' @param freq_labels a numeric vector of length two to adjust
+#' the number of printed labels (see Details).
 #'
 #' @details
 #' TODO
 #'
-#' Only the columns provided in the cols argument are represented
-#' in the treemap.
-#' Large labels are printed for the highest rank, while light
+#' Only the columns provided in the \code{cols} argument are represented
+#' in the treemap. Large labels are printed for the highest rank, while light
 #' text labels are printed for the lowest rank
 #' Intermediate ranks are drawn but their names are not shown.
 #'
-#' Use internal function to make a graph and design your plot
+#' The number of labels printed are determined by \code{freq_labels}.
+#' The first value gives the threshold
+#' for the highest rank (large labels) and the second value gives
+#' the threshold for the lowest rank (light text labels).
+#'
+#' The underlying graph is computed using the non-exported function
+#' \code{igraph_from_taxo}.
 #'
 #' @return
-#' A \pkg{ggplot2} (\pkg{ggraph}) object. This means the plot can be further customized
-#' using ggplot2 compatible functions.
+#' A \pkg{ggplot2} (\pkg{ggraph}) object. This means the plot
+#' can be further customized using \pkg{ggplot2} compatible functions.
 #' @export
 #'
 #' @examples
-refdb_plot_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003)) {
+refdb_plot_tax_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003)) {
 
   check_fields(x, what = "taxonomy")
   col_tax <- attributes(x)$refdb_fields$taxonomy
@@ -145,43 +152,122 @@ refdb_plot_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003)) {
 }
 
 
-#
-#
-#
-# ggraph::ggraph(g, layout = "igraph", algorithm = "fr") +
-#   ggraph::geom_edge_link() +
-#   ggraph::geom_node_point(ggplot2::aes(size = n, color = as.factor(taxonomy_depth)))
-#
-# ggraph::ggraph(g, layout = "circlepack", circular = TRUE) +
-#   ggraph::geom_edge_link() +
-#   ggraph::geom_node_point(ggplot2::aes(size = n, color = as.factor(taxonomy_depth))) +
-#   ggplot2::coord_fixed()
-#
-#
-# ggraph::ggraph(g, layout = "unrooted", daylight = T) +
-#   ggraph::geom_edge_link() +
-#   ggraph::geom_node_point(ggplot2::aes(size = refdb_n, color = as.factor(refdb_depth))) +
-#   ggplot2::coord_fixed()
-#
-#
-# ggraph::ggraph(g, layout = "auto") +
-#   ggraph::geom_edge_link() +
-#   ggraph::geom_node_point()
-#
+
+
+
+#' Reference database taxonomy tree
+#'
+#' Represent the hierarchical structure of the taxonomic information
+#' of a reference database as a tree.
+#'
+#' @param x a reference database.
+#' @param leaf_col a column name referring to the taxonomic level
+#' for the leaves of the tree. If not provided (\code{NULL})
+#' the function tries to find a relevant level.
+#' @param color_col a column name referring to the taxonomic level
+#' for the color of the leaves (must be higher or equal to the level
+#' of \code{leaf_col}). If not provided (\code{NULL})
+#' the function tries to find a relevant level.
+#' @param freq_labels a numeric value to adjust
+#' the number of printed labels (minimum frequency).
+#' Default is zero which means all non-NA labels are printed.
+#' @param expand_plot a value to expand the limits of the plot.
+#' Useful if the labels are too long.
+#'
+#' @details
+#' The underlying graph is computed using the non-exported function
+#' \code{igraph_from_taxo}.
+#'
+#' @return
+#' A \pkg{ggplot2} (\pkg{ggraph}) object. This means the plot
+#' can be further customized using \pkg{ggplot2} compatible functions.
+#' @export
+#'
+#' @examples
+refdb_plot_tax_tree <- function(x,
+                                leaf_col = NULL,
+                                color_col = NULL,
+                                freq_labels = 0,
+                                expand_plot = 0.5) {
+
+  check_fields(x, what = "taxonomy")
+  col_tax <- attributes(x)$refdb_fields$taxonomy
+
+  # Get labels for the nth taxonomic level
+  # from taxonomic string separated by ">"
+  # Root is zero
+  taxo_nth_level <- function(x, level){
+    out <- stringr::str_split_fixed(x, ">", n = Inf)
+    out[out == "" | out == "NA"] <- NA
+    out[, level + 1]
+  }
+
+
+  if(is.null(leaf_col)) {
+    leaf_col <- apply(x[, col_tax], 2, function(x) length(unique(x)))
+    leaf_col <- names(leaf_col[leaf_col < 200])
+    cat("Selected rank columns for the tree: ", leaf_col, "\n")
+  } else {
+    leaf_col <- col_tax[1:which(col_tax == leaf_col)]
+  }
+
+  if(is.null(color_col)) {
+    color_col <- apply(x[, leaf_col], 2, function(x) length(unique(x)))
+    color_col <- names(color_col[color_col < 25])
+    color_col <- color_col[length(color_col)]
+    cat("Selected rank column for the color: ", color_col, "\n")
+  } else {
+    color_col <- col_tax[col_tax == color_col]
+  }
+
+  g <- igraph_from_taxo(x, cols = leaf_col)
+
+  lvl_color_col <- ifelse(length(color_col) == 0, 0, which(col_tax == color_col))
+  igraph::V(g)$leaf_group <- taxo_nth_level(igraph::V(g)$name, lvl_color_col)
+
+  ggraph::ggraph(g, 'dendrogram', circular = TRUE) +
+    ggraph::geom_edge_diagonal(colour = "grey30") +
+    ggraph::geom_node_point(ggplot2::aes(filter = leaf, size = n, color = leaf_group), alpha = 0.5) +
+    ggraph::geom_node_text(ggplot2::aes(x = x*1.05, y = y*1.05,
+                                        label = ifelse(taxonomy_depth == max(taxonomy_depth) & freq_by_rank > freq_labels,
+                                                       terminal,
+                                                       NA_character_),
+                                        angle = -((- ggraph::node_angle(x, y) + 90) %% 180) + 90),
+                           size = 3, color = "black", hjust='outward') +
+    ggplot2::scale_size_continuous(range = c(1, 8) ) +
+    ggplot2::coord_fixed() +
+    ggplot2::expand_limits(x = c(-1 - expand_plot, 1 + expand_plot),
+                           y = c(-1 - expand_plot, 1 + expand_plot)) +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "none")
+
+}
+
+
 
 #
 #
+# dat <- x[ , col_tax]
 #
-# ggraph::ggraph(g, 'dendrogram', circular = TRUE)) +
-#   ggraph::geom_edge_elbow() +
-#   ggraph::geom_node_point(ggplot2::aes(size = refdb_n, color = as.factor(refdb_depth))) +
-#   ggplot2::coord_fixed()
-#
-#
-# ggraph::ggraph(g, 'dendrogram') +
-#   ggraph::geom_edge_elbow()
-#
-# ggraph::ggraph(g, 'partition') +
-#   ggraph::geom_node_tile(size = 0.25)
+# apply(dat, 2, dplyr::n_distinct)
+# ggplot2::ggplot()
 #
 #
+#
+# check_fields(x, what = "taxonomy")
+# col_tax <- attributes(x)$refdb_fields$taxonomy
+#
+# dat <- table(refdb:::.filter_tax_precision(x))
+# lvl <- factor(as.numeric(names(dat)),
+#               levels = as.numeric(names(dat)),
+#               labels = names(col_tax)[as.numeric(names(dat))])
+#
+# dat <- tibble::tibble(tax = lvl, n = as.vector(dat))
+# ggplot2::ggplot(dat) +
+#   ggplot2::geom_col(ggplot2::aes(tax, n))
+
+
+
+
+
+
