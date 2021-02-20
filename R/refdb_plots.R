@@ -199,7 +199,12 @@ refdb_plot_tax_tree <- function(x,
   taxo_nth_level <- function(x, level){
     out <- stringr::str_split_fixed(x, ">", n = Inf)
     out[out == "" | out == "NA"] <- NA
-    out[, level + 1]
+    if(all(out[, 1] == "Root")) {
+      out <- out[, level + 1]
+    } else {
+      out <- out[, level]
+    }
+    return(out)
   }
 
 
