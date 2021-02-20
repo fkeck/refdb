@@ -1,0 +1,81 @@
+---
+title: "Reference database report"
+author: "refdb"
+date: "`r as.character(format(Sys.Date(), format = '%B %d, %Y'))`"
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+
+
+# Check for typos
+```{r}
+check_typo <- refdb_check_tax_typo(x)
+check_typo <- dplyr::bind_rows(check_typo, .id = "Level")
+
+DT::datatable(check_typo,
+              rownames = FALSE,
+              options = list(searching = FALSE
+                             )
+)
+
+```
+
+
+# Check for taxonomic conflicts
+```{r}
+check_taxo <- refdb_check_tax_conflict(x)
+check_taxo <- dplyr::bind_rows(check_taxo, .id = "Level")
+check_taxo <- dplyr::group_by(check_taxo, Level, Taxon)
+
+format_taxo <- function(y) {
+  tax <- stringr::str_split(y, " > ")
+  tax <- do.call("rbind", tax)
+  tax_test <- apply(tax, 2, function(x) length(unique(x)) == 1)
+  sel <- seq(min(which(tax_test == FALSE)) - 1, length(tax_test))
+  res <- apply(tax[, sel], 1, paste, collapse = " > ")
+  if(min(sel) > 1) {
+    res <- paste("... >", res)
+  }
+  res <- paste(res, collapse = "<br/>")
+  return(res)
+}
+
+check_taxo <- dplyr::summarise(check_taxo, Taxonomy = format_taxo(Taxonomy))
+
+DT::datatable(check_taxo,
+              rownames = FALSE,
+              escape = FALSE,
+              options = list(searching = FALSE
+                             )
+)
+
+```
+
+
+# Check for sequence conflicts
+```{r}
+check_seqs <- refdb_check_seq_conflict(x)
+
+
+check_seqs <- dplyr::group_by(check_seqs, sequence)
+check_seqs <- dplyr::summarise(check_seqs, taxonomy = format_taxo(taxonomy))
+
+check_seqs$sequence <- paste('<span style="width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display:inline-block;">', check_seqs$sequence,'</span>')
+
+DT::datatable(check_seqs,
+              escape = FALSE,
+              rownames = FALSE,
+              options = list(searching = FALSE))
+
+```
+
+
+
