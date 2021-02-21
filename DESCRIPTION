@@ -33,6 +33,7 @@ Imports:
     ggplot2,
     ggraph,
     yaml,
-    ape
-    
-    
+    ape,
+    rlang,
+    rmarkdown
+RoxygenNote: 7.1.1
