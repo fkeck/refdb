@@ -250,27 +250,38 @@ refdb_plot_tax_tree <- function(x,
 
 
 
-#
-#
-# dat <- x[ , col_tax]
-#
-# apply(dat, 2, dplyr::n_distinct)
-# ggplot2::ggplot()
-#
-#
-#
-# check_fields(x, what = "taxonomy")
-# col_tax <- attributes(x)$refdb_fields$taxonomy
-#
-# dat <- table(refdb:::.filter_tax_precision(x))
-# lvl <- factor(as.numeric(names(dat)),
-#               levels = as.numeric(names(dat)),
-#               labels = names(col_tax)[as.numeric(names(dat))])
-#
-# dat <- tibble::tibble(tax = lvl, n = as.vector(dat))
-# ggplot2::ggplot(dat) +
-#   ggplot2::geom_col(ggplot2::aes(tax, n))
 
+#' Plot an histogram of sequence lengths
+#'
+#' @param x a reference database
+#' @param remove_gaps a logical (default \code{TRUE} to control whether
+#' gaps (-) should be removed prior computing sequence lengths.
+#'
+#' @return
+#' A ggplot object. This means the plot
+#' can be further customized using \pkg{ggplot2} compatible functions.
+#'
+#' @export
+#'
+refdb_plot_seqlen_hist <- function(x, remove_gaps = TRUE) {
+  check_fields(x, what = "sequence")
+  col_seq <- attributes(x)$refdb_fields$sequence
+
+  seqs <- x[[col_seq]]
+
+  if(remove_gaps) {
+    seqs <- bioseq::seq_remove_pattern(seqs, "-")
+  }
+
+  dat_len <- data.frame(Length = bioseq::seq_nchar(seqs))
+
+  ggplot2::ggplot(dat_len) +
+    ggplot2::geom_histogram(ggplot2::aes(Length)) +
+    ggplot2::xlab("Sequence length (bp)") +
+    ggplot2::ylab("Count") +
+    ggplot2::theme_bw()
+
+}
 
 
 
