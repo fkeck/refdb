@@ -42,6 +42,14 @@ This function uses several functions of the \pkg{bold}
 package to interface with the BOLD API. The NCBI Taxonomy
 database is queried using the \pkg{rentrez} package.
 }
+\section{Large requests}{
+
+As detailed in the manual of bold_seqspec, some large requests
+(e.g. high ranked taxa) can lead to errors. In that case one
+strategy can be to sequentially download data for lower rank
+taxa. See \url{https://docs.ropensci.org/bold/#large-data}.
+}
+
 \seealso{
 link[bold]{bold_stats} and \link[bold]{bold_seqspec}
 from \pkg{bold} which are used internally.

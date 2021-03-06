@@ -8,6 +8,9 @@ refdb_clean_seq_remove_sideN(x, side = "both")
 }
 \arguments{
 \item{x}{a reference database with a defined sequence field.}
+
+\item{side}{which side to clean.
+Can be one of \code{"left"}, \code{"right"} or \code{"both"} (default).}
 }
 \value{
 A reference database.

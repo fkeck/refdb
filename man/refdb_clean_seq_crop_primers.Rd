@@ -6,8 +6,8 @@
 \usage{
 refdb_clean_seq_crop_primers(
   x,
-  pattern_in,
-  pattern_out,
+  primer_forward,
+  primer_reverse,
   max_error_in = 0.1,
   max_error_out = 0.1,
   include_primers = TRUE
@@ -16,7 +16,15 @@ refdb_clean_seq_crop_primers(
 \arguments{
 \item{x}{a reference database with a defined sequence field.}
 
-\item{pattern_out}{}
+\item{primer_forward}{primer forward.}
+
+\item{primer_reverse}{primer reverse.}
+
+\item{max_error_in, max_error_out}{maximum error for a match
+(frequency based on primer length).}
+
+\item{include_primers}{a logical indicating whether the detected primers are
+included in the cropped sequences.}
 }
 \value{
 A reference database.
