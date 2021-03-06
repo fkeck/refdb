@@ -22,7 +22,8 @@ check_typo <- dplyr::bind_rows(check_typo, .id = "Level")
 
 DT::datatable(check_typo,
               rownames = FALSE,
-              options = list(searching = FALSE
+              options = list(searching = FALSE,
+                             pageLength = 10
                              )
 )
 
@@ -34,6 +35,8 @@ DT::datatable(check_typo,
 check_taxo <- refdb_check_tax_conflict(x)
 check_taxo <- dplyr::bind_rows(check_taxo, .id = "Level")
 check_taxo <- dplyr::group_by(check_taxo, Level, Taxon)
+
+
 
 format_taxo <- function(y) {
   tax <- stringr::str_split(y, " > ")
@@ -48,12 +51,15 @@ format_taxo <- function(y) {
   return(res)
 }
 
-check_taxo <- dplyr::summarise(check_taxo, Taxonomy = format_taxo(Taxonomy))
+if(nrow(check_taxo) > 0) {
+  check_taxo <- dplyr::summarise(check_taxo, Taxonomy = format_taxo(Taxonomy))
+}
 
 DT::datatable(check_taxo,
               rownames = FALSE,
               escape = FALSE,
-              options = list(searching = FALSE
+              options = list(searching = FALSE,
+                             pageLength = 10
                              )
 )
 
@@ -73,7 +79,8 @@ check_seqs$sequence <- paste('<span style="width: 250px; white-space: nowrap; ov
 DT::datatable(check_seqs,
               escape = FALSE,
               rownames = FALSE,
-              options = list(searching = FALSE))
+              options = list(searching = FALSE,
+                             pageLength = 10))
 
 ```
 
