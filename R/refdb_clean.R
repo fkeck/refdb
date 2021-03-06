@@ -20,6 +20,8 @@ refdb_clean_seq_remove_gaps <- function(x) {
 #' Remove repeated side N from genetic sequences
 #'
 #' @param x a reference database with a defined sequence field.
+#' @param side which side to clean.
+#' Can be one of \code{"left"}, \code{"right"} or \code{"both"} (default).
 #'
 #' @return
 #' A reference database.
@@ -30,11 +32,11 @@ refdb_clean_seq_remove_sideN <- function(x, side = "both") {
   check_fields(x, "sequence")
   col <- attributes(x)$refdb$sequence
 
-  if(side == "in" | side == "both") {
+  if(side == "left" | side == "both") {
     x[[col]] <- bioseq::seq_remove_pattern(x[[col]], "^N+")
   }
 
-  if(side == "out" | side == "both") {
+  if(side == "right" | side == "both") {
     x[[col]] <- bioseq::seq_remove_pattern(x[[col]], "N+$")
   }
   return(x)
@@ -44,16 +46,20 @@ refdb_clean_seq_remove_sideN <- function(x, side = "both") {
 #' Crop genetic sequences with a set of primers
 #'
 #' @param x a reference database with a defined sequence field.
-#' @param pattern_in
-#' @param pattern_out
+#' @param primer_forward primer forward.
+#' @param primer_reverse primer reverse.
+#' @param max_error_in,max_error_out maximum error for a match
+#' (frequency based on primer length).
+#' @param include_primers a logical indicating whether the detected primers are
+#' included in the cropped sequences.
 #'
 #' @return
 #' A reference database.
 #' @export
 #'
 refdb_clean_seq_crop_primers <- function(x,
-                                         pattern_in,
-                                         pattern_out,
+                                         primer_forward,
+                                         primer_reverse,
                                          max_error_in = 0.1,
                                          max_error_out = 0.1,
                                          include_primers = TRUE) {
@@ -62,8 +68,8 @@ refdb_clean_seq_crop_primers <- function(x,
   col <- attributes(x)$refdb$sequence
 
   x[[col]] <- bioseq::seq_crop_pattern(x[[col]],
-                                       pattern_in = pattern_in,
-                                       pattern_out = pattern_out,
+                                       pattern_in = primer_forward,
+                                       pattern_out = primer_reverse,
                                        max_error_in = max_error_in,
                                        max_error_out = max_error_out,
                                        include_patterns = include_primers)

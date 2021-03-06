@@ -1,4 +1,20 @@
 
+#' Compile a report with different checks
+#'
+#' This function produce an HTML report to investigate potential issues
+#' in a reference database.
+#'
+#' @param x a reference database.
+#' @param file the file (path) to write the report. If \code{NULL}
+#' the report is written in the user temp directory.
+#' @param view A logical. If \code{TRUE} (default), the file is instantly
+#' opened in the web browser.
+#'
+#' @return
+#' The function invisibly returns the file where the report was written.
+#'
+#' @export
+#'
 refdb_check_report <- function(x, file = NULL, view = TRUE) {
 
   if(is.null(file)) {
@@ -16,9 +32,10 @@ refdb_check_report <- function(x, file = NULL, view = TRUE) {
                     envir = environment)
 
   if(view) {
-    browseURL(file)
+    utils::browseURL(file)
   }
 
+  invisible(file)
 }
 
 
@@ -44,7 +61,7 @@ refdb_check_tax_typo <- function(x, tol = 1) {
 
   ff <- function(x, tol) {
     x <- unique(x)
-    d <- adist(x, x)
+    d <- utils::adist(x, x)
     d[upper.tri(d)] <- 0
     sel <- which(d > 0 & d <= tol, arr.ind = TRUE)
     sel <- apply(sel, 1, function(k) x[k])
@@ -104,10 +121,11 @@ refdb_check_tax_conflict <- function(x) {
     tax_mod <- dplyr::mutate(tax,
                              refdb_pasted_cols = paste(!!!rlang::syms(colnames(tax)[seq(1, i-1)]),
                                                        sep = " > "))
-    tax_ff <- dplyr::summarise(tax_mod, taxonomy = ff(refdb_pasted_cols))
-    tax_ff <- dplyr::filter(tax_ff, sapply(taxonomy, length) > 1)
+    tax_ff <- dplyr::summarise(tax_mod, taxonomy = ff(.data$refdb_pasted_cols))
+    tax_ff <- dplyr::filter(tax_ff, sapply(.data$taxonomy, length) > 1)
     colnames(tax_ff) <- c("Taxon", "Taxonomy")
-    res[[i]] <- tidyr::unnest(tax_ff, Taxonomy)
+    tax_ff <- dplyr::filter(tax_ff, !is.na(.data$Taxon))
+    res[[i]] <- tidyr::unnest(tax_ff, .data$Taxonomy)
   }
 
   names(res) <- colnames(tax)
@@ -137,7 +155,7 @@ refdb_check_seq_conflict <- function(x) {
   dat <- x[, c(tax_cols, seq_col)]
 
   dat <- dplyr::add_count(dat, !!rlang::sym(seq_col), name = "refdb_n_col")
-  dat <- dplyr::filter(dat, refdb_n_col > 1)
+  dat <- dplyr::filter(dat, .data$refdb_n_col > 1)
   dat <- dplyr::mutate(dat, refdb_pasted_cols = paste(!!!rlang::syms(tax_cols), sep = " > "))
   dat <- dplyr::group_by(dat, !!rlang::sym(seq_col))
 
@@ -145,9 +163,10 @@ refdb_check_seq_conflict <- function(x) {
     list(unique(x))
   }
 
-  dat <- dplyr::summarise(dat, taxonomy = ff(refdb_pasted_cols))
-  dat <- dplyr::filter(dat, sapply(taxonomy, length) > 1)
-  res <- tidyr::unnest(dat, taxonomy)
+  dat <- dplyr::summarise(dat, taxonomy = ff(.data$refdb_pasted_cols))
+  dat <- dplyr::filter(dat, sapply(.data$taxonomy, length) > 1)
+  res <- tidyr::unnest(dat, .data$taxonomy)
+  colnames(res) <- c("sequence", "taxonomy")
 
   return(res)
 }

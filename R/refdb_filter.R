@@ -217,12 +217,12 @@ NULL
     seq_dist_i <- ape::dist.dna(bioseq::as_DNAbin(c(i_seq, sample_seq)),
                                 model = "raw", as.matrix = TRUE)[-1, 1]
 
-    sel <- seq_dist_i < quantile(seq_dist_i, probs = 0.95)
+    sel <- seq_dist_i < stats::quantile(seq_dist_i, probs = 0.95)
 
     seq_dist_i <- seq_dist_i[sel]
     tax_dist_i <- tax_dist_i[sel]
 
-    median_seq_dist <- tapply(seq_dist_i, tax_dist_i, median)
+    median_seq_dist <- tapply(seq_dist_i, tax_dist_i, stats::median)
     out[i] <- sum(median_seq_dist[1] > median_seq_dist[-1])
 
     if(all(tax_dist_i == tax_dist_i[1]) | all(seq_dist_i == seq_dist_i[1])) {
@@ -230,7 +230,7 @@ NULL
       next
     }
 
-    if(cor.test(tax_dist_i, seq_dist_i)$conf.int[1] > 0) {
+    if(stats::cor.test(tax_dist_i, seq_dist_i)$conf.int[1] > 0) {
       out[i] <- 0
     }
 
@@ -243,6 +243,16 @@ NULL
 ###############################
 
 
+#' Filter sequences based on their number of character.
+#'
+#' @param x a reference database.
+#' @param min_len minimum sequence length.
+#' @param max_len maximum sequence length.
+#'
+#' @return
+#' A tibble (filtered reference database).
+#' @export
+#'
 refdb_filter_seq_length <- function(x, min_len, max_len) {
   flt <- .filter_seq_length(x)
   sel <- flt >= min_len & flt <= max_len
@@ -250,22 +260,49 @@ refdb_filter_seq_length <- function(x, min_len, max_len) {
 }
 
 
-
-refdb_filter_seq_ambiguous <- function(x, max_ambig = 3, char = "N") {
+#' Filter sequences based on their number of ambiguous character.
+#'
+#' @param x a reference database.
+#' @param max_ambig maximum number of ambiguous character.
+#' @param char characters interpreted as ambiguous (vector).
+#'
+#' @return
+#' A tibble (filtered reference database).
+#' @export
+#'
+refdb_filter_seq_ambiguous <- function(x, max_ambig = 3L, char = "N") {
   flt <- .filter_seq_ambiguous(x, char = char)
   sel <- flt <= max_ambig
   x[sel, ]
 }
 
 
-
-refdb_filter_seq_homopolymers <- function(x, max_len = 16) {
+#' Filter sequences based on their number of repeated character.
+#'
+#' @param x a reference database.
+#' @param max_len maximum number of repeated character (homopolymer).
+#'
+#' @return
+#' A tibble (filtered reference database).
+#' @export
+#'
+refdb_filter_seq_homopolymers <- function(x, max_len = 16L) {
   flt <- .filter_seq_homopolymers(x)
   sel <- flt <= max_len
   x[sel, ]
 }
 
 
+#' Filter duplicated sequences.
+#'
+#' Exclude duplicated sequences.
+#'
+#' @param x a reference database.
+#'
+#' @return
+#' A tibble (filtered reference database).
+#' @export
+#'
 refdb_filter_seq_duplicates <- function(x) {
   sel <- .filter_seq_duplicates(x)
   x[sel, ]
@@ -294,6 +331,19 @@ refdb_filter_seq_duplicates <- function(x) {
 
 
 
+#' Filter sequences based on their number of of stop codons.
+#'
+#' @param x a reference database.
+#' @param max_stop maximum number of stop codons.
+#' @param code an integer indicating the genetic code to use for translation
+#' (see \link[bioseq]{genetic-codes}).
+#' @param codon_frame an integer giving the nucleotide position where
+#' to start translation.
+#'
+#' @return
+#' A tibble (filtered reference database).
+#' @export
+#'
 refdb_filter_seq_stopcodon <- function(x, max_stop = 0, code, codon_frame = NA) {
   flt <- .filter_seq_stopcodon(x, code = code, codon_frame = codon_frame)
   sel <- flt <= max_stop
@@ -302,6 +352,19 @@ refdb_filter_seq_stopcodon <- function(x, max_stop = 0, code, codon_frame = NA) 
 
 
 
+#' Filter sequences based on the presence of primers.
+#'
+#' @param x a reference database.
+#' @param primer_forward forward primer.
+#' @param primer_reverse reverse primer.
+#' @param max_error_forward,max_error_reverse maximum error for match
+#' (frequency base on primer length).
+#'
+#'
+#' @return
+#' A tibble (filtered reference database).
+#' @export
+#'
 refdb_filter_seq_primer <- function(x, primer_forward = NULL,
                                     primer_reverse = NULL,
                                     max_error_forward = 0.1,
@@ -323,6 +386,16 @@ refdb_filter_seq_primer <- function(x, primer_forward = NULL,
 
 
 
+#' Filter records based on their taxonomic precision.
+#'
+#' @param x a reference database.
+#' @param min_tax minimum taxonomic level
+#' (column name of the reference database).
+#'
+#' @return
+#' A tibble (filtered reference database).
+#' @export
+#'
 refdb_filter_tax_precision <- function(x, min_tax) {
   flt <- .filter_tax_precision(x)
 

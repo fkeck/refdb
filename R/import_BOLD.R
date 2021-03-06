@@ -21,7 +21,7 @@
 #' package to interface with the BOLD API. The NCBI Taxonomy
 #' database is queried using the \pkg{rentrez} package.
 #'
-#' @section Large requests
+#' @section Large requests:
 #' As detailed in the manual of bold_seqspec, some large requests
 #' (e.g. high ranked taxa) can lead to errors. In that case one
 #' strategy can be to sequentially download data for lower rank
@@ -82,12 +82,23 @@ refdb_import_BOLD <- function(taxon = NULL,
   out <- tibble::tibble(source = "BOLD", out)
 
   if (full == FALSE) {
-    out <- dplyr::select(out, source, sequenceID, markercode,
-                         phylum_name, class_name, order_name,
-                         family_name, subfamily_name, genus_name,
-                         species_name, subspecies_name, # Correspond to NCBI organism
-                         nucleotides,
-                         country, province_state, lat, lon)
+    out <- dplyr::select(out,
+                         .data$source,
+                         .data$sequenceID,
+                         .data$markercode,
+                         .data$phylum_name,
+                         .data$class_name,
+                         .data$order_name,
+                         .data$family_name,
+                         .data$subfamily_name,
+                         .data$genus_name,
+                         .data$species_name,
+                         .data$subspecies_name, # Correspond to NCBI organism
+                         .data$nucleotides,
+                         .data$country,
+                         .data$province_state,
+                         .data$lat,
+                         .data$lon)
   }
 
   # Empty strings as NA

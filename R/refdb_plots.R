@@ -47,8 +47,8 @@ igraph_from_taxo <- function(x, cols = NULL) {
   res_tidy <- do.call("rbind", res_tidy)
   res_tidy$taxonomy_depth <- stringr::str_count(res_tidy$taxonomy_path, ">")
   res_tidy$terminal <- stringr::str_remove(res_tidy$taxonomy_path, ".+>")
-  res_tidy <- dplyr::group_by(res_tidy, taxonomy_rank)
-  res_tidy <- dplyr::mutate(res_tidy, freq_by_rank = n/sum(n))
+  res_tidy <- dplyr::group_by(res_tidy, .data$taxonomy_rank)
+  res_tidy <- dplyr::mutate(res_tidy, freq_by_rank = .data$n/sum(.data$n))
   res_tidy <- dplyr::ungroup(res_tidy)
 
 
@@ -113,7 +113,6 @@ igraph_from_taxo <- function(x, cols = NULL) {
 #' can be further customized using \pkg{ggplot2} compatible functions.
 #' @export
 #'
-#' @examples
 refdb_plot_tax_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003)) {
 
   check_fields(x, what = "taxonomy")
@@ -137,17 +136,24 @@ refdb_plot_tax_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003))
     out[, level + 1]
   }
 
-  ggraph::ggraph(g, 'treemap', weight =  n) +
-    ggraph::geom_node_tile(ggplot2::aes(fill = taxo_nth_level(name, 1),
-                                        alpha = n),
+  ggraph::ggraph(g, 'treemap', weight =  .data$n) +
+    ggraph::geom_node_tile(ggplot2::aes(fill = taxo_nth_level(.data$name, 1),
+                                        alpha = .data$n),
                            size = 0, show.legend = FALSE) +
-    ggraph::geom_node_tile(ggplot2::aes(size = taxonomy_depth),
+    ggraph::geom_node_tile(ggplot2::aes(size = .data$taxonomy_depth),
                            colour = 'white') +
-    ggraph::geom_node_text(ggplot2::aes(label = ifelse(taxonomy_depth == max(taxonomy_depth) & freq_by_rank > freq_labels[2], terminal, NA_character_)),
+    ggraph::geom_node_text(ggplot2::aes(label = ifelse(.data$taxonomy_depth == max(.data$taxonomy_depth) &
+                                                         .data$freq_by_rank > .data$freq_labels[2],
+                                                       .data$terminal,
+                                                       NA_character_)),
                            size = 3, color = "white", alpha = 0.8) +
-    ggraph::geom_node_label(ggplot2::aes(label = ifelse(taxonomy_depth == 1 & freq_by_rank > freq_labels[1], terminal, NA_character_))) +
+    ggraph::geom_node_label(ggplot2::aes(label = ifelse(.data$taxonomy_depth == 1 &
+                                                          .data$freq_by_rank > .data$freq_labels[1],
+                                                        .data$terminal,
+                                                        NA_character_))) +
     ggplot2::scale_alpha(range = c(1, 0.5), guide = 'none') +
-    ggplot2::scale_size(range = c(4, 0.2), guide = 'none')
+    ggplot2::scale_size(range = c(4, 0.2), guide = 'none') +
+    ggplot2::theme_void()
 
 }
 
@@ -183,7 +189,6 @@ refdb_plot_tax_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003))
 #' can be further customized using \pkg{ggplot2} compatible functions.
 #' @export
 #'
-#' @examples
 refdb_plot_tax_tree <- function(x,
                                 leaf_col = NULL,
                                 color_col = NULL,
@@ -232,13 +237,20 @@ refdb_plot_tax_tree <- function(x,
 
   ggraph::ggraph(g, 'dendrogram', circular = TRUE) +
     ggraph::geom_edge_diagonal(colour = "grey30") +
-    ggraph::geom_node_point(ggplot2::aes(filter = leaf, size = n, color = leaf_group), alpha = 0.5) +
-    ggraph::geom_node_text(ggplot2::aes(x = x*1.05, y = y*1.05,
-                                        label = ifelse(taxonomy_depth == max(taxonomy_depth) & freq_by_rank > freq_labels,
-                                                       terminal,
+    ggraph::geom_node_point(ggplot2::aes(filter = .data$leaf,
+                                         size = .data$n,
+                                         color = .data$leaf_group),
+                            alpha = 0.5) +
+    ggraph::geom_node_text(ggplot2::aes(x = .data$x*1.05,
+                                        y = .data$y*1.05,
+                                        label = ifelse(.data$taxonomy_depth == max(.data$taxonomy_depth) &
+                                                         .data$freq_by_rank > .data$freq_labels,
+                                                       .data$terminal,
                                                        NA_character_),
-                                        angle = -((- ggraph::node_angle(x, y) + 90) %% 180) + 90),
-                           size = 3, color = "black", hjust='outward') +
+                                        angle = -((- ggraph::node_angle(.data$x, .data$y) + 90) %% 180) + 90),
+                           size = 3,
+                           color = "black",
+                           hjust='outward') +
     ggplot2::scale_size_continuous(range = c(1, 8) ) +
     ggplot2::coord_fixed() +
     ggplot2::expand_limits(x = c(-1 - expand_plot, 1 + expand_plot),
@@ -276,7 +288,7 @@ refdb_plot_seqlen_hist <- function(x, remove_gaps = TRUE) {
   dat_len <- data.frame(Length = bioseq::seq_nchar(seqs))
 
   ggplot2::ggplot(dat_len) +
-    ggplot2::geom_histogram(ggplot2::aes(Length)) +
+    ggplot2::geom_histogram(ggplot2::aes(.data$Length)) +
     ggplot2::xlab("Sequence length (bp)") +
     ggplot2::ylab("Count") +
     ggplot2::theme_bw()

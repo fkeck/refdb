@@ -17,7 +17,7 @@ refdb_ncbi_taxonomy <- function(x) {
   check_fields(x, "taxonomy")
   ncbi_taxo <- ncbi_taxo_rank()
   x_taxo <- attributes(x)$refdb_fields$taxonomy
-  x_taxo_sel <- x_taxo[na.exclude(match(ncbi_taxo, names(x_taxo)))]
+  x_taxo_sel <- x_taxo[stats::na.exclude(match(ncbi_taxo, names(x_taxo)))]
   x_taxo_sel <- rev(x_taxo_sel)
 
   # Columns matching a taxonomic field are suffixed
@@ -69,7 +69,7 @@ refdb_ncbi_taxonomy <- function(x) {
   # Collect taxonomy for IDs
   bt_taxo <- get_ncbi_taxonomy(ncbi_ids)
   bt_taxo$id <- NULL
-  taxo_field <- setNames(colnames(bt_taxo), colnames(bt_taxo))
+  taxo_field <- stats::setNames(colnames(bt_taxo), colnames(bt_taxo))
 
   # Columns of x which match a taxonomic name are removed
   x <- x[, !colnames(x) %in% colnames(bt_taxo)]

@@ -18,7 +18,6 @@
 #' @return A tibble.
 #' @export
 #'
-#' @examples
 refdb_import_NCBI <- function(query, full = FALSE) {
 
   ff <- tempfile("refdb_NCBI_", fileext = ".csv")
@@ -29,7 +28,7 @@ refdb_import_NCBI <- function(query, full = FALSE) {
 
   cat("Downloading", req$count, "sequences from NCBI...\n")
 
-  pb <- txtProgressBar(0, req$count, 0, style = 3)
+  pb <- utils::txtProgressBar(0, req$count, 0, style = 3)
 
   # Main loop to download and write the data
   for(seq_start in seq(0, req$count, 200)){
@@ -58,16 +57,31 @@ refdb_import_NCBI <- function(query, full = FALSE) {
                                    suffix = c("", "_taxonomy"))
 
     NCBI_table <- tibble::tibble(source = "NCBI", NCBI_table)
-    NCBI_table <- dplyr::mutate(NCBI_table, species = organism)
+    NCBI_table <- dplyr::mutate(NCBI_table, species = .data$organism)
     # Maybe clean species column here
 
     if(full == FALSE) {
-      NCBI_table <- dplyr::select(NCBI_table, source, id, gene, sequence,
-                                  superkingdom, kingdom, phylum, subphylum,
-                                  class, subclass, infraclass,
-                                  order, suborder, infraorder,
-                                  superfamily, family, genus, species,
-                                  country_location, lat_lon)
+      NCBI_table <- dplyr::select(NCBI_table,
+                                  .data$source,
+                                  .data$id,
+                                  .data$gene,
+                                  .data$sequence,
+                                  .data$superkingdom,
+                                  .data$kingdom,
+                                  .data$phylum,
+                                  .data$subphylum,
+                                  .data$class,
+                                  .data$subclass,
+                                  .data$infraclass,
+                                  .data$order,
+                                  .data$suborder,
+                                  .data$infraorder,
+                                  .data$superfamily,
+                                  .data$family,
+                                  .data$genus,
+                                  .data$species,
+                                  .data$country_location,
+                                  .data$lat_lon)
     }
 
     # Write header
@@ -80,11 +94,11 @@ refdb_import_NCBI <- function(query, full = FALSE) {
                      append = TRUE,
                      col_names = FALSE)
 
-    setTxtProgressBar(pb, seq_start)
+    utils::setTxtProgressBar(pb, seq_start)
 
   }
 
-  setTxtProgressBar(pb, req$count)
+  utils::setTxtProgressBar(pb, req$count)
 
   out <- readr::read_csv(ff, col_types = readr::cols())
 
