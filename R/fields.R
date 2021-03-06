@@ -132,13 +132,13 @@ refdb_set_fields <- function(x,
 #' @return
 #' The function returns \code{x} with updated attributes.
 #'
-#' @export
-#'
 #' @name fields_dbs
 #'
 NULL
 
+
 #' @rdname fields_dbs
+#' @export
 refdb_set_fields_BOLD <- function(x) {
   if(!"source" %in% colnames(x)) {
     x <- tibble::tibble(source = "BOLD", x)
@@ -149,6 +149,7 @@ refdb_set_fields_BOLD <- function(x) {
 
 
 #' @rdname fields_dbs
+#' @export
 refdb_set_fields_PR2 <- function(x) {
   if(!"source" %in% colnames(x)) {
     x <- tibble::tibble(source = "PR2", x)
@@ -158,6 +159,7 @@ refdb_set_fields_PR2 <- function(x) {
 }
 
 #' @rdname fields_dbs
+#' @export
 refdb_set_fields_diatbarcode <- function(x) {
   if(!"source" %in% colnames(x)) {
     x <- tibble::tibble(source = "Diat.barcode", x)
