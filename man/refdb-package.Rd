@@ -6,6 +6,8 @@
 \alias{refdb-package}
 \title{refdb: What the Package Does (Title Case)}
 \description{
+\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+
 More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 }

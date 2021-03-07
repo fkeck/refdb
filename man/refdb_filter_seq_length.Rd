@@ -4,14 +4,13 @@
 \alias{refdb_filter_seq_length}
 \title{Filter sequences based on their number of character.}
 \usage{
-refdb_filter_seq_length(x, min_len, max_len)
+refdb_filter_seq_length(x, min_len = NULL, max_len = NULL)
 }
 \arguments{
 \item{x}{a reference database.}
 
-\item{min_len}{minimum sequence length.}
-
-\item{max_len}{maximum sequence length.}
+\item{min_len, max_len}{minimum and maximum sequence lengths.
+Use \code{NULL} (default) to ignore.}
 }
 \value{
 A tibble (filtered reference database).
