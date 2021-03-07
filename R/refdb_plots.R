@@ -143,12 +143,12 @@ refdb_plot_tax_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003))
     ggraph::geom_node_tile(ggplot2::aes(size = .data$taxonomy_depth),
                            colour = 'white') +
     ggraph::geom_node_text(ggplot2::aes(label = ifelse(.data$taxonomy_depth == max(.data$taxonomy_depth) &
-                                                         .data$freq_by_rank > .data$freq_labels[2],
+                                                         .data$freq_by_rank > freq_labels[2],
                                                        .data$terminal,
                                                        NA_character_)),
                            size = 3, color = "white", alpha = 0.8) +
     ggraph::geom_node_label(ggplot2::aes(label = ifelse(.data$taxonomy_depth == 1 &
-                                                          .data$freq_by_rank > .data$freq_labels[1],
+                                                          .data$freq_by_rank > freq_labels[1],
                                                         .data$terminal,
                                                         NA_character_))) +
     ggplot2::scale_alpha(range = c(1, 0.5), guide = 'none') +
@@ -244,7 +244,7 @@ refdb_plot_tax_tree <- function(x,
     ggraph::geom_node_text(ggplot2::aes(x = .data$x*1.05,
                                         y = .data$y*1.05,
                                         label = ifelse(.data$taxonomy_depth == max(.data$taxonomy_depth) &
-                                                         .data$freq_by_rank > .data$freq_labels,
+                                                         .data$freq_by_rank > freq_labels,
                                                        .data$terminal,
                                                        NA_character_),
                                         angle = -((- ggraph::node_angle(.data$x, .data$y) + 90) %% 180) + 90),
