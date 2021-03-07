@@ -246,15 +246,24 @@ NULL
 #' Filter sequences based on their number of character.
 #'
 #' @param x a reference database.
-#' @param min_len minimum sequence length.
-#' @param max_len maximum sequence length.
+#' @param min_len,max_len minimum and maximum sequence lengths.
+#' Use \code{NULL} (default) to ignore.
 #'
 #' @return
 #' A tibble (filtered reference database).
 #' @export
 #'
-refdb_filter_seq_length <- function(x, min_len, max_len) {
+refdb_filter_seq_length <- function(x, min_len = NULL, max_len = NULL) {
+
   flt <- .filter_seq_length(x)
+
+  if(is.null(min_len)) {
+    min_len <- 0
+  }
+  if(is.null(max_len)) {
+    max_len <- max(flt, na.rm = TRUE) + 1
+  }
+
   sel <- flt >= min_len & flt <= max_len & !is.na(flt)
   x[sel, ]
 }
