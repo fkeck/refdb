@@ -255,7 +255,7 @@ NULL
 #'
 refdb_filter_seq_length <- function(x, min_len, max_len) {
   flt <- .filter_seq_length(x)
-  sel <- flt >= min_len & flt <= max_len
+  sel <- flt >= min_len & flt <= max_len & !is.na(flt)
   x[sel, ]
 }
 
@@ -272,7 +272,7 @@ refdb_filter_seq_length <- function(x, min_len, max_len) {
 #'
 refdb_filter_seq_ambiguous <- function(x, max_ambig = 3L, char = "N") {
   flt <- .filter_seq_ambiguous(x, char = char)
-  sel <- flt <= max_ambig
+  sel <- flt <= max_ambig & !is.na(flt)
   x[sel, ]
 }
 
@@ -288,7 +288,7 @@ refdb_filter_seq_ambiguous <- function(x, max_ambig = 3L, char = "N") {
 #'
 refdb_filter_seq_homopolymers <- function(x, max_len = 16L) {
   flt <- .filter_seq_homopolymers(x)
-  sel <- flt <= max_len
+  sel <- flt <= max_len & !is.na(flt)
   x[sel, ]
 }
 
@@ -346,7 +346,7 @@ refdb_filter_seq_duplicates <- function(x) {
 #'
 refdb_filter_seq_stopcodon <- function(x, max_stop = 0, code, codon_frame = NA) {
   flt <- .filter_seq_stopcodon(x, code = code, codon_frame = codon_frame)
-  sel <- flt <= max_stop
+  sel <- flt <= max_stop & !is.na(flt)
   x[sel, ]
 }
 
@@ -373,12 +373,12 @@ refdb_filter_seq_primer <- function(x, primer_forward = NULL,
 
   if(!is.null(primer_forward)) {
     flt_fwd <- .filter_seq_primer(x, primer = primer_forward)
-    sel <- sel & (flt_fwd <= max_error_forward)
+    sel <- sel & (flt_fwd <= max_error_forward) & !is.na(flt_fwd)
   }
 
   if(!is.null(primer_reverse)) {
     flt_rev <- .filter_seq_primer(x, primer = primer_reverse)
-    sel <- sel & (flt_rev <= max_error_reverse)
+    sel <- sel & (flt_rev <= max_error_reverse) & !is.na(flt_rev)
   }
 
   x[sel, ]
@@ -400,7 +400,7 @@ refdb_filter_tax_precision <- function(x, min_tax) {
   flt <- .filter_tax_precision(x)
 
   min_tax <- which(min_tax == attributes(x)$refdb$taxonomy)
-  sel <- flt >= min_tax
+  sel <- flt >= min_tax & !is.na(flt)
   x[sel, ]
 }
 
