@@ -106,13 +106,14 @@ refdb_import_BOLD <- function(taxon = NULL,
 
   out <- refdb_set_fields(out, source = "source",
                           id = "sequenceID",
-                          organism = "species_name",
                           taxonomy = c(phylum = "phylum_name",
                                        class = "class_name",
                                        order = "order_name",
                                        family = "family_name",
                                        subfamily = "subfamily_name",
-                                       genus = "genus_name"),
+                                       genus = "genus_name",
+                                       species = "species_name",
+                                       subspecies = "subspecies_name"),
                           sequence = "nucleotides",
                           marker = "markercode")
 
