@@ -70,17 +70,22 @@ DT::datatable(check_taxo,
 ```{r}
 check_seqs <- refdb_check_seq_conflict(x)
 
+if(nrow(check_seqs) == 0) {
+  cat("No sequence conflict detected.")
+} else {
+  check_seqs <- dplyr::group_by(check_seqs, sequence)
+  check_seqs <- dplyr::summarise(check_seqs, taxonomy = format_taxo(taxonomy))
+  
+  check_seqs$sequence <- paste('<span style="width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display:inline-block;">', check_seqs$sequence,'</span>')
+  
+  DT::datatable(check_seqs,
+                escape = FALSE,
+                rownames = FALSE,
+                options = list(searching = FALSE,
+                               pageLength = 10))
+  
+}
 
-check_seqs <- dplyr::group_by(check_seqs, sequence)
-check_seqs <- dplyr::summarise(check_seqs, taxonomy = format_taxo(taxonomy))
-
-check_seqs$sequence <- paste('<span style="width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display:inline-block;">', check_seqs$sequence,'</span>')
-
-DT::datatable(check_seqs,
-              escape = FALSE,
-              rownames = FALSE,
-              options = list(searching = FALSE,
-                             pageLength = 10))
 
 ```
 
