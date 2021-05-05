@@ -8,7 +8,8 @@
 #' indicated in the field taxonomy. See \link{refdb_set_fields}.
 #'
 #' @return The reference database with the NCBI taxonomy
-#' (the original taxonomy is removed).
+#' for the genus level and higher ranks.
+#' (the original taxonomy above the genus level is removed).
 #' @export
 #'
 #'
@@ -16,7 +17,10 @@ refdb_ncbi_taxonomy <- function(x) {
 
   check_fields(x, "taxonomy")
   ncbi_taxo <- ncbi_taxo_rank()
+  valid_taxo <- valid_taxo_rank()
   x_taxo <- attributes(x)$refdb_fields$taxonomy
+  x_taxo_subgenus <- x_taxo[!names(x_taxo) %in% valid_taxo[1:which(valid_taxo == "genus")]]
+  x_taxo <- x_taxo[names(x_taxo) %in% valid_taxo[1:which(valid_taxo == "genus")]]
   x_taxo_sel <- x_taxo[stats::na.exclude(match(ncbi_taxo, names(x_taxo)))]
   x_taxo_sel <- rev(x_taxo_sel)
 
@@ -82,7 +86,10 @@ refdb_ncbi_taxonomy <- function(x) {
   out <- out[, !colnames(out) %in%
                c(x_taxo, x_taxo_sel_ori)]
 
+  # Restore attributes and reorder taxonomic columns
+  taxo_field <- c(taxo_field, x_taxo_subgenus)
   attributes(out)$refdb_fields$taxonomy <- taxo_field
+  out <- out[, c(setdiff(colnames(out), taxo_field), taxo_field)]
 
   return(out)
 }
