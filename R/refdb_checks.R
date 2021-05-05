@@ -68,14 +68,14 @@ refdb_check_tax_typo <- function(x, tol = 1) {
     list(sel)
   }
 
-  res <- list()
+  res <- vector("list", ncol(tax))
 
   for(i in seq_len(ncol(tax))) {
     tax <- dplyr::group_by(tax, !!!rlang::syms(colnames(tax)[seq(1, i-1)]))
     tax_ff <- dplyr::summarise(tax, tax_ff = ff(!!rlang::sym(colnames(tax)[i]), tol = tol))$tax_ff
     tax_ff <- tax_ff[sapply(tax_ff, length) > 0]
     if(length(tax_ff) == 0) {
-      res[[i]] <- NULL
+      #res[[i]] <- NULL
     } else {
       tax_ff <- lapply(tax_ff, t)
       tax_ff <- do.call("rbind", tax_ff)
@@ -114,7 +114,7 @@ refdb_check_tax_conflict <- function(x) {
     list(x)
   }
 
-  res <- list()
+  res <- vector("list", ncol(tax))
 
   for(i in seq_len(ncol(tax))) {
     tax <- dplyr::group_by(tax, !!rlang::sym(colnames(tax)[i]))
