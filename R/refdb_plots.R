@@ -120,8 +120,11 @@ refdb_plot_tax_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003))
 
 
   if(is.null(cols)) {
-    cols <- apply(x[, col_tax], 2, function(x) length(unique(x)))
-    cols <- names(cols[cols > 50 & cols < 5000])
+    cols_n <- apply(x[, col_tax], 2, function(x) length(unique(x)))
+    cols <- names(cols_n[cols_n > 50 & cols_n < 5000])
+    if(length(cols) < 2) {
+      cols <- names(cols_n)[c(which.max(cols_n) - 1, which.max(cols_n))]
+      }
     cat("Selected columns: ", cols, "\n")
   }
 
