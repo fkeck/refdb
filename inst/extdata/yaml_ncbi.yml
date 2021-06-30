@@ -1,0 +1,19 @@
+source: source
+id: id
+taxonomy:
+- superkingdom: superkingdom
+- kingdom: kingdom
+- phylum: phylum
+- subphylum: subphylum
+- class: class
+- subclass: subclass
+- infraclass: infraclass
+- order: order
+- suborder: suborder
+- infraorder: infraorder
+- superfamily: superfamily
+- family: family
+- genus: genus
+- species: species
+sequence: sequence
+marker: gene
