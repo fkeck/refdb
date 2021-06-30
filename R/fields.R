@@ -136,6 +136,16 @@ refdb_set_fields <- function(x,
 #'
 NULL
 
+#' @rdname fields_dbs
+#' @export
+refdb_set_fields_NCBI <- function(x) {
+  if(!"source" %in% colnames(x)) {
+    x <- tibble::tibble(source = "NCBI", x)
+  }
+  refdb_set_fields(x, config_yaml = system.file("extdata", "yaml_ncbi.yml",
+                                                package = "refdb"))
+}
+
 
 #' @rdname fields_dbs
 #' @export
