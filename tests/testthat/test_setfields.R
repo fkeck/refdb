@@ -126,3 +126,25 @@ test_that("Account NCBI ranks", {
   res <- ncbi_taxo_rank()
   expect_length(res, 13L)
 })
+
+
+
+test_that("Test error catching with check_fields", {
+  test <- read.csv("data_baetidae_bold.csv")
+
+  test <- refdb_set_fields_BOLD(test)
+
+  expect_error(
+    check_fields(test, what = "a_new_field"),
+    regexp = "Missing field"
+  )
+
+  attributes(test)$refdb_fields$a_new_field <- "a_value"
+
+  expect_error(
+    check_fields(test, what = "a_new_field"),
+    regexp = "fields associated to non-existing columns"
+  )
+
+})
+
