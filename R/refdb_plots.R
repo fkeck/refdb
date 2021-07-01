@@ -18,6 +18,7 @@ igraph_from_taxo <- function(x, cols = NULL) {
 
   check_fields(x, what = "taxonomy")
   col_tax <-attributes(x)$refdb_fields$taxonomy
+  x <- tibble::as_tibble(x)
 
   x <- x[, col_tax]
 
