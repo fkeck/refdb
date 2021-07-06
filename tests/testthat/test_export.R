@@ -1,6 +1,4 @@
 
-context("Read external")
-
 # test <- read.csv("tests/testthat/data_fragilaria_ncbi.csv")
 # test <- read.csv("tests/testthat/data_baetidae_bold.csv")
 
