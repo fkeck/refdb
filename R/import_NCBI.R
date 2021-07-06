@@ -26,6 +26,11 @@ refdb_import_NCBI <- function(query, full = FALSE) {
                                 term = query,
                                 use_history = TRUE)
 
+  if(req$count == 0) {
+    cat("No sequence found\n")
+    return(NULL)
+  }
+
   cat("Downloading", req$count, "sequences from NCBI...\n")
 
   pb <- utils::txtProgressBar(0, req$count, 0, style = 3)
