@@ -141,6 +141,8 @@ refdb_clean_tax_remove_extra <- function(x, cols = NULL) {
                        "\\b\\w\\b")
     x <- stringr::str_remove_all(x, # Words between parentheses
                        "\\(.*\\)")
+    x <- stringr::str_squish(x)
+    x <- stringr::str_trim(x)
     return(x)
   }
 
@@ -171,26 +173,44 @@ refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
 
   .replace_fun <- function(x) {
     x <- stringr::str_replace(x, " familia ", " fam. ")
+    x <- stringr::str_replace(x, " familia$", " fam.")
     x <- stringr::str_replace(x, " genus ", " gen. ")
+    x <- stringr::str_replace(x, " genus$", " gen.")
     x <- stringr::str_replace(x, " species ", " sp. ")
+    x <- stringr::str_replace(x, " species$", " sp.")
     x <- stringr::str_replace(x, " subspecies | subsp. ", " ssp. ")
+    x <- stringr::str_replace(x, " subspecies$| subsp.$", " ssp.")
 
     x <- stringr::str_replace(x, " sp. plurimae ", " sp. pl. ")
+    x <- stringr::str_replace(x, " sp. plurimae$", " sp. pl.")
     x <- stringr::str_replace(x, " g. sp. ", " gen. sp. ")
+    x <- stringr::str_replace(x, " g. sp.$", " gen. sp.")
 
     x <- stringr::str_replace(x, " sp. indeterminabilis | sp. indeterminata | ind. | indet. | sp. ind. ", " sp. indet. ")
+    x <- stringr::str_replace(x, " sp. indeterminabilis$| sp. indeterminata$| ind.$| indet.$| sp. ind.$", " sp. indet.")
+
     x <- stringr::str_replace(x, " sp. nova | nova sp. | spec. nov. | sp. n. | nov. sp. | nov. spec. | n. sp. ", " sp. nov. ")
+    x <- stringr::str_replace(x, " sp. nova$| nova sp.$| spec. nov.$| sp. n.$| nov. sp.$| nov. spec.$| n. sp.$", " sp. nov.")
 
     x <- stringr::str_replace(x, " sp. affinis | sp. aff. ", " aff. ")
+    x <- stringr::str_replace(x, " sp. affinis$| sp. aff.$", " aff.")
     x <- stringr::str_replace(x, " sp. proxima | sp. prox. ", " prox. ")
+    x <- stringr::str_replace(x, " sp. proxima$| sp. prox.$", " prox.")
     x <- stringr::str_replace(x, " sp. near | sp. nr. ", " nr. ")
+    x <- stringr::str_replace(x, " sp. near$| sp. nr.$", " nr.")
     x <- stringr::str_replace(x, " ex grege | gr. ", " ex gr. ")
+    x <- stringr::str_replace(x, " ex grege$| gr.$", " ex gr.")
     x <- stringr::str_replace(x, " confer | cfr. | conf. | sp. cf. ", " cf. ")
+    x <- stringr::str_replace(x, " confer$| cfr.$| conf.$| sp. cf.$", " cf.")
     x <- stringr::str_replace(x, " sp. incerta | inc. | \\? ", " sp. inc. ")
+    x <- stringr::str_replace(x, " sp. incerta$| inc.$| \\?$", " sp. inc.")
     x <- stringr::str_replace(x, " stetit ", " stet. ")
+    x <- stringr::str_replace(x, " stetit$", " stet.")
 
     x <- stringr::str_replace(x, " sensu lato ", " s. l. ")
+    x <- stringr::str_replace(x, " sensu lato$", " s. l.")
     x <- stringr::str_replace(x, " incertae sedis ", " inc. sed. ")
+    x <- stringr::str_replace(x, " incertae sedis$", " inc. sed.")
 
     return(x)
   }
