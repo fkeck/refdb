@@ -26,7 +26,11 @@ NULL
   check_fields(x, "sequence")
   col <- attributes(x)$refdb$sequence
   res <- bioseq::seq_extract_pattern(x[[col]], pattern = "(.)\\1+")
-  sapply(res, function(x) max(sort(unique(nchar(x)))))
+  sapply(res, function(x) ifelse(length(x) == 0,
+                                 0,
+                                 max(sort(unique(nchar(x))))
+                                 )
+         )
 } # Returns length of longest homopolymer
 
 .filter_seq_duplicates <- function(x) {
@@ -152,94 +156,95 @@ NULL
 
 
 
-.filter_seq_dist <- function(x) {
-  check_fields(x, c("taxonomy", "sequence"))
-  x <- refdb_clean_tax_NA(x)
-  x_tax <- x[, attributes(x)$refdb_fields$taxonomy]
-  x_seq <- x[, attributes(x)$refdb_fields$sequence, drop = TRUE]
-  x_tax_precision <- .filter_tax_precision(x)
-  g <- igraph_from_taxo(x)
+# .filter_seq_dist <- function(x) {
+#   check_fields(x, c("taxonomy", "sequence"))
+#   x <- refdb_clean_tax_NA(x)
+#   x_tax <- x[, attributes(x)$refdb_fields$taxonomy]
+#   x_seq <- x[, attributes(x)$refdb_fields$sequence, drop = TRUE]
+#   x_tax_precision <- .filter_tax_precision(x)
+#   g <- igraph_from_taxo(x)
+#
+#   seq_in_out <- cbind(stringr::str_locate(x_seq, "^[-N]+")[, 2],
+#                       stringr::str_locate(x_seq, "[-N]+$")[, 1])
+#   seq_in_out[, 1][is.na(seq_in_out[, 1])] <- 1
+#   seq_in_out[, 2][is.na(seq_in_out[, 2])] <- nchar(x_seq[1])
+#
+#   out <- vector(mode = "logical", length = length(x_seq))
+#
+#   for(i in seq_along(x_seq)) {
+#     i_seq <- x_seq[i]
+#     i_seq_in_out <- seq_in_out[i, ]
+#     i_tax <- unlist(x_tax[i, ])
+#     i_tax_precision <- x_tax_precision[i]
+#
+#     if(length(unique(unlist(x_tax[, 1]))) > 1) {
+#       i_tax_path <- c("Root", i_tax)
+#     } else {
+#       i_tax_path <- i_tax
+#     }
+#     i_tax_path <- paste(i_tax_path, collapse = ">")
+#     i_tax_path <- stringr::str_remove(i_tax_path, pattern = "(>NA)+$")
+#
+#
+#     sample_idx <- intersect(
+#       which(seq_in_out[, 1] <= i_seq_in_out[1]),
+#       which(seq_in_out[, 2] >= i_seq_in_out[2])
+#     )
+#     sample_idx <- intersect(
+#       sample_idx,
+#       which(x_tax_precision == i_tax_precision)
+#     )
+#     if(length(sample_idx) < 100 | is.na(x_seq[i])) {
+#       out[i] <- 0
+#       next
+#     }
+#     sample_idx <- sample(sample_idx, size = 100)
+#     sample_tax_path <- x_tax[sample_idx, ]
+#     if(length(unique(unlist(x_tax[, 1]))) > 1) {
+#       sample_tax_path <- tibble::tibble(Root = "Root", sample_tax_path)
+#     }
+#
+#     sample_tax_path <- apply(x_tax[sample_idx, ], 1,
+#                              function(x) {
+#                                res <- paste(x, collapse = ">")
+#                                res <- stringr::str_remove(res, pattern = "(>NA)+$")
+#                                })
+#
+#     sample_seq <- x_seq[sample_idx]
+#
+#     tax_dist_i <- igraph::distances(graph = g,
+#                                     v = which(igraph::V(g)$name == i_tax_path),
+#                                     to = which(igraph::V(g)$name %in%  sample_tax_path))
+#
+#     tax_dist_i <- tax_dist_i[ , sample_tax_path, drop = TRUE]
+#
+#     seq_dist_i <- ape::dist.dna(bioseq::as_DNAbin(c(i_seq, sample_seq)),
+#                                 model = "raw", as.matrix = TRUE)[-1, 1]
+#
+#     sel <- seq_dist_i < stats::quantile(seq_dist_i, probs = 0.95)
+#
+#     seq_dist_i <- seq_dist_i[sel]
+#     tax_dist_i <- tax_dist_i[sel]
+#
+#     median_seq_dist <- tapply(seq_dist_i, tax_dist_i, stats::median)
+#     out[i] <- sum(median_seq_dist[1] > median_seq_dist[-1])
+#
+#     if(all(tax_dist_i == tax_dist_i[1]) | all(seq_dist_i == seq_dist_i[1])) {
+#       out[i] <- 0
+#       next
+#     }
+#
+#     if(stats::cor.test(tax_dist_i, seq_dist_i)$conf.int[1] > 0) {
+#       out[i] <- 0
+#     }
+#
+#     if(out[i] > 2) plot(tax_dist_i, seq_dist_i, main = i)
+#
+#     cat("\rProcessing sequences: ", i, " (", floor(i/length(x_seq)*100), "%)", rep(" ", 40), sep = "")
+#   }
+#
+# }
 
-  seq_in_out <- cbind(stringr::str_locate(x_seq, "^[-N]+")[, 2],
-                      stringr::str_locate(x_seq, "[-N]+$")[, 1])
-  seq_in_out[, 1][is.na(seq_in_out[, 1])] <- 1
-  seq_in_out[, 2][is.na(seq_in_out[, 2])] <- nchar(x_seq[1])
-
-  out <- vector(mode = "logical", length = length(x_seq))
-
-  for(i in seq_along(x_seq)) {
-    i_seq <- x_seq[i]
-    i_seq_in_out <- seq_in_out[i, ]
-    i_tax <- unlist(x_tax[i, ])
-    i_tax_precision <- x_tax_precision[i]
-
-    if(length(unique(unlist(x_tax[, 1]))) > 1) {
-      i_tax_path <- c("Root", i_tax)
-    } else {
-      i_tax_path <- i_tax
-    }
-    i_tax_path <- paste(i_tax_path, collapse = ">")
-    i_tax_path <- stringr::str_remove(i_tax_path, pattern = "(>NA)+$")
-
-
-    sample_idx <- intersect(
-      which(seq_in_out[, 1] <= i_seq_in_out[1]),
-      which(seq_in_out[, 2] >= i_seq_in_out[2])
-    )
-    sample_idx <- intersect(
-      sample_idx,
-      which(x_tax_precision == i_tax_precision)
-    )
-    if(length(sample_idx) < 100 | is.na(x_seq[i])) {
-      out[i] <- 0
-      next
-    }
-    sample_idx <- sample(sample_idx, size = 100)
-    sample_tax_path <- x_tax[sample_idx, ]
-    if(length(unique(unlist(x_tax[, 1]))) > 1) {
-      sample_tax_path <- tibble::tibble(Root = "Root", sample_tax_path)
-    }
-
-    sample_tax_path <- apply(x_tax[sample_idx, ], 1,
-                             function(x) {
-                               res <- paste(x, collapse = ">")
-                               res <- stringr::str_remove(res, pattern = "(>NA)+$")
-                               })
-
-    sample_seq <- x_seq[sample_idx]
-
-    tax_dist_i <- igraph::distances(graph = g,
-                                    v = which(igraph::V(g)$name == i_tax_path),
-                                    to = which(igraph::V(g)$name %in%  sample_tax_path))
-
-    tax_dist_i <- tax_dist_i[ , sample_tax_path, drop = TRUE]
-
-    seq_dist_i <- ape::dist.dna(bioseq::as_DNAbin(c(i_seq, sample_seq)),
-                                model = "raw", as.matrix = TRUE)[-1, 1]
-
-    sel <- seq_dist_i < stats::quantile(seq_dist_i, probs = 0.95)
-
-    seq_dist_i <- seq_dist_i[sel]
-    tax_dist_i <- tax_dist_i[sel]
-
-    median_seq_dist <- tapply(seq_dist_i, tax_dist_i, stats::median)
-    out[i] <- sum(median_seq_dist[1] > median_seq_dist[-1])
-
-    if(all(tax_dist_i == tax_dist_i[1]) | all(seq_dist_i == seq_dist_i[1])) {
-      out[i] <- 0
-      next
-    }
-
-    if(stats::cor.test(tax_dist_i, seq_dist_i)$conf.int[1] > 0) {
-      out[i] <- 0
-    }
-
-    if(out[i] > 2) plot(tax_dist_i, seq_dist_i, main = i)
-
-    cat("\rProcessing sequences: ", i, " (", floor(i/length(x_seq)*100), "%)", rep(" ", 40), sep = "")
-  }
-
-}
 ###############################
 
 
@@ -305,6 +310,7 @@ refdb_filter_seq_homopolymers <- function(x, max_len = 16L) {
 #' Filter duplicated sequences.
 #'
 #' Exclude duplicated sequences.
+#' This based on sequences and taxonomy.
 #'
 #' @param x a reference database.
 #'
@@ -347,7 +353,9 @@ refdb_filter_seq_duplicates <- function(x) {
 #' @param code an integer indicating the genetic code to use for translation
 #' (see \link[bioseq]{genetic-codes}).
 #' @param codon_frame an integer giving the nucleotide position where
-#' to start translation.
+#' to start translation. If \code{NA} (the default), the three different frames
+#' are tested and the frame producing the lowest number of stop codons will
+#' be used.
 #'
 #' @return
 #' A tibble (filtered reference database).
@@ -417,7 +425,7 @@ refdb_filter_tax_precision <- function(x, min_tax) {
 #' Filter records by taxonomic scope of studies
 #'
 #' @param x a reference database (tibble).
-#' @param max_tax the maximum taxonomic focus of the study.
+#' @param max_tax the maximum (widest) taxonomic focus of the study.
 #'
 #' @details
 #' A reference field (one ore more columns) must be set to use
@@ -432,20 +440,13 @@ refdb_filter_tax_precision <- function(x, min_tax) {
 refdb_filter_ref_scope <- function(x, max_tax) {
   flt <- .filter_ref_scope(x)
 
-  min_tax <- which(min_tax == attributes(x)$refdb$taxonomy)
-  sel <- flt >= min_tax
+  max_tax <- which(max_tax == attributes(x)$refdb$taxonomy)
+  sel <- flt >= max_tax
   sel[is.na(sel)] <- TRUE
   x[sel, ]
 }
 
 
-refdb_filter_seq_dist <- function(x, max_dist){
-
-}
-
-
-
-#
 
 # #Require alignment:
 # refdb_filter_seq_dist(x, max_dist)
