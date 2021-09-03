@@ -1,0 +1,25 @@
+---
+title: "Introduction to the refdb package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to the refdb package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+Developing and maintaining a reference database can be a difficult task. This vignette will present the main functions of the `refdb` package that can assist you in the quest for a powerful and error-free database.
+
+# Installing and loading the package
+
+We start by loading the package.
+```{r setup}
+library(refdb)
+```
