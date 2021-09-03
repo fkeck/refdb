@@ -36,7 +36,12 @@ test_that("Test refdb_clean_seq_crop_primers", {
   test <- refdb_set_fields_BOLD(test)
 
   expect_equal(test$nucleotides[3], bioseq::dna("TGGTCGGCACTTCACTTAGTCTTTTTCTTATACCA"))
-  res <- refdb_clean_seq_crop_primers(test, primer_forward = "GGCACT", primer_reverse = "TTTTT")
+  res <- refdb_clean_seq_crop_primers(test,
+                                      primer_forward = "GGCACT",
+                                      primer_reverse = "TTTTT",
+                                      max_error_in = 0,
+                                      max_error_out = 0,
+                                      include_primers = TRUE)
   expect_equal(res$nucleotides[3], bioseq::dna("GGCACTTCACTTAGTCTTTTT"))
 
 })
