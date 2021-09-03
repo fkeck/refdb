@@ -104,18 +104,10 @@ refdb_import_BOLD <- function(taxon = NULL,
   # Empty strings as NA
   out[out == ""] <- NA
 
-  out <- refdb_set_fields(out, source = "source",
-                          id = "sequenceID",
-                          taxonomy = c(phylum = "phylum_name",
-                                       class = "class_name",
-                                       order = "order_name",
-                                       family = "family_name",
-                                       subfamily = "subfamily_name",
-                                       genus = "genus_name",
-                                       species = "species_name",
-                                       subspecies = "subspecies_name"),
-                          sequence = "nucleotides",
-                          marker = "markercode")
+  out <- refdb_set_fields_BOLD(out)
+  out <- refdb_set_fields(out,
+                          latitude = "lat",
+                          longitude = "lon")
 
   if (ncbi_taxo) {
     out <- refdb_ncbi_taxonomy(out)
