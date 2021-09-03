@@ -13,7 +13,8 @@ indicated in the field taxonomy. See \link{refdb_set_fields}.}
 }
 \value{
 The reference database with the NCBI taxonomy
-(the original taxonomy is removed).
+for the genus level and higher ranks.
+(the original taxonomy above the genus level is removed).
 }
 \description{
 Replace the current taxonomy using the NCBI Taxonomy database

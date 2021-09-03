@@ -9,7 +9,7 @@ refdb_filter_ref_scope(x, max_tax)
 \arguments{
 \item{x}{a reference database (tibble).}
 
-\item{max_tax}{the maximum taxonomic focus of the study.}
+\item{max_tax}{the maximum (widest) taxonomic focus of the study.}
 }
 \value{
 a reference database (tibble).

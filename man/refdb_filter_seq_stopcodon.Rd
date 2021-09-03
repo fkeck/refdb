@@ -15,7 +15,9 @@ refdb_filter_seq_stopcodon(x, max_stop = 0, code, codon_frame = NA)
 (see \link[bioseq]{genetic-codes}).}
 
 \item{codon_frame}{an integer giving the nucleotide position where
-to start translation.}
+to start translation. If \code{NA} (the default), the three different frames
+are tested and the frame producing the lowest number of stop codons will
+be used.}
 }
 \value{
 A tibble (filtered reference database).

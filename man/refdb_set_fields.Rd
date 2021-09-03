@@ -12,6 +12,8 @@ refdb_set_fields(
   taxonomy = NA,
   sequence = NA,
   marker = NA,
+  latitude = NA,
+  longitude = NA,
   reference = NA,
   config_yaml = NULL
 )
@@ -30,6 +32,10 @@ refdb_set_fields(
 \item{sequence}{name of the column which contains the sequences.}
 
 \item{marker}{name of the column which contains marker names.}
+
+\item{latitude}{name of the column which contains latitudes (WGS 84)}
+
+\item{longitude}{name of the column which contains longitudes (WGS 84).}
 
 \item{reference}{a vector of column names.}
 

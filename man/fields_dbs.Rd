@@ -2,11 +2,14 @@
 % Please edit documentation in R/fields.R
 \name{fields_dbs}
 \alias{fields_dbs}
+\alias{refdb_set_fields_NCBI}
 \alias{refdb_set_fields_BOLD}
 \alias{refdb_set_fields_PR2}
 \alias{refdb_set_fields_diatbarcode}
 \title{Functions to set fields for various databases}
 \usage{
+refdb_set_fields_NCBI(x)
+
 refdb_set_fields_BOLD(x)
 
 refdb_set_fields_PR2(x)
