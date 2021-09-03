@@ -7,20 +7,31 @@
 #' Additionally it uses the NCBI Taxonomy database
 #' to get the sequence taxonomic classification.
 #'
-#' @param query a character string with the query
+#' @param query a character string with the query.
 #' @param full a logical. If FALSE (the default), only a subset of
 #' the most important fields is included in the result.
+#' @param max_seq_length a numeric giving the maximum length of sequences
+#' to retrieve. Useful to exclude complete genomes.
 #'
 #' @details
 #' This function uses several functions of the \pkg{rentrez}
-#' package to interface with the NCBI's EUtils API.
+#' package to interface with the NCBI's EUtils API.*
+#'
+#' @section Errors
+#'
+#' \code{Error in curl::curl_fetch_memory(url, handle = handle) :
+#' transfer closed with outstanding read data remaining} \cr
+#' This error seems to appear with long sequences.
+#' You can try to decrease \code{max_seq_length} to exclude them.
 #'
 #' @return A tibble.
 #' @export
 #'
-refdb_import_NCBI <- function(query, full = FALSE) {
+refdb_import_NCBI <- function(query, full = FALSE, max_seq_length = 10000) {
 
   ff <- tempfile("refdb_NCBI_", fileext = ".csv")
+
+  query <- paste0(query, ' AND ( "0"[SLEN] : "', max_seq_length, '"[SLEN] )')
 
   req <- rentrez::entrez_search(db = "nuccore",
                                 term = query,
@@ -42,6 +53,13 @@ refdb_import_NCBI <- function(query, full = FALSE) {
                                   web_history = req$web_history,
                                   rettype = "gb", retmode = "xml",
                                   retmax = 200, retstart = seq_start)
+
+    if(is.na(recs)) {
+      next
+    }
+    # There is a risk of loss of data here (we drop 200 records)
+    # Need to track these cases which seems to be linked
+    # to NCBI empty records included in the search results
 
     NCBI_xml <- xml2::read_xml(recs)
     NCBI_xml <- xml2::xml_children(NCBI_xml)
@@ -89,6 +107,7 @@ refdb_import_NCBI <- function(query, full = FALSE) {
                                   .data$lat_lon)
     }
 
+
     # Write header
     if(seq_start == 0) {
       readr::write_csv(NCBI_table[0, ], file = ff)
@@ -106,26 +125,14 @@ refdb_import_NCBI <- function(query, full = FALSE) {
   utils::setTxtProgressBar(pb, req$count)
 
   out <- readr::read_csv(ff, col_types = readr::cols())
+  # Process geographic coordinates
+  out <- process_geo_ncbi(out)
 
+  # Set fields
+  out <- refdb_set_fields_NCBI(out)
   out <- refdb_set_fields(out,
-                          source = "source",
-                          id = "id",
-                          taxonomy = c(superkingdom = "superkingdom",
-                                       kingdom = "kingdom",
-                                       phylum = "phylum",
-                                       subphylum = "subphylum",
-                                       class = "class",
-                                       subclass = "subclass",
-                                       infraclass = "infraclass",
-                                       order = "order",
-                                       suborder = "suborder",
-                                       infraorder = "infraorder",
-                                       superfamily = "superfamily",
-                                       family = "family",
-                                       genus = "genus",
-                                       species = "species"),
-                          sequence = "sequence",
-                          marker = "gene")
+                          latitude = "latitude",
+                          longitude = "longitude")
 
   file.remove(ff)
   return(out)
@@ -215,4 +222,26 @@ make_ncbi_table <- function(x) { # Add all possible fields Gene is missing!
 #'
 xml_extract <- function(x, xpath) {
   xml2::xml_text(xml2::xml_find_first(x, xpath))
+}
+
+
+
+#' Process coordinate column returned by NCBI
+#'
+#' @param x NCBI dataframe.
+#' @param col column name containing geographical coordinates.
+#'
+#' @return NCBI dataframe.
+#'
+process_geo_ncbi <- function(x, col = "lat_lon") {
+  x <- tidyr::separate(x, col = col, into = c("latitude", "longitude"), sep = "(?<=[A-Z]) ")
+  lat_sign <- ifelse(stringr::str_detect(x$latitude, "N"), 1, -1)
+  x$latitude <- as.numeric(stringr::str_remove(x$latitude, " [A-Z]"))
+  x$latitude <- x$latitude * lat_sign
+
+  lon_sign <- ifelse(stringr::str_detect(x$longitude, "E"), 1, -1)
+  x$longitude <- as.numeric(stringr::str_remove(x$longitude, " [A-Z]"))
+  x$longitude <- x$longitude * lon_sign
+
+  return(x)
 }
