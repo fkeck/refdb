@@ -302,4 +302,46 @@ refdb_plot_seqlen_hist <- function(x, remove_gaps = TRUE) {
 
 
 
+#' Plot an interactive map
+#'
+#' This functions generate an interactive maps showing
+#' the location of the records of a reference database.
+#' Note that only records with
+#' latitude and longitude data will be displayed.
+#'
+#' @param x a reference database
+#'
+#' @return
+#' An interactive map object from the \pkg{leaflet} package.
+#'
+#' @export
+#'
+refdb_plot_map <- function(x) {
+
+  check_fields(x, c("id", "taxonomy", "sequence", "latitude", "longitude"))
+  tax_cols <- attributes(x)$refdb$taxonomy
+  id_col <- attributes(x)$refdb$id
+  seq_col <- attributes(x)$refdb$sequence
+  lat_col <- attributes(x)$refdb$latitude
+  lon_col <- attributes(x)$refdb$longitude
+
+  tax_last <- .filter_tax_precision(x)
+  tax <- x[tax_cols]
+
+  tax_last <- mapply(function(x, y) tax[y, x], x = tax_last, y = seq_len(nrow(tax)))
+  tax_last <- unlist(tax_last)
+
+  popup <- paste0("<h3>", x[[id_col]], "</h3>",
+                  "<b>", stringr::str_to_title(names(tax_last)),
+                  ": </b>", tax_last,
+                  "<br><b>Sequence length: </b>", nchar(x[[seq_col]]))
+
+  out <- leaflet::leaflet()
+  out <- leaflet::addTiles(out)
+  out <- leaflet::addCircleMarkers(out, lng = x[[lon_col]], lat = x[[lat_col]], popup = popup,
+                                   radius = 8, stroke = FALSE, fillColor = "red", fillOpacity = 1,
+                                   clusterOptions = leaflet::markerClusterOptions())
+  return(out)
+}
+
 
