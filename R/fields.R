@@ -12,6 +12,8 @@
 #' @param taxonomy a vector of column names.
 #' @param sequence name of the column which contains the sequences.
 #' @param marker name of the column which contains marker names.
+#' @param latitude name of the column which contains latitudes (WGS 84)
+#' @param longitude name of the column which contains longitudes (WGS 84).
 #' @param reference a vector of column names.
 #' @param config_yaml a file path to a YAML file
 #'
@@ -35,6 +37,8 @@ refdb_set_fields <- function(x,
                              taxonomy = NA,
                              sequence = NA,
                              marker = NA,
+                             latitude = NA,
+                             longitude = NA,
                              reference = NA,
                              config_yaml = NULL) {
 
@@ -106,6 +110,16 @@ refdb_set_fields <- function(x,
     error_field_col(x, "marker", marker)
     fields_list$marker <- marker
     x[, marker] <- as.character(x[, marker, drop = TRUE])
+  }
+
+  if (!is.na(latitude)) {
+    error_field_col(x, "latitude", latitude)
+    fields_list$latitude <- latitude
+  }
+
+  if (!is.na(longitude)) {
+    error_field_col(x, "longitude", longitude)
+    fields_list$longitude <- longitude
   }
 
   if (!all(is.na(reference))) {
