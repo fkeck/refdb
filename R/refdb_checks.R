@@ -17,6 +17,11 @@
 #'
 refdb_check_report <- function(x, file = NULL, view = TRUE) {
 
+  if (!requireNamespace("DT", quietly = TRUE)) {
+    stop("Package \"DT\" needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
+
   if(is.null(file)) {
     file <- tempfile("refdb_report_", fileext = ".html")
   }
