@@ -244,3 +244,27 @@ refdb_write_fields <- function(x, file) {
   yaml::write_yaml(attributes(x)$refdb_fields, file = file)
 }
 
+
+
+
+#' Get fields of a reference database
+#'
+#' @param x a reference database.
+#'
+#' @return
+#' The list of fields is returned invisibly.
+#'
+#' @export
+#'
+refdb_get_fields <- function(x) {
+  ff <- attributes(x)$refdb_fields
+
+  if(is.null(ff)) {
+    cat("There are no field defined yet. Use the function refdb_set_fields to set fields.")
+  } else {
+  # TODO: A cool print
+  ff$taxonomy <- as.list(ff$taxonomy)
+  cat(yaml::as.yaml(ff))
+  }
+  invisible(ff)
+}
