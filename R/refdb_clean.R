@@ -301,7 +301,7 @@ refdb_clean_tax_NA <- function(x, cols = NULL) {
 
   .replace_fun <- function(x) {
     x <- ifelse(x == "", NA, x)
-    x <- ifelse(stringr::str_detect(x, " stetit$| stet\\.| sp[0-9]| sp\\.| sp$| sp "), NA, x)
+    x <- ifelse(stringr::str_detect(x, " stetit$| stet\\.| sp[0-9]| sp\\.| sp$| sp |unclassified|^[:blank:]+$"), NA, x)
   }
 
   x[, cols] <- apply(x[, cols], 2, .replace_fun)
