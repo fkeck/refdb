@@ -4,12 +4,15 @@
 \name{refdb-package}
 \alias{refdb}
 \alias{refdb-package}
-\title{refdb: What the Package Does (Title Case)}
+\title{refdb: A DNA Reference Library Manager for R}
 \description{
 \if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
 
-More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Reference database manager offering a set of functions
+    to import, organize, clean, filter, audit and export reference genetic
+    data. Designed as an environment for semi-automatic and assisted
+    construction of reference databases and to improve standardization
+    and repeatability in barcoding and metabarcoding studies.
 }
 \seealso{
 Useful links:

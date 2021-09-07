@@ -26,5 +26,13 @@ to get the sequence taxonomic classification.
 }
 \details{
 This function uses several functions of the \pkg{rentrez}
-package to interface with the NCBI's EUtils API.
+package to interface with the NCBI's EUtils API.*
 }
+\section{Errors}{
+
+\code{Error in curl::curl_fetch_memory(url, handle = handle) :
+transfer closed with outstanding read data remaining} \cr
+This error seems to appear with long sequences.
+You can try to decrease \code{max_seq_length} to exclude them.
+}
+
