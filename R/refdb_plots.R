@@ -309,7 +309,7 @@ refdb_plot_seqlen_hist <- function(x, remove_gaps = TRUE) {
 #' Note that only records with
 #' latitude and longitude data will be displayed.
 #'
-#' @param x a reference database
+#' @param x a reference database.
 #'
 #' @return
 #' An interactive map object from the \pkg{leaflet} package.
@@ -318,7 +318,15 @@ refdb_plot_seqlen_hist <- function(x, remove_gaps = TRUE) {
 #'
 refdb_plot_map <- function(x) {
 
-  check_fields(x, c("id", "taxonomy", "sequence", "latitude", "longitude"))
+  check_fields(x, c("taxonomy", "sequence", "latitude", "longitude"))
+
+  if(!"id" %in% names(attributes(x)$refdb)) {
+    x$id <- seq_len(nrow(x))
+    x <- refdb_set_fields(x, id = "id")
+  }
+
+  check_fields(x, "id")
+
   tax_cols <- attributes(x)$refdb$taxonomy
   id_col <- attributes(x)$refdb$id
   seq_col <- attributes(x)$refdb$sequence
@@ -345,3 +353,44 @@ refdb_plot_map <- function(x) {
 }
 
 
+
+
+
+#' Barplots of the number of records for the most represented taxa
+#'
+#' Generate a multipanel plot where, for each taxonomic level,
+#' a barplot represent the number of records available
+#' in the reference database for the most represented taxa.
+#'
+#' @param x a reference database.
+#' @param show_n an integer value indicating the number of taxa to show in each panel.
+#'
+#' @return A ggplot object.
+#' @export
+#'
+refdb_plot_tax_barplot <- function(x, show_n = 10) {
+
+  check_fields(x, c("taxonomy"))
+  tax_cols <- attributes(x)$refdb$taxonomy
+
+  dat <- tidyr::pivot_longer(x[tax_cols], tidyr::everything())
+  dat <- dplyr::group_by(dat, .data$name, .data$value)
+  dat <- dplyr::count(dat)
+  dat <- dplyr::group_by(dat, .data$name)
+
+  dat_na <- dplyr::filter(dat, is.na(.data$value))
+
+  dat_top <- dplyr::filter(dat, !is.na(.data$value))
+  dat_top <- dplyr::slice_max(dat_top, order_by = .data$n, n = show_n)
+  dat_top <- dplyr::mutate(dat_top, val_ord = factor(.data$value,
+                                                     levels = .data$value[order(.data$n, decreasing = TRUE)]))
+
+  ggplot2::ggplot(dat_top) +
+    ggplot2::geom_col(ggplot2::aes(.data$val_ord, .data$n)) +
+    ggplot2::facet_wrap(ggplot2::vars(.data$name), scales = "free") +
+    ggplot2::geom_text(ggplot2::aes(Inf, Inf, label = paste("NA =", .data$n), hjust = 1.1, vjust = 1.5), size = 3, data = dat_na) +
+    ggplot2::ylab("Number of records") +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, vjust = 1, hjust = 1),
+                   axis.title.x = ggplot2::element_blank())
+
+}
