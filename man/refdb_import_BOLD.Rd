@@ -22,7 +22,7 @@ used to search the BOLD database. See \link[bold]{bold_seqspec} from
 which they are inherited.}
 
 \item{ncbi_taxo}{if \code{TRUE} (the default) the BOLD taxonomy is
-replaced by the NCBI taxonomy using \code{\link{refdb_ncbi_taxonomy}}.}
+replaced by the NCBI taxonomy using \code{\link{refdb_set_ncbitax}}.}
 
 \item{full}{if \code{TRUE} the complete data are returned for every records.
 If \code{FALSE} (the default) only a subset of the most
