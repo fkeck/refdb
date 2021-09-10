@@ -14,8 +14,21 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```
 
 
+## Reference library overview
 
-# Check for typos
+```{r}
+refdb:::check_fields(x, c("sequence", "taxonomy"))
+x_seq <- x[[attributes(x)$refdb$sequence]]
+```
+
+
+Total number of sequences: `r sum(!is.na(x_seq))`
+
+Number of unique sequences: `r sum(!duplicated(x_seq[!is.na(x_seq)]))`
+
+
+
+## Check for typos
 ```{r}
 check_typo <- refdb_check_tax_typo(x)
 check_typo <- dplyr::bind_rows(check_typo, .id = "Level")
@@ -30,7 +43,7 @@ DT::datatable(check_typo,
 ```
 
 
-# Check for taxonomic conflicts
+## Check for taxonomic conflicts
 ```{r}
 check_taxo <- refdb_check_tax_conflict(x)
 check_taxo <- dplyr::bind_rows(check_taxo, .id = "Level")
@@ -66,7 +79,7 @@ DT::datatable(check_taxo,
 ```
 
 
-# Check for sequence conflicts
+## Check for sequence conflicts
 ```{r}
 check_seqs <- refdb_check_seq_conflict(x)
 
