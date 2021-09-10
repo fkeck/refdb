@@ -11,7 +11,7 @@
 #' used to search the BOLD database. See \link[bold]{bold_seqspec} from
 #' which they are inherited.
 #' @param ncbi_taxo if \code{TRUE} (the default) the BOLD taxonomy is
-#' replaced by the NCBI taxonomy using \code{\link{refdb_ncbi_taxonomy}}.
+#' replaced by the NCBI taxonomy using \code{\link{refdb_set_ncbitax}}.
 #' @param full if \code{TRUE} the complete data are returned for every records.
 #' If \code{FALSE} (the default) only a subset of the most
 #' important columns is returned.
@@ -110,7 +110,7 @@ refdb_import_BOLD <- function(taxon = NULL,
                           longitude = "lon")
 
   if (ncbi_taxo) {
-    out <- refdb_ncbi_taxonomy(out)
+    out <- refdb_set_ncbitax(out)
   }
 
   return(out)

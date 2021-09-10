@@ -13,7 +13,7 @@
 #' @export
 #'
 #'
-refdb_ncbi_taxonomy <- function(x) {
+refdb_set_ncbitax <- function(x) {
 
   check_fields(x, "taxonomy")
   ncbi_taxo <- ncbi_taxo_rank()
