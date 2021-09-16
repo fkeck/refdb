@@ -114,7 +114,8 @@ igraph_from_taxo <- function(x, cols = NULL) {
 #' can be further customized using \pkg{ggplot2} compatible functions.
 #' @export
 #'
-refdb_plot_tax_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003)) {
+refdb_plot_tax_treemap <- function(x, cols = NULL,
+                                   freq_labels = c(0.01, 0.003)) {
 
   check_fields(x, what = "taxonomy")
   col_tax <- attributes(x)$refdb_fields$taxonomy
@@ -125,8 +126,8 @@ refdb_plot_tax_treemap <- function(x, cols = NULL, freq_labels = c(0.01, 0.003))
     cols <- names(cols_n[cols_n > 50 & cols_n < 5000])
     if(length(cols) < 2) {
       cols <- names(cols_n)[c(which.max(cols_n) - 1, which.max(cols_n))]
-      }
-    cat("Selected columns: ", cols, "\n")
+    }
+      message("Selected columns: ", paste(cols, collapse = ", "))
   }
 
   g <- igraph_from_taxo(x, cols = cols)
@@ -220,7 +221,7 @@ refdb_plot_tax_tree <- function(x,
   if(is.null(leaf_col)) {
     leaf_col <- apply(x[, col_tax], 2, function(x) length(unique(x)))
     leaf_col <- names(leaf_col[leaf_col < 200])
-    cat("Selected rank columns for the tree: ", leaf_col, "\n")
+    message("Selected rank columns for the tree: ", paste(leaf_col, collapse = ", "))
   } else {
     leaf_col <- col_tax[1:which(col_tax == leaf_col)]
   }
@@ -229,7 +230,7 @@ refdb_plot_tax_tree <- function(x,
     color_col <- apply(x[, leaf_col], 2, function(x) length(unique(x)))
     color_col <- names(color_col[color_col < 25])
     color_col <- color_col[length(color_col)]
-    cat("Selected rank column for the color: ", color_col, "\n")
+    message("Selected rank column for the color: ", paste(color_col, collapse = ", "))
   } else {
     color_col <- col_tax[col_tax == color_col]
   }
@@ -339,7 +340,7 @@ refdb_plot_map <- function(x) {
   tax_last <- mapply(function(x, y) tax[y, x], x = tax_last, y = seq_len(nrow(tax)))
   tax_last <- unlist(tax_last)
 
-  popup <- paste0("<h3>", x[[id_col]], "</h3>",
+  popup <- paste0("<h3>ID: ", x[[id_col]], "</h3>",
                   "<b>", stringr::str_to_title(names(tax_last)),
                   ": </b>", tax_last,
                   "<br><b>Sequence length: </b>", nchar(x[[seq_col]]))
