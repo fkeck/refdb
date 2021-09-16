@@ -241,7 +241,11 @@ check_fields <- function(x,
 #' @export
 #'
 refdb_write_fields <- function(x, file) {
-  yaml::write_yaml(attributes(x)$refdb_fields, file = file)
+  ff <- attributes(x)$refdb_fields
+  if("taxonomy" %in% names(ff)) {
+    ff$taxonomy <- as.list(ff$taxonomy)
+  }
+  yaml::write_yaml(ff, file = file)
 }
 
 
@@ -256,15 +260,19 @@ refdb_write_fields <- function(x, file) {
 #'
 #' @export
 #'
-refdb_get_fields <- function(x) {
+refdb_get_fields <- function(x, silent = FALSE) {
   ff <- attributes(x)$refdb_fields
 
   if(is.null(ff)) {
-    cat("There are no field defined yet. Use the function refdb_set_fields to set fields.")
+    if(!silent) {
+      cat("There are no field defined yet. Use the function refdb_set_fields to set fields.")
+    }
   } else {
-  # TODO: A cool print
-  ff$taxonomy <- as.list(ff$taxonomy)
-  cat(yaml::as.yaml(ff))
+    # TODO: A cool print
+    ff$taxonomy <- as.list(ff$taxonomy)
+    if(!silent) {
+      cat(yaml::as.yaml(ff))
+    }
   }
   invisible(ff)
 }
