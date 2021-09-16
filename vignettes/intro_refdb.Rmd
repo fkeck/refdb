@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 
-Developing and maintaining a reference database can be a difficult task. This vignette will present the main functions of the `refdb` package that can assist you in the quest for a powerful and error-free reference library.
+Developing and maintaining a DNA reference database can be difficult. The `refdb` package has been developed to assist you during the different steps of the process. This vignette will present some of the important functions of the package and help you to get started with it.
 
 
 ## Installing and loading the package
@@ -214,19 +214,19 @@ The result (not shown here) is an interactive HTML report which can be opened in
 
 Once satisfied with the results, they can be exported for further use. Since the reference database is a dataframe, it is possible to use any export functions (from R or from other packages) that support dataframes. Here we show how to export to CSV using the function `write_csv` from the `readr` package.
 
-```{r}
+```{r, eval=FALSE}
 write_csv(lib, "my_reference_library.csv")
 ```
 
 This will write the actual content of `lib` but ignore the fields which have been previously set. We can save them in a separate YAML file using:
 
-```{r}
+```{r, eval=FALSE}
 refdb_write_fields(lib, "my_reference_fields.yml")
 ```
 
 Then, the next time you will open this reference database, it will be easy to set the fields again using the argument `config_yaml` of the function `refdb_set_fields`:
 
-```{r}
+```{r, eval=FALSE}
 lib <- read_csv("my_reference_library.csv")
 lib <- refdb_set_fields(lib, config_yaml = "my_reference_fields.yml")
 
