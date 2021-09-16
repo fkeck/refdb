@@ -26,9 +26,19 @@ Total number of sequences: `r sum(!is.na(x_seq))`
 
 Number of unique sequences: `r sum(!duplicated(x_seq[!is.na(x_seq)]))`
 
+```{r, message=FALSE, warning=FALSE}
+refdb_plot_tax_barplot(x)
 
+refdb_plot_tax_treemap(x)
 
-## Check for typos
+if(all(c("latitude", "longitude") %in%
+       names(refdb_get_fields(x, silent = TRUE)))
+   ){
+refdb_plot_map(x)
+}
+```
+
+## Check for spelling errors
 ```{r}
 check_typo <- refdb_check_tax_typo(x)
 check_typo <- dplyr::bind_rows(check_typo, .id = "Level")
