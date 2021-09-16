@@ -10,10 +10,10 @@ NULL
 
 
 #' @rdname filter_scores
-.filter_seq_length <- function(x) {
+.filter_seq_length <- function(x, gaps) {
   check_fields(x, "sequence")
   col <- attributes(x)$refdb$sequence
-  bioseq::seq_nchar(x[[col]])
+  bioseq::seq_nchar(x[[col]], gaps = gaps)
 }
 
 .filter_seq_ambiguous <- function(x, char) {
@@ -253,14 +253,15 @@ NULL
 #' @param x a reference database.
 #' @param min_len,max_len minimum and maximum sequence lengths.
 #' Use \code{NULL} (default) to ignore.
+#' @param gaps if \code{TRUE} gaps are accounted.
 #'
 #' @return
 #' A tibble (filtered reference database).
 #' @export
 #'
-refdb_filter_seq_length <- function(x, min_len = NULL, max_len = NULL) {
+refdb_filter_seq_length <- function(x, min_len = NULL, max_len = NULL, gaps = FALSE) {
 
-  flt <- .filter_seq_length(x)
+  flt <- .filter_seq_length(x, gaps)
 
   if(is.null(min_len)) {
     min_len <- 0
