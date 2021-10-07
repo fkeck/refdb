@@ -5,10 +5,12 @@
 \alias{.filter_seq_length}
 \title{Scores for filtering operations}
 \usage{
-.filter_seq_length(x)
+.filter_seq_length(x, gaps)
 }
 \arguments{
 \item{x}{a reference database}
+
+\item{gaps}{should gaps be included.}
 }
 \value{
 a numeric vector

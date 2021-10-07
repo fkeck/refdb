@@ -4,7 +4,7 @@
 \alias{refdb_get_fields}
 \title{Get fields of a reference database}
 \usage{
-refdb_get_fields(x)
+refdb_get_fields(x, silent = FALSE)
 }
 \arguments{
 \item{x}{a reference database.}

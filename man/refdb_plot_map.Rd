@@ -7,7 +7,7 @@
 refdb_plot_map(x)
 }
 \arguments{
-\item{x}{a reference database}
+\item{x}{a reference database.}
 }
 \value{
 An interactive map object from the \pkg{leaflet} package.

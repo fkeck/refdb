@@ -3,6 +3,7 @@
 #' Scores for filtering operations
 #'
 #' @param x a reference database
+#' @param gaps should gaps be included.
 #'
 #' @return a numeric vector
 #' @name filter_scores
