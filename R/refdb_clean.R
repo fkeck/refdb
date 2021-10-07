@@ -104,6 +104,9 @@ refdb_clean_tax_remove_blank <- function(x, cols = NULL) {
 
   x[, cols] <- apply(x[, cols], 2, stringr::str_trim)
   x[, cols] <- apply(x[, cols], 2, stringr::str_squish)
+
+  x <- sanity_check(x, cols = cols, clean_whitespace = FALSE)
+
   return(x)
 }
 
@@ -147,6 +150,9 @@ refdb_clean_tax_remove_extra <- function(x, cols = NULL) {
   }
 
   x[, cols] <- apply(x[, cols], 2, .remove_fun)
+
+  x <- sanity_check(x, cols = cols)
+
   return(x)
 }
 
@@ -216,8 +222,10 @@ refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
   }
 
   x[, cols] <- apply(x[, cols], 2, .replace_fun)
-  return(x)
 
+  x <- sanity_check(x, cols = cols)
+
+  return(x)
 }
 
 
@@ -245,6 +253,8 @@ refdb_clean_tax_remove_uncertainty <- function(x, cols = NULL) {
                      stringr::str_replace,
                      pattern = " aff\\. | cf\\. | prox\\. | nr\\. | sp\\. inc\\. ",
                      replacement = " ")
+
+  x <- sanity_check(x, cols = cols)
 
   return(x)
 }
@@ -274,6 +284,8 @@ refdb_clean_tax_remove_subsp <- function(x, cols = NULL) {
                      stringr::str_replace,
                      pattern = " var\\. .*$| v\\. .*$| varietas .*$| forma .*$| f\\. .*$| morph .*$| form .*$| biotype .*$| isolate .*$| pathogroup .*$| serogroup .*$| serotype .*$| strain .*$| aberration .*$| abberatio .*$| ab\\. .*$",
                      replacement = "")
+
+  x <- sanity_check(x, cols = cols)
 
   return(x)
 
@@ -305,6 +317,24 @@ refdb_clean_tax_NA <- function(x, cols = NULL) {
   }
 
   x[, cols] <- apply(x[, cols], 2, .replace_fun)
-  return(x)
 
+  return(x)
+}
+
+
+
+sanity_check <- function(x, cols,
+                         clean_whitespace = TRUE,
+                         clean_na = TRUE) {
+
+  if(clean_whitespace) {
+    x[, cols] <- apply(x[, cols], 2, stringr::str_trim)
+    x[, cols] <- apply(x[, cols], 2, stringr::str_squish)
+  }
+
+  if(clean_na) {
+    x[, cols] <- apply(x[, cols], 2, function(x) ifelse(x == "", NA, x))
+  }
+
+  return(x)
 }

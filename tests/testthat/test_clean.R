@@ -89,6 +89,10 @@ test_that("Test refdb_clean_tax_remove_extra", {
   test$species_name[1] <- "Cloeon (gen) dipterum"
   res <- refdb_clean_tax_remove_extra(test)
   expect_equal(res$species_name[1], "Cloeon dipterum")
+
+  test$species_name[1] <- "AGG XXP"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], as.character(NA))
 })
 
 
