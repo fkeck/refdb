@@ -1,7 +1,7 @@
 #    test <- read.csv("tests/testthat/data_toclean_bold.csv")
 
 test_that("Test download", {
-  #skip_on_cran()
+  skip_on_cran()
   qb <- refdb_import_BOLD("Baetis melanonyx", ncbi_taxo = FALSE)
   expect_s3_class(qb, "data.frame")
 
