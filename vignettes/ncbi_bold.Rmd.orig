@@ -1,0 +1,102 @@
+---
+title: "Downloading and combining data from NCBI Genbank and BOLD"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Downloading and combining data from NCBI Genbank and BOLD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This short vignette will show you how you can use the functions of the refdb package to download sequence data from two popular repositories: NCBI Genbank and BOLD. We will also cover how these data can be combined into a single reference database. For an introduction to the package refdb see the vignette *Introduction to the refdb package*.
+
+```{r setup}
+library(refdb)
+```
+
+## Getting data from NCBI Genbank
+We start by downloading sequence data from NCBI. The refdb packages uses the rentrez package (Winter 2017) to interface with NCBI servers.
+
+```{r}
+silo_ncbi <- refdb_import_NCBI("Silo COI")
+```
+
+Data already have a set of fields defined.
+
+```{r}
+refdb_get_fields(silo_ncbi)
+```
+
+## Getting data from BOLD
+Now let's download data for another taxon from the BOLD database.
+```{r}
+goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = FALSE)
+```
+
+You may have noticed that the search interface is a bit different. This is because here we rely on another package (bold, Chamberlain 2020) to download the data. You can check the manual of `refdb_import_BOLD` to see the different arguments available. For the purpose of this vignette we also have turned off the automatic conversion to the NCBI taxonomy.
+
+
+Similarly to the NCBI data, data downloaded from BOLD have a set of fields defined automatically.
+
+```{r}
+refdb_get_fields(goera_bold)
+```
+
+## Merging data from different sources
+
+We can now use `refdb_merge` to merge the two databases. To make things clearer we will keep only the first three sequences of `goera_bold`.
+
+```{r}
+# Extract the first three records of goera_bold
+goera_bold <- goera_bold[1:3, ]
+
+# Merging goera_bold and silo_ncbi into one database
+bold_ncbi <- refdb_merge(goera_bold, silo_ncbi)
+```
+Note that you can merge more than two database with `refdb_merge`.
+
+Now, let's take a look at the columns `genus_name`, `species_name` and `nucleotides` of the merged database.
+
+```{r}
+bold_ncbi[, c("source", "genus_name", "species_name", "nucleotides")]
+```
+
+Despite that those columns had different names in the two databases, they were merged successfully because they were associated to the same field. The names used in the merged database are inherited from the database used as first argument in the merge functions (here `goera_bold`).
+
+By default only the columns that are associated to a field in one of the two databases are kept. Of course, if there are no equivalent in the other database, NAs are produced. See the columns `subfamily_name` (subfamily is a taxonomic rank which exist only BOLD):
+
+```{r}
+bold_ncbi[, c("source", "subfamily_name")]
+```
+
+Alternatively, we can request the function `refdb_merge` to return only the fields shared by all the reference databases.
+
+```{r}
+bold_ncbi <- refdb_merge(goera_bold, silo_ncbi, keep = "fields_shared")
+colnames(bold_ncbi)
+```
+
+NCBI and BOLD share several taxonomic ranks (phylum, class, order, family, genus and species) which would be a good basis for sequence taxonomic classification. But we may also use the default behavior of `refdb_import_BOLD` to force BOLD data to conform to the NCBI taxonomic system. So let's download these data again.
+
+```{r}
+goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = TRUE)
+goera_bold <- goera_bold[1:3, ]
+refdb_get_fields(silo_ncbi)
+refdb_get_fields(goera_bold)
+```
+
+Now we can observe that many more matching taxonomic fields between the two database which makes the merge operation much more straightforward. Note that you can operate NCBI taxonomic conversion with data from other sources using the function `refdb_set_ncbitax`.
+
+
+## References
+
+Winter, D. J. (2017) rentrez: an R package for the NCBI eUtils API The R Journal 9(2):520-526
+
+Scott Chamberlain (2020). bold: Interface to Bold Systems API. R package version 1.1.0. https://CRAN.R-project.org/package=bold
+

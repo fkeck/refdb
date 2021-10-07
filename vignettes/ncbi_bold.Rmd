@@ -7,36 +7,59 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+
 
 This short vignette will show you how you can use the functions of the refdb package to download sequence data from two popular repositories: NCBI Genbank and BOLD. We will also cover how these data can be combined into a single reference database. For an introduction to the package refdb see the vignette *Introduction to the refdb package*.
 
-```{r setup}
+
+```r
 library(refdb)
 ```
 
 ## Getting data from NCBI Genbank
 We start by downloading sequence data from NCBI. The refdb packages uses the rentrez package (Winter 2017) to interface with NCBI servers.
 
-```{r}
+
+```r
 silo_ncbi <- refdb_import_NCBI("Silo COI")
+#> Downloading 72 sequences from NCBI...
+#>   |                                                                                                                                                                 |                                                                                                                                                         |   0%  |                                                                                                                                                                 |=========================================================================================================================================================| 100%
 ```
 
 Data already have a set of fields defined.
 
-```{r}
+
+```r
 refdb_get_fields(silo_ncbi)
+#> source: source
+#> id: id
+#> taxonomy:
+#>   superkingdom: superkingdom
+#>   kingdom: kingdom
+#>   phylum: phylum
+#>   subphylum: subphylum
+#>   class: class
+#>   subclass: subclass
+#>   infraclass: infraclass
+#>   order: order
+#>   suborder: suborder
+#>   infraorder: infraorder
+#>   superfamily: superfamily
+#>   family: family
+#>   genus: genus
+#>   species: species
+#> sequence: sequence
+#> marker: gene
+#> latitude: latitude
+#> longitude: longitude
 ```
 
 ## Getting data from BOLD
 Now let's download data for another taxon from the BOLD database.
-```{r}
+
+```r
 goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = FALSE)
+#> Downloading 30 sequences from BOLD...
 ```
 
 You may have noticed that the search interface is a bit different. This is because here we rely on another package (bold, Chamberlain 2020) to download the data. You can check the manual of `refdb_import_BOLD` to see the different arguments available. For the purpose of this vignette we also have turned off the automatic conversion to the NCBI taxonomy.
@@ -44,15 +67,31 @@ You may have noticed that the search interface is a bit different. This is becau
 
 Similarly to the NCBI data, data downloaded from BOLD have a set of fields defined automatically.
 
-```{r}
+
+```r
 refdb_get_fields(goera_bold)
+#> source: source
+#> id: sequenceID
+#> taxonomy:
+#>   phylum: phylum_name
+#>   class: class_name
+#>   order: order_name
+#>   family: family_name
+#>   subfamily: subfamily_name
+#>   genus: genus_name
+#>   species: species_name
+#> sequence: nucleotides
+#> marker: markercode
+#> latitude: lat
+#> longitude: lon
 ```
 
 ## Merging data from different sources
 
 We can now use `refdb_merge` to merge the two databases. To make things clearer we will keep only the first three sequences of `goera_bold`.
 
-```{r}
+
+```r
 # Extract the first three records of goera_bold
 goera_bold <- goera_bold[1:3, ]
 
@@ -63,32 +102,110 @@ Note that you can merge more than two database with `refdb_merge`.
 
 Now, let's take a look at the columns `genus_name`, `species_name` and `nucleotides` of the merged database.
 
-```{r}
+
+```r
 bold_ncbi[, c("source", "genus_name", "species_name", "nucleotides")]
+#> # A tibble: 75 x 4
+#>    source genus_name species_name  nucleotides                                                                                                                     
+#>    <chr>  <chr>      <chr>         <DNA>                                                                                                                           
+#>  1 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…
+#>  2 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACATCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…
+#>  3 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…
+#>  4 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
+#>  5 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
+#>  6 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
+#>  7 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
+#>  8 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
+#>  9 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
+#> 10 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
+#> # … with 65 more rows
 ```
 
 Despite that those columns had different names in the two databases, they were merged successfully because they were associated to the same field. The names used in the merged database are inherited from the database used as first argument in the merge functions (here `goera_bold`).
 
 By default only the columns that are associated to a field in one of the two databases are kept. Of course, if there are no equivalent in the other database, NAs are produced. See the columns `subfamily_name` (subfamily is a taxonomic rank which exist only BOLD):
 
-```{r}
+
+```r
 bold_ncbi[, c("source", "subfamily_name")]
+#> # A tibble: 75 x 2
+#>    source subfamily_name
+#>    <chr>  <chr>         
+#>  1 BOLD   Goerinae      
+#>  2 BOLD   Goerinae      
+#>  3 BOLD   Goerinae      
+#>  4 NCBI   <NA>          
+#>  5 NCBI   <NA>          
+#>  6 NCBI   <NA>          
+#>  7 NCBI   <NA>          
+#>  8 NCBI   <NA>          
+#>  9 NCBI   <NA>          
+#> 10 NCBI   <NA>          
+#> # … with 65 more rows
 ```
 
 Alternatively, we can request the function `refdb_merge` to return only the fields shared by all the reference databases.
 
-```{r}
+
+```r
 bold_ncbi <- refdb_merge(goera_bold, silo_ncbi, keep = "fields_shared")
 colnames(bold_ncbi)
+#>  [1] "source"       "sequenceID"   "phylum_name"  "class_name"   "order_name"   "family_name"  "genus_name"   "species_name" "nucleotides"  "markercode"  
+#> [11] "lat"          "lon"
 ```
 
 NCBI and BOLD share several taxonomic ranks (phylum, class, order, family, genus and species) which would be a good basis for sequence taxonomic classification. But we may also use the default behavior of `refdb_import_BOLD` to force BOLD data to conform to the NCBI taxonomic system. So let's download these data again.
 
-```{r}
+
+```r
 goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = TRUE)
+#> Downloading 30 sequences from BOLD...
+#> Processing: Goera
 goera_bold <- goera_bold[1:3, ]
 refdb_get_fields(silo_ncbi)
+#> source: source
+#> id: id
+#> taxonomy:
+#>   superkingdom: superkingdom
+#>   kingdom: kingdom
+#>   phylum: phylum
+#>   subphylum: subphylum
+#>   class: class
+#>   subclass: subclass
+#>   infraclass: infraclass
+#>   order: order
+#>   suborder: suborder
+#>   infraorder: infraorder
+#>   superfamily: superfamily
+#>   family: family
+#>   genus: genus
+#>   species: species
+#> sequence: sequence
+#> marker: gene
+#> latitude: latitude
+#> longitude: longitude
 refdb_get_fields(goera_bold)
+#> source: source
+#> id: sequenceID
+#> taxonomy:
+#>   superkingdom: superkingdom
+#>   kingdom: kingdom
+#>   phylum: phylum
+#>   subphylum: subphylum
+#>   class: class
+#>   subclass: subclass
+#>   infraclass: infraclass
+#>   order: order
+#>   suborder: suborder
+#>   infraorder: infraorder
+#>   superfamily: superfamily
+#>   family: family
+#>   genus: genus
+#>   species: species_name
+#> sequence: nucleotides
+#> marker: markercode
+#> latitude: lat
+#> longitude: lon
 ```
 
 Now we can observe that many more matching taxonomic fields between the two database which makes the merge operation much more straightforward. Note that you can operate NCBI taxonomic conversion with data from other sources using the function `refdb_set_ncbitax`.
