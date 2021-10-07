@@ -48,6 +48,6 @@ test_that("Test checking taxonomic conflicts", {
 #   test <- read.csv("data_baetidae_bold.csv")
 #   test_file <- tempfile()
 #   test <- refdb_set_fields_BOLD(test)
-#   refdb_check_report(test, test_file, view = FALSE)
-#   refdb_check_report(test, view = FALSE)
+#   refdb_report(test, test_file, view = FALSE)
+#   refdb_report(test, view = FALSE)
 # })

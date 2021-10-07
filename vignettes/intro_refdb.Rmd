@@ -242,10 +242,10 @@ refdb_plot_map(lib)
 
 ### Creating a report
 
-A report is a simple and rapid way to get an overview of the current state of your reference library and to identify some possible issues. You can compile a report using the function `refdb_check_report`.
+A report is a simple and rapid way to get an overview of the current state of your reference library and to identify some possible issues. You can compile a report using the function `refdb_report`.
 
 ```{r, eval=FALSE}
-refdb_check_report(lib)
+refdb_report(lib)
 ```
 
 

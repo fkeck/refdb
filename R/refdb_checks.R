@@ -15,7 +15,7 @@
 #'
 #' @export
 #'
-refdb_check_report <- function(x, file = NULL, view = TRUE) {
+refdb_report <- function(x, file = NULL, view = TRUE) {
 
   if (!requireNamespace("DT", quietly = TRUE)) {
     stop("Package \"DT\" needed for this function to work. Please install it.",
