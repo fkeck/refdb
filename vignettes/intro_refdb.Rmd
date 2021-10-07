@@ -37,7 +37,7 @@ library(tidyverse)
 #### Reading data from a file
 
 
-In refdb a reference database is a simple dataframe. This means that any functions able to read external data and return a dataframe in your R environment can be used to import a reference library. Here, for simplicity, we will assume the reference database is stored as a CSV on the disk. You can download this file here. Then, we can read the data from their location on your computer with:
+In `refdb`, a reference database is a simple dataframe. This means that any functions able to read external data and return a dataframe in your R environment can be used to import a reference library. Here, for simplicity, we will assume the reference database is stored as a CSV on the disk. You can download this file [here](https://raw.githubusercontent.com/fkeck/refdb/acee2ff1b3a9dca27aa7aeb9e0f1e5837105b094/inst/extdata/ephem.csv) (use "Save as"). Then, we can read the file from its location on your computer with:
 
 ```{r, include=FALSE}
 lib <- read_csv(system.file("extdata", "ephem.csv", package = "refdb"))
@@ -71,6 +71,7 @@ If you print the object `lib` now, you will see that the nucleotide symbols in t
 refdb_get_fields(lib)
 ```
 
+Note that if you are importing data from some popular reference databases, these functions can save you time: `refdb_set_fields_BOLD`, `refdb_set_fields_NCBI`, `refdb_set_fields_PR2`, `refdb_set_fields_diatbarcode`.
 
 ### Cleaning taxonomic names and DNA sequences
 
@@ -85,7 +86,7 @@ Let's take a look at the taxonomy of the 91st record:
 ```{r}
 lib [91, 1:4]
 ```
-Here, the specimen has been identified at the genus level and the species is reported using the notation "sp.". However to manage a database it is not really practical to use such notation. How would you report the family of an organism identified at the class level? A general and efficient way to code for a missing value is simply to use the built-in `NA` indicator.
+Here, the specimen has been identified at the genus level and the species is reported using the notation "sp.". This is a common notation but not really a practical one when you manage a database. How would you report the family of an organism identified at the class level? In R, a general and efficient way to code for a missing information is simply to use the built-in `NA` indicator.
 
 The function `refdb_clean_tax_NA` can be used to identify taxonomic levels for which there are no information and change them to `NA`.
 
@@ -96,7 +97,7 @@ lib_na [91, 1:4]
 
 #### Extra information appended to taxonomic names
 
-It is common to find taxonomic names to which various information has been added. See the 32nd row of our database:
+It is common to find taxonomic names to which various information have been added. See the 32nd row of our database:
 
 ```{r}
 lib [32, 1:4]
@@ -119,6 +120,14 @@ The cleaning functions of refdb uses several rules and heuristics, some of them 
 
 
 #### Cleaning DNA sequences
+Similarly it is possible to clean the sequences with different functions. For example, if we want to remove the gaps in the sequences:
+
+```{r}
+head(lib)
+
+lib_nogap <- refdb_clean_seq_remove_gaps(lib)
+head(lib_nogap)
+```
 
 
 
@@ -126,7 +135,18 @@ The cleaning functions of refdb uses several rules and heuristics, some of them 
 
 We have only seen a brief overview of the functions available for cleaning up the sequences and their associated taxonomy. It would be tedious to list all the functions and their options here. Instead, the table below summarises the functions currently available in refdb.
 
-TABLE
+| Function                                   | Description                                                     |
+| ------------------------------------------ | --------------------------------------------------------------- |
+| refdb\_clean\_seq\_remove\_gaps            | Remove gaps from genetic sequences                              |
+| refdb\_clean\_seq\_remove\_sideN           | Remove repeated side N from genetic sequences                   |
+| refdb\_clean\_seq\_crop\_primers           | Crop genetic sequences with a set of primers                    |
+| refdb\_clean\_tax\_remove\_blank           | Remove blank characters from taxonomic names                    |
+| refdb\_clean\_tax\_remove\_extra           | Remove extra words from taxonomic names                         |
+| refdb\_clean\_tax\_harmonize\_nomenclature | Harmonize taxonomic name nomenclature                           |
+| refdb\_clean\_tax\_remove\_uncertainty     | Remove terms indicating uncertainty in taxonomic names          |
+| refdb\_clean\_tax\_remove\_subsp           | Remove subspecific information from taxonomic names             |
+| refdb\_clean\_tax\_NA                      | Convert missing taxonomic names to NA                           |
+
 
 ### Filtering records
 
@@ -149,7 +169,7 @@ The function has removed `r nrow(lib) - nrow(lib_long)` records.
 
 Another, more sophisticated filtering function is `refdb_filter_seq_primer()` which can find sequences which do not contain a motif (typically a primer sequence) and remove them from the reference database
 
-For example, a famous forward primer for metazoan is the mlCOIintF (Leray 2013). I we want to keep only the sequences where this primer is found we can use:
+For example, a commonly used forward primer for metazoan is the mlCOIintF (Leray 2013). I we want to keep only the sequences where this primer is found we can use:
 
 ```{r}
 refdb_filter_seq_primer(lib, primer_forward = "GGWACWGGWTGAACWGTWTAYCCYCC")
@@ -162,6 +182,20 @@ refdb_filter_seq_primer(lib, primer_forward = "GGWACWGGWTGAACWGTWTAYCCYCC", max_
 ```
 
 By increasing the maximum error rate to 20%, we now retain 99 sequences.
+
+
+Similarly to the the cleaning functions, there are many filtering functions available in refdb, as shown in the table below:
+
+| Function                                   | Description                                                     |
+| ------------------------------------------ | --------------------------------------------------------------- |
+| refdb\_filter\_seq\_length                 | Filter sequences based on their number of characters.           |
+| refdb\_filter\_seq\_ambiguous              | Filter sequences based on their number of ambiguous characters. |
+| refdb\_filter\_seq\_homopolymers           | Filter sequences based on their number of repeated characters.  |
+| refdb\_filter\_seq\_duplicates             | Filter duplicated sequences.                                    |
+| refdb\_filter\_seq\_stopcodon              | Filter sequences based on their number of stop codons.          |
+| refdb\_filter\_seq\_primer                 | Filter sequences based on the presence of primers.              |
+| refdb\_filter\_tax\_precision              | Filter records based on their taxonomic precision.              |
+| refdb\_filter\_ref\_scope                  | Filter records by taxonomic scope of studies.                   |
 
 
 ### Visualizing the reference library
@@ -191,7 +225,7 @@ Alternatively you can represent this information with a taxonomic tree. These fu
 refdb_plot_tax_tree(lib)
 ```
 
-We conclude our overview of the graphical features of refdb with the refdb_plot_map function which can be used to generate interactive maps from the data. Of course this requires the sequences to be geographically located. As we have not yet associated columns to the latitude and longitude fields, we have to do this beforehand.
+We conclude our overview of the graphical features of refdb with the `refdb_plot_map` function which can be used to generate interactive maps from the data. Of course this requires the sequences to be geographically located. As we have not yet associated columns to the latitude and longitude fields, we have to do this beforehand.
 
 ```{r, message=FALSE, warning=FALSE}
 lib <- refdb_set_fields(lib, latitude = "lat", longitude = "lon")
@@ -229,8 +263,6 @@ Then, the next time you will open this reference database, it will be easy to se
 ```{r, eval=FALSE}
 lib <- read_csv("my_reference_library.csv")
 lib <- refdb_set_fields(lib, config_yaml = "my_reference_fields.yml")
-
-refdb_get_fields(lib)
 ```
 
 
