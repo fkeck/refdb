@@ -44,6 +44,7 @@ Suggests:
     testthat (>= 3.0.0),
     covr,
     DT,
-    knitr
+    knitr,
+    forcats
 Config/testthat/edition: 3
 VignetteBuilder: knitr

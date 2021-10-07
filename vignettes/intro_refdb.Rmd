@@ -27,9 +27,17 @@ The refdb package is available on CRAN which means that you can easily install t
 
 Once everything is ready, we can start by loading the packages we need:
 
-```{r setup}
+```{r setup, eval=FALSE}
 library(refdb)
 library(tidyverse)
+```
+
+```{r}
+library(refdb)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(forcats)
 ```
 
 ### Reading data
