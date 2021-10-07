@@ -254,6 +254,8 @@ refdb_write_fields <- function(x, file) {
 #' Get fields of a reference database
 #'
 #' @param x a reference database.
+#' @param silent if \code{TRUE} silently and invisibly
+#' returns fields.
 #'
 #' @return
 #' The list of fields is returned invisibly.

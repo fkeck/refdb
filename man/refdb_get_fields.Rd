@@ -8,6 +8,9 @@ refdb_get_fields(x, silent = FALSE)
 }
 \arguments{
 \item{x}{a reference database.}
+
+\item{silent}{if \code{TRUE} silently and invisibly
+returns fields.}
 }
 \value{
 The list of fields is returned invisibly.
