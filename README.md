@@ -12,13 +12,11 @@ The refdb package is a reference database manager offering a set of powerful fun
 
 ## Installation
 
-You can install the development version of refdb from GitHub. Note that you also need the development version of bioseq installed.
+You can install the development version of refdb from GitHub.
 
 
 ``` r
-remotes::install_github("fkeck/bioseq")
 remotes::install_github("fkeck/refdb")
 ```
 
-This is an alpha version, use with care. Please report issues [here](https://github.com/fkeck/refdb/issues).
 
