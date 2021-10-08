@@ -144,7 +144,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-import" class="hasAnchor"><a href="#section-import" class="anchor"></a>Import</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -156,9 +156,15 @@
       <tr>
         
         <td>
-          <p><code><a href="check_fields.html">check_fields()</a></code> </p>
+          <p><code><a href="refdb_import_BOLD.html">refdb_import_BOLD()</a></code> </p>
         </td>
-        <td><p>Internal check for fields</p></td>
+        <td><p>Download and import BOLD records</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="refdb_import_NCBI.html">refdb_import_NCBI()</a></code> </p>
+        </td>
+        <td><p>Download and import NCBI Nucleotide records</p></td>
       </tr><tr>
         
         <td>
@@ -168,58 +174,35 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="filter_scores.html">.filter_seq_length()</a></code> </p>
+          <p><code><a href="refdb_set_fields.html">refdb_set_fields()</a></code> </p>
         </td>
-        <td><p>Scores for filtering operations</p></td>
+        <td><p>Associate columns to fields</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="get_ncbi_taxonomy.html">get_ncbi_taxonomy()</a></code> </p>
+          <p><code><a href="refdb_set_ncbitax.html">refdb_set_ncbitax()</a></code> </p>
         </td>
-        <td><p>Get NCBI taxonomy</p></td>
+        <td><p>Replace the current taxonomy using the NCBI Taxonomy database</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="igraph_from_taxo.html">igraph_from_taxo()</a></code> </p>
+          <p><code><a href="refdb_merge.html">refdb_merge()</a></code> </p>
         </td>
-        <td><p>Create a graph from a taxonomic table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="make_ncbi_table.html">make_ncbi_table()</a></code> </p>
-        </td>
-        <td><p>Parse NCBI XML and make a table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ncbi_taxo_rank.html">ncbi_taxo_rank()</a></code> </p>
-        </td>
-        <td><p>Taxonomic ranks of the NCBI Taxonomy database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="process_geo_ncbi.html">process_geo_ncbi()</a></code> </p>
-        </td>
-        <td><p>Process coordinate column returned by NCBI</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_check_seq_conflict.html">refdb_check_seq_conflict()</a></code> </p>
-        </td>
-        <td><p>Check for conflicts in sequences</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_check_tax_conflict.html">refdb_check_tax_conflict()</a></code> </p>
-        </td>
-        <td><p>Check for conflicts in taxonomy</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_check_tax_typo.html">refdb_check_tax_typo()</a></code> </p>
-        </td>
-        <td><p>Check for typos in taxonomic names</p></td>
-      </tr><tr>
+        <td><p>Merge reference databases</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-clean" class="hasAnchor"><a href="#section-clean" class="anchor"></a>Clean</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="refdb_clean_seq_crop_primers.html">refdb_clean_seq_crop_primers()</a></code> </p>
@@ -273,19 +256,20 @@
           <p><code><a href="refdb_clean_tax_remove_uncertainty.html">refdb_clean_tax_remove_uncertainty()</a></code> </p>
         </td>
         <td><p>Remove terms indicating uncertainty in taxonomic names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_export_dada2.html">refdb_export_dada2()</a></code> </p>
-        </td>
-        <td><p>Export reference database for DADA2</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_export_mothur.html">refdb_export_mothur()</a></code> </p>
-        </td>
-        <td><p>Export reference database for Mothur</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-filter" class="hasAnchor"><a href="#section-filter" class="anchor"></a>Filter</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="refdb_filter_ref_scope.html">refdb_filter_ref_scope()</a></code> </p>
@@ -333,31 +317,20 @@
           <p><code><a href="refdb_filter_tax_precision.html">refdb_filter_tax_precision()</a></code> </p>
         </td>
         <td><p>Filter records based on their taxonomic precision.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_get_fields.html">refdb_get_fields()</a></code> </p>
-        </td>
-        <td><p>Get fields of a reference database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_import_BOLD.html">refdb_import_BOLD()</a></code> </p>
-        </td>
-        <td><p>Download and import BOLD records</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_import_NCBI.html">refdb_import_NCBI()</a></code> </p>
-        </td>
-        <td><p>Download and import NCBI Nucleotide records</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_merge.html">refdb_merge()</a></code> </p>
-        </td>
-        <td><p>Merge reference databases</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-plot" class="hasAnchor"><a href="#section-plot" class="anchor"></a>Plot</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="refdb_plot_map.html">refdb_plot_map()</a></code> </p>
@@ -387,42 +360,87 @@
           <p><code><a href="refdb_plot_tax_treemap.html">refdb_plot_tax_treemap()</a></code> </p>
         </td>
         <td><p>Reference database treemap</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-check" class="hasAnchor"><a href="#section-check" class="anchor"></a>Check</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="refdb_check_seq_conflict.html">refdb_check_seq_conflict()</a></code> </p>
+        </td>
+        <td><p>Check for conflicts in sequences</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="refdb_check_tax_conflict.html">refdb_check_tax_conflict()</a></code> </p>
+        </td>
+        <td><p>Check for conflicts in taxonomy</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="refdb_check_tax_typo.html">refdb_check_tax_typo()</a></code> </p>
+        </td>
+        <td><p>Check for typos in taxonomic names</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-report" class="hasAnchor"><a href="#section-report" class="anchor"></a>Report</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="refdb_report.html">refdb_report()</a></code> </p>
         </td>
         <td><p>Compile a report with different checks</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-export" class="hasAnchor"><a href="#section-export" class="anchor"></a>Export</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="refdb_export_dada2.html">refdb_export_dada2()</a></code> </p>
+        </td>
+        <td><p>Export reference database for DADA2</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="refdb_set_fields.html">refdb_set_fields()</a></code> </p>
+          <p><code><a href="refdb_export_mothur.html">refdb_export_mothur()</a></code> </p>
         </td>
-        <td><p>Associate columns to fields</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refdb_set_ncbitax.html">refdb_set_ncbitax()</a></code> </p>
-        </td>
-        <td><p>Replace the current taxonomy using the NCBI Taxonomy database</p></td>
+        <td><p>Export reference database for Mothur</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="refdb_write_fields.html">refdb_write_fields()</a></code> </p>
         </td>
         <td><p>Write fields to a file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="valid_taxo_rank.html">valid_taxo_rank()</a></code> </p>
-        </td>
-        <td><p>Ranks considered as valid by refdb</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="xml_extract.html">xml_extract()</a></code> </p>
-        </td>
-        <td><p>Extract XML elements</p></td>
       </tr>
     </tbody>
     </table>

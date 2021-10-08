@@ -1,0 +1,25 @@
+reference:
+- title: Import
+- contents:
+  - starts_with("refdb_import_")
+  - starts_with("refdb_set_")
+  - refdb_merge
+- title: Clean
+- contents:
+  - starts_with("refdb_clean_")
+- title: Filter
+- contents:
+  - starts_with("refdb_filter_")
+- title: Plot
+- contents:
+  - starts_with("refdb_plot_")
+- title: Check
+- contents:
+  - starts_with("refdb_check_")
+- title: Report
+- contents:
+  - refdb_report
+- title: Export
+- contents:
+  - starts_with("refdb_export_")
+  - starts_with("refdb_write_")
