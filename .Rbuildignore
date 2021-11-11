@@ -3,3 +3,4 @@
 git_ignore
 ^codecov\.yml$
 ^\.github$
+run_before_push.R
