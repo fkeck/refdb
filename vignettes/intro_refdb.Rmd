@@ -17,12 +17,12 @@ knitr::opts_chunk$set(
 ```
 
 
-Developing and maintaining a DNA reference database can be difficult. The `refdb` package has been developed to assist you during the different steps of the process. This vignette will present some of the important functions of the package and help you to get started with it.
+Developing and maintaining a DNA reference database can be difficult. The `refdb` package has been developed to assist you during the different steps of the process of developing, maintaining and using DNA reference databases efficiently and reproducibly. This vignette will present some of the important functions of the package and help you to get started with it.
 
 
 ## Installing and loading the package
 
-The refdb package is available on CRAN which means that you can easily install the latest stable version using the RStudio IDE or with the function `install.packages`. In this tutorial we will also be using functions from several packages of the tidyverse. Therefore, if the `tidyverse` package is not already installed on your computer, you are encouraged to install it now.
+The refdb package is available on CRAN, which means that you can easily install the latest stable version using the RStudio IDE or with the function `install.packages`. In this tutorial we will also be using functions from several packages of the tidyverse. Therefore, if the `tidyverse` package is not already installed on your computer, you are encouraged to install it now.
 
 
 Once everything is ready, we can start by loading the packages we need:
@@ -32,7 +32,7 @@ library(refdb)
 library(tidyverse)
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE}
 library(refdb)
 library(readr)
 library(ggplot2)
@@ -45,7 +45,7 @@ library(forcats)
 #### Reading data from a file
 
 
-In `refdb`, a reference database is a simple dataframe. This means that any functions able to read external data and return a dataframe in your R environment can be used to import a reference library. Here, for simplicity, we will assume the reference database is stored as a CSV on the disk. You can download this file [here](https://raw.githubusercontent.com/fkeck/refdb/acee2ff1b3a9dca27aa7aeb9e0f1e5837105b094/inst/extdata/ephem.csv) (use "Save as"). Then, we can read the file from its location on your computer with:
+In `refdb`, a reference database is a simple dataframe. This means that any functions able to read external data and return a dataframe in your R environment can be used to import a reference library. Here, for simplicity, we will assume the reference database is stored as a CSV on your computer's local harddrive. You can download the example file [here](https://raw.githubusercontent.com/fkeck/refdb/acee2ff1b3a9dca27aa7aeb9e0f1e5837105b094/inst/extdata/ephem.csv) (use "Save as"). Then, we can read the file from its location on your computer with:
 
 ```{r, include=FALSE}
 lib <- read_csv(system.file("extdata", "ephem.csv", package = "refdb"))
@@ -55,12 +55,12 @@ lib <- read_csv("my_path/ephem.csv")
 ```
 
 
-Note that we use the function `read_csv` from tidyverse which returns a tibble. A tibble is a dataframe with some extra refinements. There is no issue with using tibbles with refdb functions (this is actually encouraged).
+Note that we use the function `read_csv` from tidyverse, which returns a tibble. A tibble is a dataframe with some extra refinements. There is no issue with using tibbles with refdb functions (this is actually encouraged).
 
 
 #### Setting fields
 
-Now we have a dataframe (a tibble) in our environment. However, the functions of the refdb package can do nothing from it because they need to know what is the actual content stored in each column. You have to provide this information, and this can be done using the function `refdb_set_fields`.
+Now we have a dataframe (a tibble) in our environment. However, the functions of the refdb package can't use it directly, as first the actual content stored in each column has to be specified. You have to provide this information, and this can be done using the function `refdb_set_fields`:
 
 ```{r}
 lib <- refdb_set_fields(lib,
@@ -71,9 +71,9 @@ lib <- refdb_set_fields(lib,
                         marker = "marker")
 ```
 
-Here we explicitly set the taxonomy, sequence and marker fields by indicating which columns of the dataframe correspond to each of those fields.
+Here we explicitly set the taxonomy, sequence, and marker fields by indicating which columns of the dataframe correspond to each of those fields.
 
-If you print the object `lib` now, you will see that the nucleotide symbols in the columns DNA_seq are colored. This is because this column has been identified as containing DNA sequences. A simple way to see which fields have been associated with which column is simply to use the function `refdb_get_fields`.
+If you now print the object `lib`, you will see that the nucleotide symbols in the columns DNA_seq are colored. This is because this column has been identified as containing DNA sequences. A simple way to see which fields have been associated with which column is simply to use the function `refdb_get_fields`.
 
 ```{r}
 refdb_get_fields(lib)
@@ -83,10 +83,10 @@ Note that if you are importing data from some popular reference databases, these
 
 ### Cleaning taxonomic names and DNA sequences
 
-Now that the data are loaded and the fields have been set, we can start to work with the reference database. The first thing we will look at, is how to clean taxonomic names and DNA sequences. Cleaning is different than filtering (that we will see in the next section) in that the objective here is not to remove entries but to improve them.
+Once the data are loaded and the fields have been set, we can start to work with the reference database. The first thing we will look at, is how to clean taxonomic names and DNA sequences. Cleaning is different than filtering (that we will see in the next section) in that the objective here is not to remove entries, but to correct them.
 
 
-Both sequences and taxonomic names can be affected by countless problems that would be impossible to list here. However, the refdb package provides functions to deal with many of the common cases. Let's review some of them.
+Both sequences and taxonomic names can be affected by countless problems, which we do not list here all. However, the refdb package provides functions to deal with many of the common cases. Let's review some of them.
 
 #### Missing taxonomic information
 
@@ -96,7 +96,7 @@ lib [91, 1:4]
 ```
 Here, the specimen has been identified at the genus level and the species is reported using the notation "sp.". This is a common notation but not really a practical one when you manage a database. How would you report the family of an organism identified at the class level? In R, a general and efficient way to code for a missing information is simply to use the built-in `NA` indicator.
 
-The function `refdb_clean_tax_NA` can be used to identify taxonomic levels for which there are no information and change them to `NA`.
+The function `refdb_clean_tax_NA` can be used to identify taxonomic levels for which there are no information and change them to `NA`:
 
 ```{r}
 lib_na <- refdb_clean_tax_NA(lib)
@@ -111,7 +111,7 @@ It is common to find taxonomic names to which various information have been adde
 lib [32, 1:4]
 ```
 
-The species name is tagged "B BG" which probably meant something to the person who recorded this entry but is not useful to us and may even be problematic. The function `refdb_clean_tax_remove_extra` uses some simple rules to detect these information and remove them.
+The species name is tagged "B BG". This extra information probably meant something to the person who recorded this entry (e.g., some field or identification notes), but is not useful to us and may even be problematic. The function `refdb_clean_tax_remove_extra` uses some simple rules to detect these information and remove them:
 
 ```{r}
 lib_na_extra <- refdb_clean_tax_remove_extra(lib_na)
@@ -121,14 +121,14 @@ lib_na_extra [32, 1:4]
 
 
 
-#### A note on false positive and negative
+#### A note on false positive and false negative
 
-The cleaning functions of refdb uses several rules and heuristics, some of them can produce false positive and negative. You should always be careful and if you find cases where a function does not what it is expected to do, please report [here](https://github.com/fkeck/refdb/issues).
+The cleaning functions of refdb uses several rules and heuristics, some of them can produce false positive and false negative. You should always be careful of the functions actions. If you find cases where a function does not what it is expected to do, please report [here](https://github.com/fkeck/refdb/issues).
 
 
 
 #### Cleaning DNA sequences
-Similarly it is possible to clean the sequences with different functions. For example, if we want to remove the gaps in the sequences:
+Similarly, it is possible to clean the sequences with different functions. For example, if we want to remove the gaps in the sequences:
 
 ```{r}
 head(lib)
@@ -141,7 +141,7 @@ head(lib_nogap)
 
 #### Other cleaning functions
 
-We have only seen a brief overview of the functions available for cleaning up the sequences and their associated taxonomy. It would be tedious to list all the functions and their options here. Instead, the table below summarises the functions currently available in refdb.
+We have only seen a brief overview of the functions available for cleaning up the sequences and their associated taxonomy. Many further functions and options are possible, listed in the table below that summarizes all functions currently available in refdb:
 
 | Function                                   | Description                                                     |
 | ------------------------------------------ | --------------------------------------------------------------- |
@@ -158,15 +158,15 @@ We have only seen a brief overview of the functions available for cleaning up th
 
 ### Filtering records
 
-Filtering is the step that usually follows cleaning and whose objective is to identify and remove records (rows) which do not satisfy quality criteria (those criteria and associated thresholds are of course specific to each project).
+Filtering is the step that usually follows cleaning and whose objective is to identify and remove records (rows) that do not satisfy quality criteria (those criteria and associated thresholds are of course specific to each project).
 
-For example we may want to exclude very short sequences whose length is likely shorter than the targeted genetic marker. Let's take a look at the distribution of sequence lengths in the database:
+For example, we may want to exclude very short sequences whose length is likely shorter than the targeted genetic marker. Let's take a look at the distribution of sequence lengths in the database:
 
 ```{r, fig.width=4.5, fig.height=3.5}
 refdb_plot_seqlen_hist(lib)
 ```
 
-To exclude all the sequences shorter than 500 nucleotides we use the function `refdb_filter_seq_length`.
+To exclude all the sequences shorter than 500 nucleotides we use the function `refdb_filter_seq_length`:
 ```{r}
 lib_long <- refdb_filter_seq_length(lib, min_len = 500)
 
@@ -175,15 +175,15 @@ nrow(lib_long)
 ```
 The function has removed `r nrow(lib) - nrow(lib_long)` records.
 
-Another, more sophisticated filtering function is `refdb_filter_seq_primer()` which can find sequences which do not contain a motif (typically a primer sequence) and remove them from the reference database
+Another, more sophisticated filtering function is `refdb_filter_seq_primer()`, which can find sequences that do not contain a motif (typically a primer sequence) and remove them from the reference database.
 
-For example, a commonly used forward primer for metazoan is the mlCOIintF (Leray 2013). I we want to keep only the sequences where this primer is found we can use:
+For example, a commonly used forward primer for metazoan is the mlCOIintF (Leray 2013). If we want to keep only the sequences where this primer is found we can use:
 
 ```{r}
 refdb_filter_seq_primer(lib, primer_forward = "GGWACWGGWTGAACWGTWTAYCCYCC")
 ```
 
-You can see that only 76 sequences have passed the filter. By default the tolerance of error is 10%. We can change this value using the `max_error_forward` argument.
+You can see that only 76 sequences have passed the filter. By default the tolerance of error is 10%. We can change this value using the `max_error_forward` argument:
 
 ```{r}
 refdb_filter_seq_primer(lib, primer_forward = "GGWACWGGWTGAACWGTWTAYCCYCC", max_error_forward = 0.2)
@@ -196,19 +196,19 @@ Similarly to the the cleaning functions, there are many filtering functions avai
 
 | Function                                   | Description                                                     |
 | ------------------------------------------ | --------------------------------------------------------------- |
-| refdb\_filter\_seq\_length                 | Filter sequences based on their number of characters.           |
-| refdb\_filter\_seq\_ambiguous              | Filter sequences based on their number of ambiguous characters. |
-| refdb\_filter\_seq\_homopolymers           | Filter sequences based on their number of repeated characters.  |
-| refdb\_filter\_seq\_duplicates             | Filter duplicated sequences.                                    |
-| refdb\_filter\_seq\_stopcodon              | Filter sequences based on their number of stop codons.          |
-| refdb\_filter\_seq\_primer                 | Filter sequences based on the presence of primers.              |
-| refdb\_filter\_tax\_precision              | Filter records based on their taxonomic precision.              |
-| refdb\_filter\_ref\_scope                  | Filter records by taxonomic scope of studies.                   |
+| refdb\_filter\_seq\_length                 | Filter sequences based on their number of characters            |
+| refdb\_filter\_seq\_ambiguous              | Filter sequences based on their number of ambiguous characters  |
+| refdb\_filter\_seq\_homopolymers           | Filter sequences based on their number of repeated characters   |
+| refdb\_filter\_seq\_duplicates             | Filter duplicated sequences                                     |
+| refdb\_filter\_seq\_stopcodon              | Filter sequences based on their number of stop codons           |
+| refdb\_filter\_seq\_primer                 | Filter sequences based on the presence of primers               |
+| refdb\_filter\_tax\_precision              | Filter records based on their taxonomic precision               |
+| refdb\_filter\_ref\_scope                  | Filter records by taxonomic scope of studies                    |
 
 
 ### Visualizing the reference library
 
-Now let's take a tour of the functions you can use to produce graphical representation of your reference database. The fact that refdb stores reference database as dataframes makes it really easy to produce plots (e.g. with the tidyverse and `ggplot2`). For example, we can make a barplot showing the distribution of the families like this:
+Now let's take a tour of the functions you can use to produce graphical representation of your reference database. Because refdb stores reference database as dataframes it is straightforward to produce plots (e.g. with the tidyverse and `ggplot2`). For example, we can make a barplot showing the distribution of the families like this:
 
 ```{r}
 lib %>% 
@@ -221,19 +221,19 @@ lib %>%
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
 
-Additionally, refdb provides ready-to use functions to produce more sophisticated plots. For example to represent the taxonomic coverage of your reference library across multiple levels with a tree map.
+Additionally, refdb provides ready-to-use functions to produce more sophisticated plots. For example, to represent the taxonomic coverage of your reference library across multiple levels with a tree map:
 
 ```{r, message=FALSE, warning=FALSE}
 refdb_plot_tax_treemap(lib)
 ```
 
-Alternatively you can represent this information with a taxonomic tree. These functions have several parameters to control what is represented in the plot.
+Alternatively you can represent this information with a taxonomic tree. These functions have several parameters to control what is represented in the plot (taxonomic ranks, colors, etc.).
 
 ```{r, message=FALSE, warning=FALSE}
 refdb_plot_tax_tree(lib)
 ```
 
-We conclude our overview of the graphical features of refdb with the `refdb_plot_map` function which can be used to generate interactive maps from the data. Of course this requires the sequences to be geographically located. As we have not yet associated columns to the latitude and longitude fields, we have to do this beforehand.
+We conclude our overview of the graphical features of refdb with the `refdb_plot_map` function, which can be used to generate interactive maps from the data. Of course this requires the sequences to be geographically located. As we have not yet associated columns to the latitude and longitude fields, we have to do this beforehand:
 
 ```{r, message=FALSE, warning=FALSE}
 lib <- refdb_set_fields(lib, latitude = "lat", longitude = "lon")
@@ -242,19 +242,19 @@ refdb_plot_map(lib)
 
 ### Creating a report
 
-A report is a simple and rapid way to get an overview of the current state of your reference library and to identify some possible issues. You can compile a report using the function `refdb_report`.
+A report is a simple and rapid way to get an overview of the current state of your reference library and to identify some possible issues. You can compile a report using the function `refdb_report`:
 
 ```{r, eval=FALSE}
 refdb_report(lib)
 ```
 
 
-The result (not shown here) is an interactive HTML report which can be opened in any recent web browser. It contains some statistics and plots, and the results of functions `refdb_check_tax_typo`, `refdb_check_tax_conflict` and `refdb_check_seq_conflict`. These functions can be used to identify possible spelling errors in taxonomic names, conflicts in the taxonomic tree and lack of genetic resolution in sequences, respectively.
+The result (not shown here) is an interactive HTML report that can be opened in any recent web browser. It contains some statistics and plots, and the results of functions `refdb_check_tax_typo`, `refdb_check_tax_conflict` and `refdb_check_seq_conflict`. These functions can be used to identify possible spelling errors in taxonomic names, conflicts in the taxonomic tree and lack of genetic resolution in sequences, respectively.
 
 
 ### Exporting the data
 
-Once satisfied with the results, they can be exported for further use. Since the reference database is a dataframe, it is possible to use any export functions (from R or from other packages) that support dataframes. Here we show how to export to CSV using the function `write_csv` from the `readr` package.
+Once satisfied with the results, they can be exported for further use. Since the reference database is a dataframe, it is possible to use any export functions (from R or from other packages) that support dataframes. Here we show how to export to CSV using the function `write_csv` from the `readr` package:
 
 ```{r, eval=FALSE}
 write_csv(lib, "my_reference_library.csv")

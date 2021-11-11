@@ -23,7 +23,7 @@ We start by downloading sequence data from NCBI. The refdb packages uses the ren
 ```r
 silo_ncbi <- refdb_import_NCBI("Silo COI")
 #> Downloading 72 sequences from NCBI...
-#>   |                                                                                                                                                                 |                                                                                                                                                         |   0%  |                                                                                                                                                                 |=========================================================================================================================================================| 100%
+#>   |                                                                                                                                         |                                                                                                                                 |   0%  |                                                                                                                                         |=================================================================================================================================| 100%
 ```
 
 Data already have a set of fields defined.
@@ -106,24 +106,24 @@ Now, let's take a look at the columns `genus_name`, `species_name` and `nucleoti
 ```r
 bold_ncbi[, c("source", "genus_name", "species_name", "nucleotides")]
 #> # A tibble: 75 x 4
-#>    source genus_name species_name  nucleotides                                                                                                                     
-#>    <chr>  <chr>      <chr>         <DNA>                                                                                                                           
-#>  1 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…
-#>  2 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACATCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…
-#>  3 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…
-#>  4 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
-#>  5 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
-#>  6 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
-#>  7 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
-#>  8 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
-#>  9 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
-#> 10 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…
+#>    source genus_name species_name  nucleotides                                                                                             
+#>    <chr>  <chr>      <chr>         <DNA>                                                                                                   
+#>  1 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAAT…
+#>  2 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACATCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAAT…
+#>  3 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAAT…
+#>  4 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…
+#>  5 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…
+#>  6 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…
+#>  7 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…
+#>  8 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…
+#>  9 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…
+#> 10 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…
 #> # … with 65 more rows
 ```
 
-Despite that those columns had different names in the two databases, they were merged successfully because they were associated to the same field. The names used in the merged database are inherited from the database used as first argument in the merge functions (here `goera_bold`).
+Despite those columns having different names in the two databases, they were merged successfully because they were associated to the same field. The names used in the merged database are inherited from the database used as first argument in the merge functions (here `goera_bold`).
 
-By default only the columns that are associated to a field in one of the two databases are kept. Of course, if there are no equivalent in the other database, NAs are produced. See the columns `subfamily_name` (subfamily is a taxonomic rank which exist only BOLD):
+By default only the columns that are associated to a field in one of the two databases are kept. Of course, if there is no equivalent in the other database, NAs are produced. See the columns `subfamily_name` (subfamily is a taxonomic rank which exist only BOLD):
 
 
 ```r
@@ -150,11 +150,11 @@ Alternatively, we can request the function `refdb_merge` to return only the fiel
 ```r
 bold_ncbi <- refdb_merge(goera_bold, silo_ncbi, keep = "fields_shared")
 colnames(bold_ncbi)
-#>  [1] "source"       "sequenceID"   "phylum_name"  "class_name"   "order_name"   "family_name"  "genus_name"   "species_name" "nucleotides"  "markercode"  
-#> [11] "lat"          "lon"
+#>  [1] "source"       "sequenceID"   "phylum_name"  "class_name"   "order_name"   "family_name"  "genus_name"   "species_name" "nucleotides" 
+#> [10] "markercode"   "lat"          "lon"
 ```
 
-NCBI and BOLD share several taxonomic ranks (phylum, class, order, family, genus and species) which would be a good basis for sequence taxonomic classification. But we may also use the default behavior of `refdb_import_BOLD` to force BOLD data to conform to the NCBI taxonomic system. So let's download these data again.
+NCBI and BOLD share several taxonomic ranks (phylum, class, order, family, genus, and species) that are a good basis for sequence taxonomic classification. But we may also use the default behavior of `refdb_import_BOLD` to force BOLD data to conform to the NCBI taxonomic system. So let's download these data again.
 
 
 ```r
@@ -208,12 +208,12 @@ refdb_get_fields(goera_bold)
 #> longitude: lon
 ```
 
-Now we can observe that many more matching taxonomic fields between the two database which makes the merge operation much more straightforward. Note that you can operate NCBI taxonomic conversion with data from other sources using the function `refdb_set_ncbitax`.
+Now we can observe many more matching taxonomic fields between the two database, which makes the merge operation much more straightforward. Note that you can operate NCBI taxonomic conversion with data from other sources using the function `refdb_set_ncbitax`.
 
 
 ## References
 
 Winter, D. J. (2017) rentrez: an R package for the NCBI eUtils API The R Journal 9(2):520-526
 
-Scott Chamberlain (2020). bold: Interface to Bold Systems API. R package version 1.1.0. https://CRAN.R-project.org/package=bold
+Chamberlain, S. (2020). bold: Interface to Bold Systems API. R package version 1.1.0. https://CRAN.R-project.org/package=bold
 
