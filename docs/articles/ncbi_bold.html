@@ -109,10 +109,10 @@
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>silo_ncbi &lt;-<span class="st"> </span><span class="kw">refdb_import_NCBI</span>(<span class="st">"Silo COI"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; Downloading 72 sequences from NCBI...</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; </span></span>
-<span id="cb2-4"><a href="#cb2-4"></a>  <span class="op">|</span><span class="st">                                                                                                                                                               </span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                                                                                                         </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
-<span id="cb2-6"><a href="#cb2-6"></a>  <span class="op">|</span><span class="st">                                                                                                                                                               </span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="st">  </span><span class="er">|=========================================================================================================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span></code></pre></div>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="op">|</span><span class="st">                                                                                                                                       </span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="op">|</span><span class="st">                                                                                                                                       </span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="st">  </span><span class="er">|=================================================================================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span></code></pre></div>
 <p>Data already have a set of fields defined.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/refdb_get_fields.html">refdb_get_fields</a></span><span class="op">(</span><span class="va">silo_ncbi</span><span class="op">)</span>
@@ -179,21 +179,21 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bold_ncbi</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"source"</span>, <span class="st">"genus_name"</span>, <span class="st">"species_name"</span>, <span class="st">"nucleotides"</span><span class="op">)</span><span class="op">]</span>
 <span class="co">#&gt; # A tibble: 75 x 4</span>
-<span class="co">#&gt;    source genus_name species_name  nucleotides                                                                                                                     </span>
-<span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt;         &lt;DNA&gt;                                                                                                                           </span>
-<span class="co">#&gt;  1 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…</span>
-<span class="co">#&gt;  2 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACATCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…</span>
-<span class="co">#&gt;  3 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTA…</span>
-<span class="co">#&gt;  4 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…</span>
-<span class="co">#&gt;  5 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…</span>
-<span class="co">#&gt;  6 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…</span>
-<span class="co">#&gt;  7 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…</span>
-<span class="co">#&gt;  8 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…</span>
-<span class="co">#&gt;  9 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…</span>
-<span class="co">#&gt; 10 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAATGATCAAATTTATAATGTTTTAGTG…</span>
+<span class="co">#&gt;    source genus_name species_name  nucleotides                                                                                             </span>
+<span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt;         &lt;DNA&gt;                                                                                                   </span>
+<span class="co">#&gt;  1 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAAT…</span>
+<span class="co">#&gt;  2 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACATCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAAT…</span>
+<span class="co">#&gt;  3 BOLD   Goera      Goera pilosa  AACAATTTATTTTATTTTTGGTATTTGATCAGGAATAGTCGGAACGTCCCTAAGTATAATTATTCGAATTGAATTAGGAACAGCTAATTCTTTAATTAAAAAT…</span>
+<span class="co">#&gt;  4 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…</span>
+<span class="co">#&gt;  5 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…</span>
+<span class="co">#&gt;  6 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…</span>
+<span class="co">#&gt;  7 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…</span>
+<span class="co">#&gt;  8 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…</span>
+<span class="co">#&gt;  9 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…</span>
+<span class="co">#&gt; 10 NCBI   Silo       Silo pallipes AACTATTTATTTTATTTTTGGAATTTGATCTGGAATAGTAGGAACTTCTCTAAGAATAATTATTCGAACTGAGCTAGGGACTGCTGAATCTTTAATTAAAAAT…</span>
 <span class="co">#&gt; # … with 65 more rows</span></code></pre></div>
-<p>Despite that those columns had different names in the two databases, they were merged successfully because they were associated to the same field. The names used in the merged database are inherited from the database used as first argument in the merge functions (here <code>goera_bold</code>).</p>
-<p>By default only the columns that are associated to a field in one of the two databases are kept. Of course, if there are no equivalent in the other database, NAs are produced. See the columns <code>subfamily_name</code> (subfamily is a taxonomic rank which exist only BOLD):</p>
+<p>Despite those columns having different names in the two databases, they were merged successfully because they were associated to the same field. The names used in the merged database are inherited from the database used as first argument in the merge functions (here <code>goera_bold</code>).</p>
+<p>By default only the columns that are associated to a field in one of the two databases are kept. Of course, if there is no equivalent in the other database, NAs are produced. See the columns <code>subfamily_name</code> (subfamily is a taxonomic rank which exist only BOLD):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bold_ncbi</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"source"</span>, <span class="st">"subfamily_name"</span><span class="op">)</span><span class="op">]</span>
 <span class="co">#&gt; # A tibble: 75 x 2</span>
@@ -214,9 +214,9 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bold_ncbi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/refdb_merge.html">refdb_merge</a></span><span class="op">(</span><span class="va">goera_bold</span>, <span class="va">silo_ncbi</span>, keep <span class="op">=</span> <span class="st">"fields_shared"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">bold_ncbi</span><span class="op">)</span>
-<span class="co">#&gt;  [1] "source"       "sequenceID"   "phylum_name"  "class_name"   "order_name"   "family_name"  "genus_name"   "species_name" "nucleotides"  "markercode"  </span>
-<span class="co">#&gt; [11] "lat"          "lon"</span></code></pre></div>
-<p>NCBI and BOLD share several taxonomic ranks (phylum, class, order, family, genus and species) which would be a good basis for sequence taxonomic classification. But we may also use the default behavior of <code>refdb_import_BOLD</code> to force BOLD data to conform to the NCBI taxonomic system. So let’s download these data again.</p>
+<span class="co">#&gt;  [1] "source"       "sequenceID"   "phylum_name"  "class_name"   "order_name"   "family_name"  "genus_name"   "species_name" "nucleotides" </span>
+<span class="co">#&gt; [10] "markercode"   "lat"          "lon"</span></code></pre></div>
+<p>NCBI and BOLD share several taxonomic ranks (phylum, class, order, family, genus, and species) that are a good basis for sequence taxonomic classification. But we may also use the default behavior of <code>refdb_import_BOLD</code> to force BOLD data to conform to the NCBI taxonomic system. So let’s download these data again.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">goera_bold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/refdb_import_BOLD.html">refdb_import_BOLD</a></span><span class="op">(</span>taxon <span class="op">=</span> <span class="st">"Goera pilosa"</span>, ncbi_taxo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; Downloading 30 sequences from BOLD...</span>
@@ -267,13 +267,13 @@
 <span class="co">#&gt; marker: markercode</span>
 <span class="co">#&gt; latitude: lat</span>
 <span class="co">#&gt; longitude: lon</span></code></pre></div>
-<p>Now we can observe that many more matching taxonomic fields between the two database which makes the merge operation much more straightforward. Note that you can operate NCBI taxonomic conversion with data from other sources using the function <code>refdb_set_ncbitax</code>.</p>
+<p>Now we can observe many more matching taxonomic fields between the two database, which makes the merge operation much more straightforward. Note that you can operate NCBI taxonomic conversion with data from other sources using the function <code>refdb_set_ncbitax</code>.</p>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
 <p>Winter, D. J. (2017) rentrez: an R package for the NCBI eUtils API The R Journal 9(2):520-526</p>
-<p>Scott Chamberlain (2020). bold: Interface to Bold Systems API. R package version 1.1.0. <a href="https://CRAN.R-project.org/package=bold" class="uri">https://CRAN.R-project.org/package=bold</a></p>
+<p>Chamberlain, S. (2020). bold: Interface to Bold Systems API. R package version 1.1.0. <a href="https://CRAN.R-project.org/package=bold" class="uri">https://CRAN.R-project.org/package=bold</a></p>
 </div>
   </div>
 
