@@ -18,3 +18,5 @@ You can install the development version of refdb from GitHub.
 ``` r
 remotes::install_github("fkeck/refdb")
 ```
+
+Find more about the package (manual, vignettes, etc.): [](https://fkeck.github.io/refdb/)
