@@ -161,17 +161,28 @@ refdb_check_seq_conflict <- function(x) {
 
   dat <- dplyr::add_count(dat, !!rlang::sym(seq_col), name = "refdb_n_col")
   dat <- dplyr::filter(dat, .data$refdb_n_col > 1)
-  dat <- dplyr::mutate(dat, refdb_pasted_cols = paste(!!!rlang::syms(tax_cols), sep = " > "))
+  dat$refdb_n_col <- NULL
   dat <- dplyr::group_by(dat, !!rlang::sym(seq_col))
+
+  dat <- tidyr::nest(dat)
+  dat <- dplyr::mutate(dat,
+                min_conf = sapply(data, function(x) {
+                  names(tax_cols)[which(apply(x, 2, function(y) {length(unique(y))}) > 1)][1]
+                  }))
+  dat <- tidyr::unnest(dat, cols = .data$data)
+  dat <- dplyr::mutate(dat, refdb_pasted_cols = paste(!!!rlang::syms(tax_cols), sep = " > "))
+
 
   ff <- function(x) {
     list(unique(x))
   }
 
+  dat <- dplyr::group_by(dat, !!rlang::sym(seq_col), .data$min_conf)
   dat <- dplyr::summarise(dat, taxonomy = ff(.data$refdb_pasted_cols))
   dat <- dplyr::filter(dat, sapply(.data$taxonomy, length) > 1)
   res <- tidyr::unnest(dat, .data$taxonomy)
-  colnames(res) <- c("sequence", "taxonomy")
+  colnames(res) <- c("sequence", "level_conflict", "taxonomy")
 
   return(res)
 }
+
