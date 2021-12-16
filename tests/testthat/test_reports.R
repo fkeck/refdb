@@ -31,7 +31,7 @@ test_that("Test checking taxonomic conflicts", {
 })
 
 
-test_that("Test checking taxonomic conflicts", {
+test_that("Test checking sequence conflicts", {
   test <- read.csv("data_baetidae_bold.csv")
   test <- refdb_set_fields_BOLD(test)
 
