@@ -144,13 +144,15 @@ refdb_check_tax_conflict <- function(x) {
 #' Check for conflicts in sequences
 #'
 #' @param x a reference database.
+#' @param na_omit if \code{FALSE} conflicts involving
+#' NA taxonomic names are also reported.
 #'
 #' @return A list of two-columns tibbles reporting duplicated
 #' sequences with different taxonomy.
 #'
 #' @export
 #'
-refdb_check_seq_conflict <- function(x) {
+refdb_check_seq_conflict <- function(x, na_omit = TRUE) {
 
   check_fields(x, what = c("taxonomy", "sequence"))
 
@@ -164,11 +166,19 @@ refdb_check_seq_conflict <- function(x) {
   dat$refdb_n_col <- NULL
   dat <- dplyr::group_by(dat, !!rlang::sym(seq_col))
 
+  if(na_omit) {
+    filter_tax <- function(x) {length(unique(x[!is.na(x)]))}
+  } else {
+    filter_tax <- function(x) {length(unique(x))}
+  }
+
   dat <- tidyr::nest(dat)
   dat <- dplyr::mutate(dat,
                 min_conf = sapply(data, function(x) {
-                  names(tax_cols)[which(apply(x, 2, function(y) {length(unique(y))}) > 1)][1]
+                  s <- apply(x, 2, filter_tax)
+                  names(tax_cols)[which(s > 1)][1]
                   }))
+  dat <- filter(dat, !is.na(.data$min_conf))
   dat <- tidyr::unnest(dat, cols = .data$data)
   dat <- dplyr::mutate(dat, refdb_pasted_cols = paste(!!!rlang::syms(tax_cols), sep = " > "))
 
