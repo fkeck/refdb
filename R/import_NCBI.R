@@ -276,9 +276,15 @@ entrez_fetch_retry <- function(..., delay_retry = 60, n_retry = 20) {
 
     res <- tryCatch({
       Sys.sleep(0.1)
-      # abort if slower than 30 bytes/sec during 60 seconds
-      rentrez::entrez_fetch(..., config = httr::config(low_speed_limit = 30L,
-                                                       low_speed_time = 60L))
+      # Abort if slower than 30 bytes/sec during 60 seconds
+      # To avoid httr dependency we construct the config manually (not very safe)
+      # Replace httr::config(low_speed_limit = 30L, low_speed_time = 60L)
+      httr_conf <- structure(list(method = NULL, url = NULL, headers = NULL, fields = NULL,
+                                  options = list(low_speed_limit = 30L, low_speed_time = 60L),
+                                  auth_token = NULL, output = NULL), class = "request")
+
+
+      rentrez::entrez_fetch(..., config = httr_conf)
     },
     error = function(cond) {
       message("\nSomething went wrong:")
