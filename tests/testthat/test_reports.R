@@ -39,7 +39,7 @@ test_that("Test checking sequence conflicts", {
 
   res <- refdb_check_seq_conflict(test)
 
-  expect_equal(ncol(res), 2L)
+  expect_equal(ncol(res), 3L)
   expect_equal(nrow(res), 2L)
 })
 
