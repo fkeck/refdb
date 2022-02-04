@@ -178,7 +178,7 @@ refdb_check_seq_conflict <- function(x, na_omit = TRUE) {
                   s <- apply(x, 2, filter_tax)
                   names(tax_cols)[which(s > 1)][1]
                   }))
-  dat <- filter(dat, !is.na(.data$min_conf))
+  dat <- dplyr::filter(dat, !is.na(.data$min_conf))
   dat <- tidyr::unnest(dat, cols = .data$data)
   dat <- dplyr::mutate(dat, refdb_pasted_cols = paste(!!!rlang::syms(tax_cols), sep = " > "))
 
