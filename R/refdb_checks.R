@@ -173,13 +173,20 @@ refdb_check_seq_conflict <- function(x, na_omit = TRUE) {
   }
 
   dat <- tidyr::nest(dat)
+  names(dat)[names(dat) == "data"] <- "dd"
   dat <- dplyr::mutate(dat,
-                min_conf = sapply(data, function(x) {
+                min_conf = sapply(.data$dd, function(x) {
                   s <- apply(x, 2, filter_tax)
                   names(tax_cols)[which(s > 1)][1]
                   }))
   dat <- dplyr::filter(dat, !is.na(.data$min_conf))
-  dat <- tidyr::unnest(dat, cols = .data$data)
+  dat <- tidyr::unnest(dat, cols = .data$dd)
+
+  if(nrow(dat) == 0) {
+    colnames(dat) <- c("sequence", "level_conflict", "taxonomy")
+    return(dat)
+  }
+
   dat <- dplyr::mutate(dat, refdb_pasted_cols = paste(!!!rlang::syms(tax_cols), sep = " > "))
 
 
