@@ -12,6 +12,7 @@
 #' the most important fields is included in the result.
 #' @param max_seq_length a numeric giving the maximum length of sequences
 #' to retrieve. Useful to exclude complete genomes.
+#' @param seq_bin number of sequences to download at once.
 #'
 #' @details
 #' This function uses several functions of the \pkg{rentrez}
@@ -26,9 +27,13 @@
 #' @return A tibble.
 #' @export
 #'
-refdb_import_NCBI <- function(query, full = FALSE, max_seq_length = 10000) {
+refdb_import_NCBI <- function(query,
+                              full = FALSE,
+                              max_seq_length = 10000,
+                              seq_bin = 200) {
 
   ff <- tempfile("refdb_NCBI_", fileext = ".csv")
+  fx <- tempfile("refdb_NCBI_", fileext = ".xml")
 
   query <- paste0(query, ' AND ( "0"[SLEN] : "', max_seq_length, '"[SLEN] )')
 
@@ -43,24 +48,25 @@ refdb_import_NCBI <- function(query, full = FALSE, max_seq_length = 10000) {
 
   cat("Downloading", req$count, "sequences from NCBI...\n")
 
-  pb <- utils::txtProgressBar(0, req$count, 0, style = 3)
-
   # Main loop to download and write the data
-  for(seq_start in seq(0, req$count, 200)){
+  for(seq_start in seq(0, req$count, seq_bin)){
 
-    recs <- rentrez::entrez_fetch(db = "nuccore",
-                                  web_history = req$web_history,
-                                  rettype = "gb", retmode = "xml",
-                                  retmax = 200, retstart = seq_start)
+    recs <- entrez_fetch_retry(db = "nuccore",
+                               web_history = req$web_history,
+                               rettype = "gb", retmode = "xml",
+                               retmax = seq_bin, retstart = seq_start,
+                               delay_retry = 60, n_retry = 50)
+
 
     if(is.na(recs)) {
       next
+      # There is a risk of loss of data here (we drop seq_bin records)
+      # Need to track these cases which seems to be linked
+      # to NCBI empty records included in the search results
     }
-    # There is a risk of loss of data here (we drop 200 records)
-    # Need to track these cases which seems to be linked
-    # to NCBI empty records included in the search results
 
-    NCBI_xml <- xml2::read_xml(recs)
+    readr::write_lines(recs, file = fx, append = FALSE)
+    NCBI_xml <- xml2::read_xml(fx)
     NCBI_xml <- xml2::xml_children(NCBI_xml)
 
     NCBI_table <- make_ncbi_table(NCBI_xml)
@@ -117,11 +123,14 @@ refdb_import_NCBI <- function(query, full = FALSE, max_seq_length = 10000) {
                      append = TRUE,
                      col_names = FALSE)
 
-    utils::setTxtProgressBar(pb, seq_start)
+    cat("\r > ", seq_start + nrow(NCBI_table),
+        " (",
+        round((seq_start + nrow(NCBI_table))/req$count * 100, digits = 1),
+        "%) ",
+        "sequences downloaded.", sep = "")
 
   }
 
-  utils::setTxtProgressBar(pb, req$count)
 
   out <- readr::read_csv(ff, col_types = readr::cols())
   # Process geographic coordinates
@@ -133,7 +142,7 @@ refdb_import_NCBI <- function(query, full = FALSE, max_seq_length = 10000) {
                           latitude = "latitude",
                           longitude = "longitude")
 
-  file.remove(ff)
+  file.remove(ff, fx)
   return(out)
 }
 
@@ -150,29 +159,38 @@ refdb_import_NCBI <- function(query, full = FALSE, max_seq_length = 10000) {
 #' to a taxonomic level.
 get_ncbi_taxonomy <- function(id) {
 
-  taxo <- rentrez::entrez_fetch("taxonomy", id = id, rettype = "xml")
-  taxo_xml <- xml2::read_xml(taxo)
-  taxo_xml <- xml2::xml_children(taxo_xml)
+  ids <- split(id, ceiling(seq_along(id)/100))
 
-  taxo_table <- tibble::tibble(
-    id = id,
-    superkingdom = xml_extract(taxo_xml, './/Rank[text()="superkingdom"]/preceding-sibling::ScientificName'),
-    kingdom = xml_extract(taxo_xml, './/Rank[text()="kingdom"]/preceding-sibling::ScientificName'),
-    phylum = xml_extract(taxo_xml, './/Rank[text()="phylum"]/preceding-sibling::ScientificName'),
-    subphylum = xml_extract(taxo_xml, './/Rank[text()="subphylum"]/preceding-sibling::ScientificName'),
-    class = xml_extract(taxo_xml, './/Rank[text()="class"]/preceding-sibling::ScientificName'),
-    subclass = xml_extract(taxo_xml, './/Rank[text()="subclass"]/preceding-sibling::ScientificName'),
-    infraclass = xml_extract(taxo_xml, './/Rank[text()="infraclass"]/preceding-sibling::ScientificName'),
-    order = xml_extract(taxo_xml, './/Rank[text()="order"]/preceding-sibling::ScientificName'),
-    suborder = xml_extract(taxo_xml, './/Rank[text()="suborder"]/preceding-sibling::ScientificName'),
-    infraorder = xml_extract(taxo_xml, './/Rank[text()="infraorder"]/preceding-sibling::ScientificName'),
-    superfamily = xml_extract(taxo_xml, './/Rank[text()="superfamily"]/preceding-sibling::ScientificName'),
-    family = xml_extract(taxo_xml, './/Rank[text()="family"]/preceding-sibling::ScientificName'),
-    genus = xml_extract(taxo_xml, './/Rank[text()="genus"]/preceding-sibling::ScientificName')
-  )
+  taxo_table <- lapply(ids, function(x) {
+
+    taxo <- entrez_fetch_retry("taxonomy", id = x, rettype = "xml")
+
+    taxo_xml <- xml2::read_xml(taxo)
+    taxo_xml <- xml2::xml_children(taxo_xml)
+
+    taxo_table <- tibble::tibble(
+      id = x,
+      superkingdom = xml_extract(taxo_xml, './/Rank[text()="superkingdom"]/preceding-sibling::ScientificName'),
+      kingdom = xml_extract(taxo_xml, './/Rank[text()="kingdom"]/preceding-sibling::ScientificName'),
+      phylum = xml_extract(taxo_xml, './/Rank[text()="phylum"]/preceding-sibling::ScientificName'),
+      subphylum = xml_extract(taxo_xml, './/Rank[text()="subphylum"]/preceding-sibling::ScientificName'),
+      class = xml_extract(taxo_xml, './/Rank[text()="class"]/preceding-sibling::ScientificName'),
+      subclass = xml_extract(taxo_xml, './/Rank[text()="subclass"]/preceding-sibling::ScientificName'),
+      infraclass = xml_extract(taxo_xml, './/Rank[text()="infraclass"]/preceding-sibling::ScientificName'),
+      order = xml_extract(taxo_xml, './/Rank[text()="order"]/preceding-sibling::ScientificName'),
+      suborder = xml_extract(taxo_xml, './/Rank[text()="suborder"]/preceding-sibling::ScientificName'),
+      infraorder = xml_extract(taxo_xml, './/Rank[text()="infraorder"]/preceding-sibling::ScientificName'),
+      superfamily = xml_extract(taxo_xml, './/Rank[text()="superfamily"]/preceding-sibling::ScientificName'),
+      family = xml_extract(taxo_xml, './/Rank[text()="family"]/preceding-sibling::ScientificName'),
+      genus = xml_extract(taxo_xml, './/Rank[text()="genus"]/preceding-sibling::ScientificName')
+    )
+
+    return(taxo_table)
+  })
+
+  taxo_table <- dplyr::bind_rows(taxo_table)
 
   return(taxo_table)
-
 }
 
 
@@ -244,3 +262,40 @@ process_geo_ncbi <- function(x, col = "lat_lon") {
 
   return(x)
 }
+
+
+
+
+# Retry entrez_fetch
+# Will retry every delay_retry seconds for n_retry times
+entrez_fetch_retry <- function(..., delay_retry = 60, n_retry = 20) {
+
+  res <- "error"
+
+  while (res == "error" & n_retry > 0) {
+
+    res <- tryCatch({
+      Sys.sleep(0.1)
+      # abort if slower than 30 bytes/sec during 60 seconds
+      rentrez::entrez_fetch(..., config = httr::config(low_speed_limit = 30L,
+                                                       low_speed_time = 60L))
+    },
+    error = function(cond) {
+      message("\nSomething went wrong:")
+      message(cond)
+      message("\n")
+      for (i in delay_retry:0) {cat("\rRetrying in", i, "s.  "); Sys.sleep(1)}
+      cat("\n")
+      return("error")
+    }
+    )
+    n_retry <- n_retry - 1
+  }
+
+  if(res == "error") {
+    stop("All attempts failed.")
+  } else {
+    return(res)
+  }
+}
+

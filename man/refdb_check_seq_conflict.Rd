@@ -4,10 +4,13 @@
 \alias{refdb_check_seq_conflict}
 \title{Check for conflicts in sequences}
 \usage{
-refdb_check_seq_conflict(x)
+refdb_check_seq_conflict(x, na_omit = TRUE)
 }
 \arguments{
 \item{x}{a reference database.}
+
+\item{na_omit}{if \code{FALSE} conflicts involving
+NA taxonomic names are also reported.}
 }
 \value{
 A list of two-columns tibbles reporting duplicated
