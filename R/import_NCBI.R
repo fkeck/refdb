@@ -77,7 +77,9 @@ refdb_import_NCBI <- function(query,
     taxo_id <- tibble::tibble(taxonomy = NCBI_table$taxonomy, id = taxo_id)
     taxo_id <- taxo_id[!duplicated(taxo_id$taxonomy), ]
     taxo_id <- dplyr::left_join(taxo_id,
-                                get_ncbi_taxonomy(taxo_id$id),
+                                get_ncbi_taxonomy_retry(taxo_id$id,
+                                                        delay_retry = 60,
+                                                        n_retry = 50),
                                 by = "id")
 
     NCBI_table <- dplyr::left_join(NCBI_table, taxo_id,
@@ -195,6 +197,7 @@ get_ncbi_taxonomy <- function(id) {
 
 
 
+
 #' Parse NCBI XML and make a table
 #'
 #' @param x A XML nodeset.
@@ -305,3 +308,33 @@ entrez_fetch_retry <- function(..., delay_retry = 60, n_retry = 20) {
   }
 }
 
+
+# Another layer of security for large request
+# and which proved to be useful
+get_ncbi_taxonomy_retry <- function(id, delay_retry = 60, n_retry = 20) {
+
+  res <- "error"
+
+  while (identical(res, "error") & n_retry > 0) {
+
+    res <- tryCatch({
+      Sys.sleep(0.1)
+      get_ncbi_taxonomy(id)
+    },
+    error = function(cond) {
+      message("\nSomething went wrong:")
+      message(cond)
+      message("\n")
+      for (i in delay_retry:0) {cat("\rRetrying in", i, "s.  "); Sys.sleep(1)}
+      cat("\n")
+      return("error")
+    })
+    n_retry <- n_retry - 1
+  }
+
+  if(identical(res, "error")) {
+    stop("All attempts failed.")
+  } else {
+    return(res)
+  }
+}
