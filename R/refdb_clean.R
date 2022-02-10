@@ -117,6 +117,10 @@ refdb_clean_tax_remove_blank <- function(x, cols = NULL) {
 #' @param cols an optional vector of column names.
 #' If \code{NULL} (default), the function is applied to the columns
 #' associated with the \code{taxonomy} and \code{organism} fields.
+#' @details
+#' As the function can match words like "g.", "s." or "x", which can
+#' have a signification in some nomenclatures, it is recommended to
+#' execute \link{refdb_clean_tax_harmonize_nomenclature} first.
 #'
 #' @return
 #' A reference database.
@@ -131,6 +135,9 @@ refdb_clean_tax_remove_extra <- function(x, cols = NULL) {
     # Maybe check for columns
   }
 
+  test <- read.csv("git_ignore/clean_tofix.csv", header = FALSE)
+  x <- test$V1
+
   .remove_fun <- function(x) {
     x <- stringr::str_remove_all(x, #Words containing numbers
                        "(?=\\S*['-])([a-zA-Z'-]+)\\d*(?=\\S*['-])([a-zA-Z'-]+)")
@@ -144,6 +151,8 @@ refdb_clean_tax_remove_extra <- function(x, cols = NULL) {
                        "\\b\\w\\b")
     x <- stringr::str_remove_all(x, # Words between parentheses
                        "\\(.*\\)")
+    x <- stringr::str_remove_all(x, # Remove remaining dots
+                       "\\.{2,}$| \\.+||^\\.+")
     x <- stringr::str_squish(x)
     x <- stringr::str_trim(x)
     return(x)
@@ -218,6 +227,8 @@ refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
     x <- stringr::str_replace(x, " incertae sedis ", " inc. sed. ")
     x <- stringr::str_replace(x, " incertae sedis$", " inc. sed.")
 
+    x <- stringr::str_replace(x, " x (?=[A-Z])", " * ")
+
     return(x)
   }
 
@@ -251,7 +262,7 @@ refdb_clean_tax_remove_uncertainty <- function(x, cols = NULL) {
 
   x[, cols] <- apply(x[, cols], 2,
                      stringr::str_replace,
-                     pattern = " aff\\. | cf\\. | prox\\. | nr\\. | sp\\. inc\\. ",
+                     pattern = " aff\\. | cf\\. | prox\\. | nr\\. | sp\\. inc\\. |^aff\\.|^cf\\.|^prox\\.|^nr\\.|^sp\\. inc\\.| aff\\.$| cf\\.$| prox\\.$| nr\\.$| sp\\. inc\\.$",
                      replacement = " ")
 
   x <- sanity_check(x, cols = cols)
@@ -283,6 +294,30 @@ refdb_clean_tax_remove_subsp <- function(x, cols = NULL) {
   x[, cols] <- apply(x[, cols], 2,
                      stringr::str_replace,
                      pattern = " var\\. .*$| v\\. .*$| varietas .*$| forma .*$| f\\. .*$| morph .*$| form .*$| biotype .*$| isolate .*$| pathogroup .*$| serogroup .*$| serotype .*$| strain .*$| aberration .*$| abberatio .*$| ab\\. .*$",
+                     replacement = "")
+
+  x <- sanity_check(x, cols = cols)
+
+  return(x)
+
+}
+
+# TODO
+# Remove taxonomic qualifiers eg. sp. nov.
+# and everything following
+# To be run after harmonizing nomenclature (or maybe enforce it inside the function)
+refdb_clean_tax_remove_qualifiers <- function(x, cols = NULL) {
+
+  if(is.null(cols)) {
+    cols <- c(attributes(x)$refdb$taxonomy,
+              attributes(x)$refdb$organism)
+  } else {
+    # Maybe check for columns
+  }
+
+  x[, cols] <- apply(x[, cols], 2,
+                     stringr::str_replace,
+                     pattern = "",
                      replacement = "")
 
   x <- sanity_check(x, cols = cols)
