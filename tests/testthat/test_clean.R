@@ -90,6 +90,44 @@ test_that("Test refdb_clean_tax_remove_extra", {
   res <- refdb_clean_tax_remove_extra(test)
   expect_equal(res$species_name[1], "Cloeon dipterum")
 
+  test$species_name[1] <- "Lutjanus aff. johnii CIFEFGB"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], "Lutjanus aff. johnii")
+
+  test$species_name[1] <- "Cochliopodium sp. ATCC 30936"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], "Cochliopodium sp.")
+
+  test$species_name[1] <- "Cortinarius cf. violaceus TRTC155606"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], "Cortinarius cf. violaceus")
+
+  test$species_name[1] <- "Pristimantis sp. ca MRC"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], "Pristimantis sp.")
+
+  test$species_name[1] <- "Pristimantis sp. nov. teofanensis MRC"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], "Pristimantis sp. nov. teofanensis")
+
+  test$species_name[1] <- "Pristimantis teofanensis sp. nov. bg MRC"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], "Pristimantis teofanensis sp. nov.")
+
+  # Expected no change:
+  test$species_name[1] <- "Cloeon dipterum"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], "Cloeon dipterum")
+
+  test$species_name[1] <- "Saccharomyces cerevisiae * Saccharomyces paradoxus"
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], "Saccharomyces cerevisiae * Saccharomyces paradoxus")
+
+  # Expected NA
+  test$species_name[1] <- ""
+  res <- refdb_clean_tax_remove_extra(test)
+  expect_equal(res$species_name[1], as.character(NA))
+
   test$species_name[1] <- "AGG XXP"
   res <- refdb_clean_tax_remove_extra(test)
   expect_equal(res$species_name[1], as.character(NA))
@@ -113,6 +151,10 @@ test_that("Test refdb_clean_tax_harmonize_nomenclature", {
   test$species_name[1] <- "Cloeon confer dipterum"
   res <- refdb_clean_tax_harmonize_nomenclature(test)
   expect_equal(res$species_name[1], "Cloeon cf. dipterum")
+
+  test$species_name[1] <- "Saccharomyces cerevisiae x Saccharomyces paradoxus"
+  res <- refdb_clean_tax_harmonize_nomenclature(test)
+  expect_equal(res$species_name[1], "Saccharomyces cerevisiae * Saccharomyces paradoxus")
 
 })
 
