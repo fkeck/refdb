@@ -135,9 +135,6 @@ refdb_clean_tax_remove_extra <- function(x, cols = NULL) {
     # Maybe check for columns
   }
 
-  test <- read.csv("git_ignore/clean_tofix.csv", header = FALSE)
-  x <- test$V1
-
   .remove_fun <- function(x) {
     x <- stringr::str_remove_all(x, #Words containing numbers
                        "(?=\\S*['-])([a-zA-Z'-]+)\\d*(?=\\S*['-])([a-zA-Z'-]+)")
@@ -153,6 +150,13 @@ refdb_clean_tax_remove_extra <- function(x, cols = NULL) {
                        "\\(.*\\)")
     x <- stringr::str_remove_all(x, # Remove remaining dots
                        "\\.{2,}$| \\.+||^\\.+")
+    x <- stringr::str_remove_all(x, # Remove word starting with uppercase (and remain string) after a word in lowercase/dot
+                                 "(?<= [a-z\\.]{1,30}) [A-Z].*")
+    x <- stringr::str_remove_all(x, # Remove words after sp. but not if the first is ending with a dot
+                                 "(?<= sp\\.) [a-z]+($| ).*")
+    x <- stringr::str_remove_all(x, # Remove word after sp. nov.
+                                 "(?<=[A-Z][a-z]{2,30} [a-z]{2,30} sp\\. nov\\.).*")
+
     x <- stringr::str_squish(x)
     x <- stringr::str_trim(x)
     return(x)
@@ -222,12 +226,12 @@ refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
     x <- stringr::str_replace(x, " stetit ", " stet. ")
     x <- stringr::str_replace(x, " stetit$", " stet.")
 
-    x <- stringr::str_replace(x, " sensu lato ", " s. l. ")
-    x <- stringr::str_replace(x, " sensu lato$", " s. l.")
+    x <- stringr::str_replace(x, " sensu lato ", " sen. lat. ")
+    x <- stringr::str_replace(x, " sensu lato$", " sen. lat.")
     x <- stringr::str_replace(x, " incertae sedis ", " inc. sed. ")
     x <- stringr::str_replace(x, " incertae sedis$", " inc. sed.")
 
-    x <- stringr::str_replace(x, " x (?=[A-Z])", " * ")
+    x <- stringr::str_replace_all(x, " x (?=[A-Z])", " * ")
 
     return(x)
   }
@@ -306,25 +310,25 @@ refdb_clean_tax_remove_subsp <- function(x, cols = NULL) {
 # Remove taxonomic qualifiers eg. sp. nov.
 # and everything following
 # To be run after harmonizing nomenclature (or maybe enforce it inside the function)
-refdb_clean_tax_remove_qualifiers <- function(x, cols = NULL) {
-
-  if(is.null(cols)) {
-    cols <- c(attributes(x)$refdb$taxonomy,
-              attributes(x)$refdb$organism)
-  } else {
-    # Maybe check for columns
-  }
-
-  x[, cols] <- apply(x[, cols], 2,
-                     stringr::str_replace,
-                     pattern = "",
-                     replacement = "")
-
-  x <- sanity_check(x, cols = cols)
-
-  return(x)
-
-}
+# refdb_clean_tax_remove_qualifiers <- function(x, cols = NULL) {
+#
+#   if(is.null(cols)) {
+#     cols <- c(attributes(x)$refdb$taxonomy,
+#               attributes(x)$refdb$organism)
+#   } else {
+#     # Maybe check for columns
+#   }
+#
+#   x[, cols] <- apply(x[, cols], 2,
+#                      stringr::str_replace,
+#                      pattern = "",
+#                      replacement = "")
+#
+#   x <- sanity_check(x, cols = cols)
+#
+#   return(x)
+#
+# }
 
 #' Convert missing taxonomic names to NA
 #'
@@ -348,13 +352,23 @@ refdb_clean_tax_NA <- function(x, cols = NULL) {
 
   .replace_fun <- function(x) {
     x <- ifelse(x == "", NA, x)
-    x <- ifelse(stringr::str_detect(x, " stetit$| stet\\.| sp[0-9]| sp\\.| sp$| sp |unclassified|^[:blank:]+$"), NA, x)
+    x <- ifelse(stringr::str_detect(x, " \\* | stetit$| stet\\.| sp[0-9]|([A-Z][a-z]+ sp\\.)| sp$| sp |unclassified|^[:blank:]+$"), NA, x)
   }
 
   x[, cols] <- apply(x[, cols], 2, .replace_fun)
 
   return(x)
 }
+
+
+
+
+# refdb_clean_tax_smart <- function(x, cols = NULL) {
+#   refdb_clean_tax_harmonize_nomenclature
+#   refdb_clean_tax_remove_extra
+#   refdb_clean_tax_NA
+# }
+
 
 
 
