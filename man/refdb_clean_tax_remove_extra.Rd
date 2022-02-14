@@ -19,3 +19,8 @@ A reference database.
 \description{
 Remove extra words from taxonomic names
 }
+\details{
+As the function can match words like "g.", "s." or "x", which can
+have a signification in some nomenclatures, it is recommended to
+execute \link{refdb_clean_tax_harmonize_nomenclature} first.
+}

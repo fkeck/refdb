@@ -4,7 +4,7 @@
 \alias{refdb_clean_tax_NA}
 \title{Convert missing taxonomic names to NA}
 \usage{
-refdb_clean_tax_NA(x, cols = NULL)
+refdb_clean_tax_NA(x, cols = NULL, hybrid = TRUE, uncertain = FALSE)
 }
 \arguments{
 \item{x}{a reference database.}
@@ -12,6 +12,11 @@ refdb_clean_tax_NA(x, cols = NULL)
 \item{cols}{an optional vector of column names.
 If \code{NULL} (default), the function is applied to the columns
 associated with the \code{taxonomy} and \code{organism} fields.}
+
+\item{hybrid}{hybrids are converted to NA (default \code{TRUE}).}
+
+\item{uncertain}{taxa with qualifiers of uncertainty (cf., aff., etc.)
+are converted to NA (default \code{FALSE}).}
 }
 \value{
 A reference database.
