@@ -231,7 +231,7 @@ refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
     x <- stringr::str_replace(x, " incertae sedis ", " inc. sed. ")
     x <- stringr::str_replace(x, " incertae sedis$", " inc. sed.")
 
-    x <- stringr::str_replace_all(x, " x (?=[A-Z])", " * ")
+    x <- stringr::str_replace_all(x, .REGEX_HYBRID, " * ")
 
     return(x)
   }
@@ -266,7 +266,7 @@ refdb_clean_tax_remove_uncertainty <- function(x, cols = NULL) {
 
   x[, cols] <- apply(x[, cols], 2,
                      stringr::str_replace,
-                     pattern = " aff\\. | cf\\. | prox\\. | nr\\. | sp\\. inc\\. |^aff\\.|^cf\\.|^prox\\.|^nr\\.|^sp\\. inc\\.| aff\\.$| cf\\.$| prox\\.$| nr\\.$| sp\\. inc\\.$",
+                     pattern = .REGEX_UNCERTAIN,
                      replacement = " ")
 
   x <- sanity_check(x, cols = cols)
@@ -297,7 +297,7 @@ refdb_clean_tax_remove_subsp <- function(x, cols = NULL) {
 
   x[, cols] <- apply(x[, cols], 2,
                      stringr::str_replace,
-                     pattern = " var\\. .*$| v\\. .*$| varietas .*$| forma .*$| f\\. .*$| morph .*$| form .*$| biotype .*$| isolate .*$| pathogroup .*$| serogroup .*$| serotype .*$| strain .*$| aberration .*$| abberatio .*$| ab\\. .*$",
+                     pattern = .REGEX_SUBSP,
                      replacement = "")
 
   x <- sanity_check(x, cols = cols)
@@ -336,12 +336,15 @@ refdb_clean_tax_remove_subsp <- function(x, cols = NULL) {
 #' @param cols an optional vector of column names.
 #' If \code{NULL} (default), the function is applied to the columns
 #' associated with the \code{taxonomy} and \code{organism} fields.
+#' @param hybrid hybrids are converted to NA (default \code{TRUE}).
+#' @param uncertain taxa with qualifiers of uncertainty (cf., aff., etc.)
+#' are converted to NA (default \code{FALSE}).
 #'
 #' @return
 #' A reference database.
 #' @export
 #'
-refdb_clean_tax_NA <- function(x, cols = NULL) {
+refdb_clean_tax_NA <- function(x, cols = NULL, hybrid = TRUE, uncertain = FALSE) {
 
   if(is.null(cols)) {
     cols <- c(attributes(x)$refdb$taxonomy,
@@ -350,9 +353,19 @@ refdb_clean_tax_NA <- function(x, cols = NULL) {
     # Maybe check for columns
   }
 
+  rgx <- .REGEX_NOT_ID
+
+  if(hybrid) {
+    rgx <- paste0(rgx, "|", .REGEX_HYBRID)
+  }
+
+  if(uncertain) {
+    rgx <- paste0(rgx, "|", .REGEX_UNCERTAIN)
+  }
+
   .replace_fun <- function(x) {
     x <- ifelse(x == "", NA, x)
-    x <- ifelse(stringr::str_detect(x, " \\* | stetit$| stet\\.| sp[0-9]|([A-Z][a-z]+ sp\\.)| sp$| sp |unclassified|^[:blank:]+$"), NA, x)
+    x <- ifelse(stringr::str_detect(x, rgx), NA, x)
   }
 
   x[, cols] <- apply(x[, cols], 2, .replace_fun)
@@ -387,3 +400,12 @@ sanity_check <- function(x, cols,
 
   return(x)
 }
+
+
+
+#### REGEXES ####
+
+.REGEX_UNCERTAIN <- " aff\\. | cf\\. | prox\\. | nr\\. | sp\\. inc\\. |^aff\\.|^cf\\.|^prox\\.|^nr\\.|^sp\\. inc\\.| aff\\.$| cf\\.$| prox\\.$| nr\\.$| sp\\. inc\\.$"
+.REGEX_NOT_ID <- "stetit$| stet\\.| sp[0-9]|([A-Z][a-z]+ sp\\.)| sp$| sp |unclassified|^[:blank:]+$"
+.REGEX_HYBRID <- " \\* | \\u00D7 | x (?=[A-Z])"
+.REGEX_SUBSP <- " var\\. .*$| v\\. .*$| varietas .*$| forma .*$| f\\. .*$| morph .*$| form .*$| biotype .*$| isolate .*$| pathogroup .*$| serogroup .*$| serotype .*$| strain .*$| aberration .*$| abberatio .*$| ab\\. .*$"
