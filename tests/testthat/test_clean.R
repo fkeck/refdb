@@ -202,4 +202,28 @@ test_that("Test refdb_clean_tax_NA", {
   res <- refdb_clean_tax_NA(test)
   expect_equal(res$species_name[1], as.character(NA))
 
+  test$species_name[1] <- "Lila biluna"
+  res <- refdb_clean_tax_NA(test)
+  expect_equal(res$species_name[1], "Lila biluna")
+
+  test$species_name[1] <- "Lila sp."
+  res <- refdb_clean_tax_NA(test)
+  expect_equal(res$species_name[1], as.character(NA))
+
+  test$species_name[1] <- "Lila * Lola"
+  res <- refdb_clean_tax_NA(test, hybrid = TRUE)
+  expect_equal(res$species_name[1], as.character(NA))
+
+  test$species_name[1] <- "Lila * Lola"
+  res <- refdb_clean_tax_NA(test, hybrid = FALSE)
+  expect_equal(res$species_name[1], "Lila * Lola")
+
+  test$species_name[1] <- "Lila cf. biluna"
+  res <- refdb_clean_tax_NA(test, uncertain = TRUE)
+  expect_equal(res$species_name[1], as.character(NA))
+
+  test$species_name[1] <- "Lila cf. biluna"
+  res <- refdb_clean_tax_NA(test, uncertain = FALSE)
+  expect_equal(res$species_name[1], "Lila cf. biluna")
+
 })
