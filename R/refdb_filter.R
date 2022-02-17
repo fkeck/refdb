@@ -38,7 +38,7 @@ NULL
   check_fields(x, what = c("sequence", "taxonomy"))
   col <- c(attributes(x)$refdb$sequence,
            attributes(x)$refdb$taxonomy)
-  !duplicated.data.frame(x[, col])
+  !duplicated.data.frame(x[, col], incomparables = FALSE)
 } # Return logical vector: FALSE are duplicates
 
 .filter_seq_stopcodon <- function(x, code, codon_frame = NA) {
@@ -312,7 +312,8 @@ refdb_filter_seq_homopolymers <- function(x, max_len = 16L) {
 #' Filter duplicated sequences.
 #'
 #' Exclude duplicated sequences.
-#' This based on sequences and taxonomy.
+#' This is based both on sequences and taxonomy.
+#' NA values are assumed to be comparable.
 #'
 #' @param x a reference database.
 #'
