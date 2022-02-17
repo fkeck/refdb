@@ -191,45 +191,28 @@ refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
   }
 
   .replace_fun <- function(x) {
-    x <- stringr::str_replace(x, " familia ", " fam. ")
-    x <- stringr::str_replace(x, " familia$", " fam.")
-    x <- stringr::str_replace(x, " genus ", " gen. ")
-    x <- stringr::str_replace(x, " genus$", " gen.")
-    x <- stringr::str_replace(x, " species ", " sp. ")
-    x <- stringr::str_replace(x, " species$", " sp.")
-    x <- stringr::str_replace(x, " subspecies | subsp. ", " ssp. ")
-    x <- stringr::str_replace(x, " subspecies$| subsp.$", " ssp.")
+    x <- stringr::str_replace(x, " familia($|\\s)", " fam. ")
+    x <- stringr::str_replace(x, " genus($|\\s)", " gen. ")
+    x <- stringr::str_replace(x, " species($|\\s)", " sp. ")
+    x <- stringr::str_replace(x, " subspecies($|\\s)| subsp\\.($|\\s)", " ssp. ")
 
-    x <- stringr::str_replace(x, " sp. plurimae ", " sp. pl. ")
-    x <- stringr::str_replace(x, " sp. plurimae$", " sp. pl.")
-    x <- stringr::str_replace(x, " g. sp. ", " gen. sp. ")
-    x <- stringr::str_replace(x, " g. sp.$", " gen. sp.")
+    x <- stringr::str_replace(x, " sp\\. plurimae($|\\s)", " sp. pl. ")
+    x <- stringr::str_replace(x, " g\\. sp\\.($|\\s)", " gen. sp. ")
+    x <- stringr::str_replace(x, " sp\\. indeterminabilis($|\\s)| sp\\. indeterminata($|\\s)| ind\\.($|\\s)| indet\\.($|\\s)| sp\\. ind\\.($|\\s)", " sp. indet. ")
+    x <- stringr::str_replace(x, " sp\\. nova($|\\s)| nova sp\\.($|\\s)| spec\\. nov\\.($|\\s)| sp\\. n\\.($|\\s)| nov\\. sp\\.($|\\s)| nov\\. spec\\.($|\\s)| n\\. sp\\.($|\\s)", " sp. nov. ")
 
-    x <- stringr::str_replace(x, " sp. indeterminabilis | sp. indeterminata | ind. | indet. | sp. ind. ", " sp. indet. ")
-    x <- stringr::str_replace(x, " sp. indeterminabilis$| sp. indeterminata$| ind.$| indet.$| sp. ind.$", " sp. indet.")
+    x <- stringr::str_replace(x, " sp\\. affinis($|\\s)| sp\\. aff\\.($|\\s)", " aff. ")
+    x <- stringr::str_replace(x, " sp\\. proxima($|\\s)| sp\\. prox\\.($|\\s)", " prox. ")
+    x <- stringr::str_replace(x, " sp\\. near($|\\s)| sp\\. nr\\.($|\\s)", " nr. ")
+    x <- stringr::str_replace(x, " confer($|\\s)| cfr\\.($|\\s)| conf\\.($|\\s)| sp\\. cf\\.($|\\s)", " cf. ")
+    x <- stringr::str_replace(x, " sp\\. incerta($|\\s)| inc\\.($|\\s)| \\?($|\\s)", " sp. inc. ")
+    x <- stringr::str_replace(x, " stetit($|\\s)", " stet. ")
 
-    x <- stringr::str_replace(x, " sp. nova | nova sp. | spec. nov. | sp. n. | nov. sp. | nov. spec. | n. sp. ", " sp. nov. ")
-    x <- stringr::str_replace(x, " sp. nova$| nova sp.$| spec. nov.$| sp. n.$| nov. sp.$| nov. spec.$| n. sp.$", " sp. nov.")
+    x <- stringr::str_replace(x, " sensu lato($|\\s)", " sen. lat. ")
+    x <- stringr::str_replace(x, " incertae sedis($|\\s)", " inc. sed. ")
 
-    x <- stringr::str_replace(x, " sp. affinis | sp. aff. ", " aff. ")
-    x <- stringr::str_replace(x, " sp. affinis$| sp. aff.$", " aff.")
-    x <- stringr::str_replace(x, " sp. proxima | sp. prox. ", " prox. ")
-    x <- stringr::str_replace(x, " sp. proxima$| sp. prox.$", " prox.")
-    x <- stringr::str_replace(x, " sp. near | sp. nr. ", " nr. ")
-    x <- stringr::str_replace(x, " sp. near$| sp. nr.$", " nr.")
-    x <- stringr::str_replace(x, " ex grege | gr. ", " ex gr. ")
-    x <- stringr::str_replace(x, " ex grege$| gr.$", " ex gr.")
-    x <- stringr::str_replace(x, " confer | cfr. | conf. | sp. cf. ", " cf. ")
-    x <- stringr::str_replace(x, " confer$| cfr.$| conf.$| sp. cf.$", " cf.")
-    x <- stringr::str_replace(x, " sp. incerta | inc. | \\? ", " sp. inc. ")
-    x <- stringr::str_replace(x, " sp. incerta$| inc.$| \\?$", " sp. inc.")
-    x <- stringr::str_replace(x, " stetit ", " stet. ")
-    x <- stringr::str_replace(x, " stetit$", " stet.")
-
-    x <- stringr::str_replace(x, " sensu lato ", " sen. lat. ")
-    x <- stringr::str_replace(x, " sensu lato$", " sen. lat.")
-    x <- stringr::str_replace(x, " incertae sedis ", " inc. sed. ")
-    x <- stringr::str_replace(x, " incertae sedis$", " inc. sed.")
+    x <- stringr::str_replace(x, "(^|\\s)sp\\. complex($|\\s)|(^|\\s)complex sp\\.($|\\s)|(^|\\s)group($|\\s)|(^|\\s)group sp\\.($|\\s)|(^|\\s)aggregate sp\\.($|\\s)|(^|\\s)ex grege($|\\s)|(^|\\s)gr\\.($|\\s)|(^|\\s)ex gr\\.($|\\s)", " complex ")
+    x <- stringr::str_replace(x, "(^|\\s)complex sp\\.($|\\s)", " complex ")
 
     x <- stringr::str_replace_all(x, .REGEX_HYBRID, " * ")
 
@@ -370,6 +353,10 @@ refdb_clean_tax_NA <- function(x, cols = NULL, hybrid = TRUE, uncertain = FALSE)
 
   x[, cols] <- apply(x[, cols], 2, .replace_fun)
 
+  if("species" %in% names(cols)) {
+    x[[cols["species"]]][!str_detect(x[[cols["species"]]], "[A-Za-z] +[A-Za-z]")] <- NA
+  }
+
   return(x)
 }
 
@@ -406,6 +393,8 @@ sanity_check <- function(x, cols,
 #### REGEXES ####
 
 .REGEX_UNCERTAIN <- " aff\\. | cf\\. | prox\\. | nr\\. | sp\\. inc\\. |^aff\\.|^cf\\.|^prox\\.|^nr\\.|^sp\\. inc\\.| aff\\.$| cf\\.$| prox\\.$| nr\\.$| sp\\. inc\\.$"
-.REGEX_NOT_ID <- "stetit$| stet\\.| sp[0-9]|([A-Z][a-z]+ sp\\.)| sp$| sp |unclassified|^[:blank:]+$"
-.REGEX_HYBRID <- " \\* | \\u00D7 | x (?=[A-Z])"
+.REGEX_NOT_ID <- "(^|\\s)stetit($|\\s)|(^|\\s)stet\\.($|\\s)|(^|\\s)sp[0-9]($|\\s)|([A-Z][a-z]+ sp\\.)| gen\\. sp\\.|(^|\\s)unclassified($|\\s)|^[:blank:]+$"
+.REGEX_HYBRID <- " \\* | \\u00D7 | [xX] (?=[A-Z])"
 .REGEX_SUBSP <- " var\\. .*$| v\\. .*$| varietas .*$| forma .*$| f\\. .*$| morph .*$| form .*$| biotype .*$| isolate .*$| pathogroup .*$| serogroup .*$| serotype .*$| strain .*$| aberration .*$| abberatio .*$| ab\\. .*$"
+
+
