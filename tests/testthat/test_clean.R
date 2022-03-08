@@ -214,9 +214,9 @@ test_that("Test refdb_clean_tax_NA", {
   res <- refdb_clean_tax_NA(test, hybrid = TRUE)
   expect_equal(res$species_name[1], as.character(NA))
 
-  test$species_name[1] <- "Lila * Lola"
+  test$species_name[1] <- "Lila lala * Lola lili"
   res <- refdb_clean_tax_NA(test, hybrid = FALSE)
-  expect_equal(res$species_name[1], "Lila * Lola")
+  expect_equal(res$species_name[1], "Lila lala * Lola lili")
 
   test$species_name[1] <- "Lila cf. biluna"
   res <- refdb_clean_tax_NA(test, uncertain = TRUE)

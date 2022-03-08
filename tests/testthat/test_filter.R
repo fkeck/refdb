@@ -164,3 +164,33 @@ test_that("Test refdb_filter_ref_scope", {
   expect_equal(nrow(res), nrow(test) - 10)
 })
 
+
+
+test_that("Test refdb_filter_tax_na", {
+
+  test <- read.csv("data_tofilter_bold.csv")
+  test <- refdb_set_fields_BOLD(test)
+  test[3, c("genus_name", "species_name")] <- NA
+  res <- refdb_filter_tax_na(test)
+  expect_equal(nrow(res), nrow(test) - 1)
+
+  test <- read.csv("data_tofilter_bold.csv")
+  test <- refdb_set_fields_BOLD(test)
+  test[5, c("genus_name", "species_name")] <- NA
+  test[5, c("genus_name")] <- "Neogen"
+  res <- refdb_filter_tax_na(test)
+  expect_equal(nrow(res), nrow(test))
+
+  test <- read.csv("data_tofilter_bold.csv")
+  test <- refdb_set_fields_BOLD(test)
+  test[7, c("order_name")] <- NA
+  res <- refdb_filter_tax_na(test)
+  expect_equal(nrow(res), nrow(test))
+
+  test <- read.csv("data_tofilter_bold.csv")
+  test <- refdb_set_fields_BOLD(test)
+  test[1:2, c("species_name")] <- NA
+  res <- refdb_filter_tax_na(test)
+  expect_equal(nrow(res), nrow(test))
+})
+
