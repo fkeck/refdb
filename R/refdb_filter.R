@@ -462,4 +462,49 @@ refdb_filter_ref_scope <- function(x, max_tax) {
 
 
 
+#' Filter records NA taxa
+#'
+#' EXPERIMENTAL
+#'
+#'Remove records where taxa is NA if it is not
+#'the only representant of the upper clade
+#'
+#' @param x a reference database.
+#' @param min_tax minimum taxonomic level
+#' (column name of the reference database).
+#'
+#' @return
+#' A tibble (filtered reference database).
+#' @export
+#'
+refdb_filter_tax_na <- function(x){
+
+  na_lvl <- .filter_tax_precision(x)
+  cols <- attributes(x)$refdb$taxonomy
+  tax <- length(cols)
+
+  if(all(na_lvl >= tax)) {
+    return(x)
+  }
+
+  sel <- rep_len(TRUE, nrow(x))
+  tax_mat <- x[, cols]
+  tax_comp <- lapply(1:ncol(tax_mat), function(x) apply(tax_mat[1:x], 1, paste, collapse = ""))
+  tax_comp <- as.data.frame(tax_comp)
+  tax_comp$na_lvl <- na_lvl
+
+  tax_comp_na <- tax_comp[na_lvl < tax, ]
+  na_lvl_na <- na_lvl[na_lvl < tax]
+
+  sel[na_lvl < tax] <-
+    sapply(seq_along(na_lvl_na),
+           function(x) {
+             upstream_tax <- unlist(tax_comp_na[x, na_lvl_na[x]])
+             res <- any(tax_comp[tax_comp[[na_lvl_na[x]]] == upstream_tax, ]$na_lvl > na_lvl_na[x])
+             return(!res)
+           })
+
+  x[sel, ]
+}
+
 
