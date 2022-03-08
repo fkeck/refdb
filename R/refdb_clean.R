@@ -81,6 +81,7 @@ refdb_clean_seq_crop_primers <- function(x,
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+# TODO: Add check fields to all functions
 
 #' Remove blank characters from taxonomic names
 #'
@@ -354,7 +355,7 @@ refdb_clean_tax_NA <- function(x, cols = NULL, hybrid = TRUE, uncertain = FALSE)
   x[, cols] <- apply(x[, cols], 2, .replace_fun)
 
   if("species" %in% names(cols)) {
-    x[[cols["species"]]][!str_detect(x[[cols["species"]]], "[A-Za-z] +[A-Za-z]")] <- NA
+    x[[cols["species"]]][!stringr::str_detect(x[[cols["species"]]], "[A-Za-z] +[A-Za-z]")] <- NA
   }
 
   return(x)
