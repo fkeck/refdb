@@ -76,11 +76,8 @@ refdb_import_NCBI <- function(query,
     taxo_id <- stringr::str_extract(taxo_id, "(?<=taxon:)[0-9]+")
     taxo_id <- tibble::tibble(taxonomy = NCBI_table$taxonomy, id = taxo_id)
     taxo_id <- taxo_id[!duplicated(taxo_id$taxonomy), ]
-    taxo_id <- dplyr::left_join(taxo_id,
-                                get_ncbi_taxonomy_retry(taxo_id$id,
-                                                        delay_retry = 60,
-                                                        n_retry = 50),
-                                by = "id")
+    gtax <- get_ncbi_taxonomy_retry(taxo_id$id, delay_retry = 60, n_retry = 50)
+    taxo_id <- dplyr::left_join(taxo_id, gtax[, -ncol(gtax)], by = "id")
 
     NCBI_table <- dplyr::left_join(NCBI_table, taxo_id,
                                    by = "taxonomy",
@@ -184,7 +181,8 @@ get_ncbi_taxonomy <- function(id) {
       infraorder = xml_extract(taxo_xml, './/Rank[text()="infraorder"]/preceding-sibling::ScientificName'),
       superfamily = xml_extract(taxo_xml, './/Rank[text()="superfamily"]/preceding-sibling::ScientificName'),
       family = xml_extract(taxo_xml, './/Rank[text()="family"]/preceding-sibling::ScientificName'),
-      genus = xml_extract(taxo_xml, './/Rank[text()="genus"]/preceding-sibling::ScientificName')
+      genus = xml_extract(taxo_xml, './/Rank[text()="genus"]/preceding-sibling::ScientificName'),
+      species = xml_extract(taxo_xml, './/Rank[text()="species"]/preceding-sibling::ScientificName')
     )
 
     return(taxo_table)
