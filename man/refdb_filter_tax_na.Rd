@@ -7,9 +7,7 @@
 refdb_filter_tax_na(x)
 }
 \arguments{
-\item{x}{a reference database.}
-
-\item{min_tax}{minimum taxonomic level
+\item{x}{a reference database.
 (column name of the reference database).}
 }
 \value{
