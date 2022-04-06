@@ -14,5 +14,6 @@ A tibble (filtered reference database).
 }
 \description{
 Exclude duplicated sequences.
-This based on sequences and taxonomy.
+This is based both on sequences and taxonomy.
+NA values are assumed to be comparable.
 }

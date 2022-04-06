@@ -14,5 +14,5 @@ a .fasta file and a .txt file.}
 }
 \description{
 Write a reference database in formats which can be used
-with \code{Mothur}..
+with \code{Mothur}.
 }
