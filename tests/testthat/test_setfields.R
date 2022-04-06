@@ -122,7 +122,7 @@ test_that("Test setting fields with BOLD function", {
 
 test_that("Account NCBI ranks", {
   res <- ncbi_taxo_rank()
-  expect_length(res, 13L)
+  expect_length(res, 14L)
 })
 
 
