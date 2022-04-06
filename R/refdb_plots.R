@@ -386,12 +386,17 @@ refdb_plot_tax_barplot <- function(x, show_n = 10) {
   dat_top <- dplyr::mutate(dat_top, val_ord = factor(.data$value,
                                                      levels = .data$value[order(.data$n, decreasing = TRUE)]))
 
-  ggplot2::ggplot(dat_top) +
+  p <-
+    ggplot2::ggplot(dat_top) +
     ggplot2::geom_col(ggplot2::aes(.data$val_ord, .data$n)) +
     ggplot2::facet_wrap(ggplot2::vars(.data$name), scales = "free") +
-    ggplot2::geom_text(ggplot2::aes(Inf, Inf, label = paste("NA =", .data$n), hjust = 1.1, vjust = 1.5), size = 3, data = dat_na) +
     ggplot2::ylab("Number of records") +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, vjust = 1, hjust = 1),
                    axis.title.x = ggplot2::element_blank())
 
+  if(nrow(dat_na) > 0) {
+    p <- p +
+    ggplot2::geom_text(ggplot2::aes(Inf, Inf, label = paste("NA =", .data$n), hjust = 1.1, vjust = 1.5), size = 3, data = dat_na)
+  }
+  p
 }
