@@ -87,6 +87,8 @@ refdb_export_mothur <- function(x, file) {
 #' @param x a reference database.
 #' @param file a file path without extension. This will be used to create
 #'  a .fasta file and two .txt files.
+#' @param taxid should the taxid file be generated
+#' (can be very slow with large databases)
 #'
 #' @details
 #' The functions generates three files.
@@ -160,7 +162,7 @@ taxid_file <- function(x) {
   col_tax <- attributes(x)$refdb_fields$taxonomy
   tax_levels <- names(col_tax)
   tax_letters <- letters[seq_along(tax_levels)]
-  taxa <- setNames(tax_levels, tax_letters)
+  taxa <- stats::setNames(tax_levels, tax_letters)
 
   tax_mat <- x[, col_tax]
   tax_mat <- tax_mat[!duplicated.data.frame(tax_mat), ]
@@ -177,7 +179,7 @@ taxid_file <- function(x) {
   index <- -1L
   level <- 0L
   rank <- "rootrank"
-  pBar <- txtProgressBar(style = 3)
+  pBar <- utils::txtProgressBar(style = 3)
   for (i in seq_along(ranks)) {
   	for (j in seq_along(ranks[[i]])) {
   		rank_level <- taxa[substring(ranks[[i]][j], 1, 3)]
@@ -204,7 +206,7 @@ taxid_file <- function(x) {
   		rank <- c(rank, taxa[j])
   	}
 
-  	setTxtProgressBar(pBar, i/length(ranks))
+  	utils::setTxtProgressBar(pBar, i/length(ranks))
   }
   groups <- gsub("^[ ]+", "", groups)
   groups <- gsub("[ ]+$", "", groups)

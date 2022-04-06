@@ -26,7 +26,7 @@ refdb_fill_tax_upstream <- function(x, qualifier = "undef.") {
     row_len <- length(row)
     for(i in seq(row_len - 1)) {
       if(is.na(row[i])) {
-        repl <- na.exclude(row[seq(i + 1, row_len)])
+        repl <- stats::na.exclude(row[seq(i + 1, row_len)])
         if(length(repl) == 0) {
           row[i] <- NA
         } else {
