@@ -15,7 +15,9 @@
 #' @export
 #'
 refdb_sample_tax <- function(x, n_max = 10, cols = NULL){
+
   check_fields(x, "taxonomy")
+  ff <- attr(x, "refdb_fields")
 
   if(is.null(cols)) {
     cols <- attributes(x)$refdb$taxonomy
@@ -25,6 +27,10 @@ refdb_sample_tax <- function(x, n_max = 10, cols = NULL){
 
   x <- dplyr::group_by(x, !!!rlang::syms(unname(cols)))
   x <- dplyr::slice_sample(x, n = n_max)
+  x <- dplyr::ungroup(x)
+
+  attr(x, "refdb_fields") <- ff
+
   return(x)
 }
 
