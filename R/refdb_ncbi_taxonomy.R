@@ -6,6 +6,10 @@
 #' @param x a reference database (tibble) with one or several columns
 #' giving the taxonomy of each record and explicitly
 #' indicated in the field taxonomy. See \link{refdb_set_fields}.
+#' @param min_level minimum taxonomic level at which taxonomy
+#' should be replaced. Default is the finest level (\code{"species"}).
+#' @param force_species_name if \code{TRUE}, species not found in NCBI Taxonomy
+#' will keep their original names instead of NAs.
 #'
 #' @return The reference database with the NCBI taxonomy
 #' for the genus level and higher ranks.
@@ -13,14 +17,14 @@
 #' @export
 #'
 #'
-refdb_set_ncbitax <- function(x) {
+refdb_set_ncbitax <- function(x, min_level = "species", force_species_name = TRUE) {
 
   check_fields(x, "taxonomy")
   ncbi_taxo <- ncbi_taxo_rank()
   valid_taxo <- valid_taxo_rank()
   x_taxo <- attributes(x)$refdb_fields$taxonomy
-  x_taxo_subgenus <- x_taxo[!names(x_taxo) %in% valid_taxo[1:which(valid_taxo == "genus")]]
-  x_taxo <- x_taxo[names(x_taxo) %in% valid_taxo[1:which(valid_taxo == "genus")]]
+  x_taxo_sub_min_level <- x_taxo[!names(x_taxo) %in% valid_taxo[1:which(valid_taxo == min_level)]]
+  x_taxo <- x_taxo[names(x_taxo) %in% valid_taxo[1:which(valid_taxo == min_level)]]
   x_taxo_sel <- x_taxo[stats::na.exclude(match(ncbi_taxo, names(x_taxo)))]
   x_taxo_sel <- rev(x_taxo_sel)
 
@@ -29,6 +33,7 @@ refdb_set_ncbitax <- function(x) {
     paste0(colnames(x)[colnames(x) %in% x_taxo_sel], "_original")
 
   x_taxo_sel_ori <- paste0(x_taxo_sel, "_original")
+  names(x_taxo_sel_ori) <- names(x_taxo_sel)
 
   bt <- x[, x_taxo_sel_ori]
   bt <- dplyr::distinct(bt)
@@ -80,14 +85,24 @@ refdb_set_ncbitax <- function(x) {
 
   # Expand results with left join
   bt_taxo <- dplyr::bind_cols(bt, bt_taxo)
-  out <- dplyr::left_join(x, bt_taxo, by = x_taxo_sel_ori)
+  out <- dplyr::left_join(x, bt_taxo, by = unname(x_taxo_sel_ori))
+
+
+ # Replace new NA values for species if original ones are not NA
+  if(force_species_name) {
+    sel <-
+      !is.na(out[, x_taxo_sel_ori["species"], drop = TRUE]) &
+      is.na(out[, taxo_field["species"], drop = TRUE])
+
+    out[, taxo_field["species"]][sel, 1] <- out[, x_taxo_sel_ori["species"], drop = TRUE][sel]
+  }
 
   # Original taxonomy columns are removed
   out <- out[, !colnames(out) %in%
                c(x_taxo, x_taxo_sel_ori)]
 
   # Restore attributes and reorder taxonomic columns
-  taxo_field <- c(taxo_field, x_taxo_subgenus)
+  taxo_field <- c(taxo_field, x_taxo_sub_min_level)
   attributes(out)$refdb_fields$taxonomy <- taxo_field
   out <- out[, c(setdiff(colnames(out), taxo_field), taxo_field)]
 
@@ -113,7 +128,8 @@ ncbi_taxo_rank <- function() {
     "infraorder",
     "superfamily",
     "family",
-    "genus")
+    "genus",
+    "species")
 }
 
 
