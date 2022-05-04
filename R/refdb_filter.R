@@ -464,13 +464,12 @@ refdb_filter_ref_scope <- function(x, max_tax) {
 
 #' Filter records NA taxa
 #'
-#' EXPERIMENTAL
-#'
-#'Remove records where taxa is NA if it is not
-#'the only representant of the upper clade
+#' Remove records where taxa is NA if it is not
+#' the only representant of the upper clade.
+#' Note that the function maybe slow on large datasets.
+#' //EXPERIMENTAL//
 #'
 #' @param x a reference database.
-#' @param min_tax minimum taxonomic level
 #' (column name of the reference database).
 #'
 #' @return
