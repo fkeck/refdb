@@ -71,6 +71,12 @@ refdb_set_ncbitax <- function(x, min_level = "species", force_species_name = TRU
         }
       }
       lvl = lvl + 1
+      # Deal with case where none of the taxonomic levels are found in NCBI
+      # -> Use "unidentified"
+      if(lvl > length(bt_i)) {
+        ncbi_ids[i] <- 32644
+        break
+      }
     }
   }
   cat("\n\n")
