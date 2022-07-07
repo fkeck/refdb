@@ -136,6 +136,25 @@ NULL
 } # Return taxonomic precision (number of last taxonomic column)
   # High value indicate more precise identification
 
+.filter_tax_precision2 <- function(x) {
+  check_fields(x, "taxonomy")
+  col <- attributes(x)$refdb$taxonomy
+  x_na <- refdb_clean_tax_NA(x)
+  x_na <- x_na[, col]
+  ncc <- ncol(x_na)
+
+  apply(x_na, 1, function(x) {
+    pos <- which(!is.na(x))
+    if(length(pos) == 0) {
+      ncc
+    } else {
+      max(pos)
+    }
+  })
+} # Return taxonomic precision (number of last taxonomic column)
+# High value indicate more precise identification
+
+
 .filter_ref_scope <- function(x) {
   check_fields(x, c("taxonomy", "reference"))
   col_tax <- attributes(x)$refdb$taxonomy
@@ -417,7 +436,7 @@ refdb_filter_seq_primer <- function(x, primer_forward = NULL,
 #' @export
 #'
 refdb_filter_tax_precision <- function(x, min_tax) {
-  flt <- .filter_tax_precision(x)
+  flt <- .filter_tax_precision2(x)
 
   min_tax <- which(min_tax == attributes(x)$refdb$taxonomy)
   sel <- flt >= min_tax & !is.na(flt)
@@ -478,7 +497,7 @@ refdb_filter_ref_scope <- function(x, max_tax) {
 #'
 refdb_filter_tax_na <- function(x){
 
-  na_lvl <- .filter_tax_precision(x)
+  na_lvl <- .filter_tax_precision2(x)
   cols <- attributes(x)$refdb$taxonomy
   tax <- length(cols)
 

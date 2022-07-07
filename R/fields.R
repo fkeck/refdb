@@ -214,6 +214,7 @@ check_fields <- function(x,
          "\n-- See function `refdb_set_fields` to set fields.")
   }
 
+  # Annoying
   diff <- setdiff(unlist(fields[what]), colnames(x))
   if(length(diff) > 0) {
     stop("Some declared fields associated to non-existing columns: ",
