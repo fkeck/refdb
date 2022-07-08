@@ -51,3 +51,27 @@ test_that("Test checking sequence conflicts", {
 #   refdb_report(test, test_file, view = FALSE)
 #   refdb_report(test, view = FALSE)
 # })
+
+
+
+test_that("Test refdb_check_seq_homogeneity fails with non aligned sequences", {
+  test <- read.csv("data_baetidae_bold.csv")
+  test <- refdb_set_fields_BOLD(test)
+
+  expect_error(refdb_check_seq_homogeneity(test, levels = c(species = 0.05)),
+               "Sequences must be aligned")
+})
+
+# test <- read.csv("tests/testthat/data_tocheck_homogeneity.csv")
+test_that("Test refdb_check_seq_homogeneity", {
+  test <- read.csv("data_tocheck_homogeneity.csv")
+  test <- refdb_set_fields_BOLD(test)
+
+  r1 <- refdb_check_seq_homogeneity(test, levels = c(species = 0.05))
+  r2 <- refdb_check_seq_homogeneity(test, levels = c(genus = 0.1, species = 0.05))
+  r3 <- refdb_check_seq_homogeneity(test, levels = c(species = 0.05, genus = 0.1))
+
+  expect_equal(nrow(r1), 7L)
+  expect_equal(nrow(r2), 10L)
+  expect_equal(r2, r3)
+})
