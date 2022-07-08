@@ -235,6 +235,11 @@ refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
 #' If \code{NULL} (default), the function is applied to the columns
 #' associated with the \code{taxonomy} and \code{organism} fields.
 #'
+#' @section Warning:
+#' Marks of taxonomic uncertainty provided by specialists
+#' are not without value. The consequences of their deletion
+#' must be well understood by the user before using this function.
+#'
 #' @return
 #' A reference database.
 #' @export
