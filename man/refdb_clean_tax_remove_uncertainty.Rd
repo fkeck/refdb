@@ -19,3 +19,10 @@ A reference database.
 \description{
 Remove terms indicating uncertainty in taxonomic names
 }
+\section{Warning}{
+
+Marks of taxonomic uncertainty provided by specialists
+are not without value. The consequences of their deletion
+must be well understood by the user before using this function.
+}
+
