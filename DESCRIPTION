@@ -32,6 +32,7 @@ Imports:
     taxize,
     xml2,
     bioseq,
+    ape,
     igraph,
     ggplot2,
     ggraph,
