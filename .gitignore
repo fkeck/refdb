@@ -4,3 +4,4 @@
 .Ruserdata
 git_ignore
 inst/doc
+cran-comments.md

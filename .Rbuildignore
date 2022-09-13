@@ -8,3 +8,4 @@ run_before_push.R
 ^_pkgdown\.yml$
 ^docs$
 pkgdown
+cran-comments.md
