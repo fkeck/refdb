@@ -15,6 +15,9 @@ refdb_export_dada2(x, file, mode = "taxonomy")
 Use \code{"taxonomy"} to produce a file for function \code{assignTaxonomy}
 or \code{"species"} to produce a file for function \code{assignSpecies}.}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Write reference database in formats which can be used with the
 functions of the package \pkg{dada2}.

@@ -1,6 +1,6 @@
 Package: refdb
 Type: Package
-Title: A DNA Reference Library Manager for R
+Title: A DNA Reference Library Manager
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Francois",

@@ -11,6 +11,9 @@
 #' Default ensure that \code{refdb_clean_tax_NA} will correctly
 #' identify the label as NA.
 #'
+#' @return
+#' A reference database.
+#'
 #' @seealso refdb_fill_tax_downstream to replace terminal NA values
 #' using upstream data.
 #'
@@ -58,6 +61,9 @@ refdb_fill_tax_upstream <- function(x, qualifier = "undef.") {
 #' @param qualifier a string to add the new labels.
 #' Default ensure that \code{refdb_clean_tax_NA} will correctly
 #' identify the label as NA.
+#'
+#' @return
+#' A reference database.
 #'
 #' @seealso refdb_fill_tax_upstream to replace NA values
 #' using downstream data.

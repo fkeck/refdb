@@ -13,6 +13,9 @@ refdb_fill_tax_upstream(x, qualifier = "undef.")
 Default ensure that \code{refdb_clean_tax_NA} will correctly
 identify the label as NA.}
 }
+\value{
+A reference database.
+}
 \description{
 Replace NA values in taxonomic classification
 using downstream ranks.

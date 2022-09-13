@@ -12,6 +12,9 @@ refdb_export_mothur(x, file)
 \item{file}{a file path. This will be used to create
 a .fasta file and a .txt file.}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Write a reference database in formats which can be used
 with \code{Mothur}.

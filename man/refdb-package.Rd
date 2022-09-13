@@ -4,7 +4,7 @@
 \name{refdb-package}
 \alias{refdb}
 \alias{refdb-package}
-\title{refdb: A DNA Reference Library Manager for R}
+\title{refdb: A DNA Reference Library Manager}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 

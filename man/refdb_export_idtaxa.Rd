@@ -15,6 +15,9 @@ a .fasta file and two .txt files.}
 \item{taxid}{should the taxid file be generated
 (can be very slow with large databases)}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Write a reference database in file formats which can be used
 to train the \code{IDTAXA} classifier implemented in \code{DECIPHER}.
