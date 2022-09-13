@@ -6,13 +6,9 @@
 \alias{refdb-package}
 \title{refdb: A DNA Reference Library Manager for R}
 \description{
-\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Reference database manager offering a set of functions
-    to import, organize, clean, filter, audit and export reference genetic
-    data. Designed as an environment for semi-automatic and assisted
-    construction of reference databases and to improve standardization
-    and repeatability in barcoding and metabarcoding studies.
+Reference database manager offering a set of functions to import, organize, clean, filter, audit and export reference genetic data. Designed as an environment for semi-automatic and assisted construction of reference databases and to improve standardization and repeatability in barcoding and metabarcoding studies.
 }
 \seealso{
 Useful links:

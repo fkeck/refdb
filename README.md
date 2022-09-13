@@ -3,7 +3,7 @@
 # refdb: A reference database manager for R
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/fkeck/refdb/branch/main/graph/badge.svg)](https://codecov.io/gh/fkeck/refdb?branch=main)
+[![Codecov test coverage](https://codecov.io/gh/fkeck/refdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/fkeck/refdb?branch=main)
 [![R-CMD-check](https://github.com/fkeck/refdb/workflows/R-CMD-check/badge.svg)](https://github.com/fkeck/refdb/actions)
 <!-- badges: end -->
 

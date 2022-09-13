@@ -19,7 +19,6 @@ License: GPL-3
 URL: https://fkeck.github.io/refdb/
 BugReports: https://github.com/fkeck/refdb/issues
 Encoding: UTF-8
-LazyData: true
 Depends: R (>= 3.1.0)
 Imports:
     tibble,
@@ -40,7 +39,7 @@ Imports:
     rlang,
     rmarkdown,
     leaflet
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Suggests: 
     testthat (>= 3.0.0),
     covr,
