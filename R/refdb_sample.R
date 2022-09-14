@@ -3,6 +3,8 @@
 #' Sample records within taxa
 #'
 #' This function can be useful to keep a maximum of records per taxa.
+#' This function require dplyr dev version to work because of slice_sample.
+#' Will be exported once available.
 #'
 #' @param x a reference database.
 #' @param cols an optional vector of column names.
@@ -12,7 +14,6 @@
 #'
 #' @return
 #' A reference database.
-#' @export
 #'
 refdb_sample_tax <- function(x, n_max = 10, cols = NULL){
 
