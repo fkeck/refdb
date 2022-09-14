@@ -7,6 +7,12 @@
 #'
 #' @return
 #' A reference database.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_seq_remove_gaps(lib)
+#'
 #' @export
 #'
 refdb_clean_seq_remove_gaps <- function(x) {
@@ -25,6 +31,12 @@ refdb_clean_seq_remove_gaps <- function(x) {
 #'
 #' @return
 #' A reference database.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_seq_remove_sideN(lib)
+#'
 #' @export
 #'
 refdb_clean_seq_remove_sideN <- function(x, side = "both") {
@@ -55,6 +67,12 @@ refdb_clean_seq_remove_sideN <- function(x, side = "both") {
 #'
 #' @return
 #' A reference database.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_seq_crop_primers(lib, "AGT", "TTTA")
+#'
 #' @export
 #'
 refdb_clean_seq_crop_primers <- function(x,
@@ -92,6 +110,12 @@ refdb_clean_seq_crop_primers <- function(x,
 #'
 #' @return
 #' A reference database.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_tax_remove_blank(lib)
+#'
 #' @export
 #'
 refdb_clean_tax_remove_blank <- function(x, cols = NULL) {
@@ -125,6 +149,11 @@ refdb_clean_tax_remove_blank <- function(x, cols = NULL) {
 #'
 #' @return
 #' A reference database.
+#'
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_tax_remove_extra(lib)
+#'
 #' @export
 #'
 refdb_clean_tax_remove_extra <- function(x, cols = NULL) {
@@ -180,6 +209,12 @@ refdb_clean_tax_remove_extra <- function(x, cols = NULL) {
 #'
 #' @return
 #' A reference database.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_tax_harmonize_nomenclature(lib)
+#'
 #' @export
 #'
 refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
@@ -242,6 +277,12 @@ refdb_clean_tax_harmonize_nomenclature <- function(x, cols = NULL) {
 #'
 #' @return
 #' A reference database.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_tax_remove_uncertainty(lib)
+#'
 #' @export
 #'
 refdb_clean_tax_remove_uncertainty <- function(x, cols = NULL) {
@@ -273,6 +314,12 @@ refdb_clean_tax_remove_uncertainty <- function(x, cols = NULL) {
 #'
 #' @return
 #' A reference database.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_tax_remove_subsp(lib)
+#'
 #' @export
 #'
 refdb_clean_tax_remove_subsp <- function(x, cols = NULL) {
@@ -331,6 +378,12 @@ refdb_clean_tax_remove_subsp <- function(x, cols = NULL) {
 #'
 #' @return
 #' A reference database.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_clean_tax_NA(lib)
+#'
 #' @export
 #'
 refdb_clean_tax_NA <- function(x, cols = NULL, hybrid = TRUE, uncertain = FALSE) {
@@ -366,14 +419,6 @@ refdb_clean_tax_NA <- function(x, cols = NULL, hybrid = TRUE, uncertain = FALSE)
   return(x)
 }
 
-
-
-
-# refdb_clean_tax_smart <- function(x, cols = NULL) {
-#   refdb_clean_tax_harmonize_nomenclature
-#   refdb_clean_tax_remove_extra
-#   refdb_clean_tax_NA
-# }
 
 
 

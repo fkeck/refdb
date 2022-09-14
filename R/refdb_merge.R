@@ -22,6 +22,13 @@
 #'
 #'
 #' @return a merged reference database (tibble).
+#'
+#' @examples
+#' lib_1 <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib_1 <- refdb_set_fields_BOLD(lib_1)
+#' lib_2 <- lib_1
+#' refdb_merge(lib_1, lib_2)
+#'
 #' @export
 #'
 refdb_merge <-function(..., keep = "fields_all") {

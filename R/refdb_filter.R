@@ -277,6 +277,12 @@ NULL
 #'
 #' @return
 #' A tibble (filtered reference database).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_filter_seq_length(lib, 50L)
+#'
 #' @export
 #'
 refdb_filter_seq_length <- function(x, min_len = NULL, max_len = NULL, gaps = FALSE) {
@@ -303,6 +309,12 @@ refdb_filter_seq_length <- function(x, min_len = NULL, max_len = NULL, gaps = FA
 #'
 #' @return
 #' A tibble (filtered reference database).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_filter_seq_ambiguous(lib)
+#'
 #' @export
 #'
 refdb_filter_seq_ambiguous <- function(x, max_ambig = 3L, char = "N") {
@@ -319,6 +331,12 @@ refdb_filter_seq_ambiguous <- function(x, max_ambig = 3L, char = "N") {
 #'
 #' @return
 #' A tibble (filtered reference database).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_filter_seq_homopolymers(lib)
+#'
 #' @export
 #'
 refdb_filter_seq_homopolymers <- function(x, max_len = 16L) {
@@ -338,6 +356,12 @@ refdb_filter_seq_homopolymers <- function(x, max_len = 16L) {
 #'
 #' @return
 #' A tibble (filtered reference database).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_filter_seq_duplicates(lib)
+#'
 #' @export
 #'
 refdb_filter_seq_duplicates <- function(x) {
@@ -381,6 +405,12 @@ refdb_filter_seq_duplicates <- function(x) {
 #'
 #' @return
 #' A tibble (filtered reference database).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_filter_seq_stopcodon(lib, code = 5)
+#'
 #' @export
 #'
 refdb_filter_seq_stopcodon <- function(x, max_stop = 0, code, codon_frame = NA) {
@@ -402,6 +432,12 @@ refdb_filter_seq_stopcodon <- function(x, max_stop = 0, code, codon_frame = NA) 
 #'
 #' @return
 #' A tibble (filtered reference database).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_filter_seq_primer(lib, "ACTA")
+#'
 #' @export
 #'
 refdb_filter_seq_primer <- function(x, primer_forward = NULL,
@@ -433,6 +469,12 @@ refdb_filter_seq_primer <- function(x, primer_forward = NULL,
 #'
 #' @return
 #' A tibble (filtered reference database).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_filter_tax_precision(lib, min_tax = "family_name")
+#'
 #' @export
 #'
 refdb_filter_tax_precision <- function(x, min_tax) {
@@ -456,6 +498,13 @@ refdb_filter_tax_precision <- function(x, min_tax) {
 #'
 #' @return
 #' a reference database (tibble).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' lib$refs <- rep("REF_1", nrow(lib))
+#' lib <- refdb_set_fields(lib, reference = "refs")
+#' refdb_filter_ref_scope(lib, max_tax = "family_name")
 #'
 #' @export
 #'
@@ -493,6 +542,12 @@ refdb_filter_ref_scope <- function(x, max_tax) {
 #'
 #' @return
 #' A tibble (filtered reference database).
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_filter_tax_na(lib)
+#'
 #' @export
 #'
 refdb_filter_tax_na <- function(x){

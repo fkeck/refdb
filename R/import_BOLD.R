@@ -32,6 +32,11 @@
 #' @seealso link[bold]{bold_stats} and \link[bold]{bold_seqspec}
 #' from \pkg{bold} which are used internally.
 #'
+#' @examples
+#' \dontrun{
+#' goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = FALSE)
+#'}
+#'
 #' @export
 #'
 #'
@@ -116,29 +121,3 @@ refdb_import_BOLD <- function(taxon = NULL,
   return(out)
 }
 
-
-# Attempt to implement data collection recursively in the taxonomy
-# Not working yet!
-# bold_seqspec_large <- function(taxon, ncbi_taxo, full) {
-#
-#   query_stats <- bold::bold_stats(taxon = taxon)
-#
-#   tax_levels <- c("order", "family", "genus", "species")
-#   top_tax <- sapply(query_stats[tax_levels], function(x) x$count)
-#
-#   if(top_tax["order"] > 1) {
-#     down_to_tax <- "order"
-#   } else {
-#     top_tax <- dplyr::last(names(which(top_tax == min(top_tax))))
-#     down_to_tax <- tax_levels[which(tax_levels == top_tax) + 1]
-#   }
-#
-#   suppressMessages(
-#     tax_ds <- taxize::downstream(taxon, db = "bold", downto = "genus")
-#   )
-#
-#   out <- lapply(tax_ds[[taxon]]$name, refdb_import_BOLD,
-#                 ncbi_taxo = ncbi_taxo,
-#                 full = full)
-#   dplyr::bind_rows(out)
-# }

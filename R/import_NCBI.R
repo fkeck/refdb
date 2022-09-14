@@ -25,6 +25,12 @@
 #' You can try to decrease \code{max_seq_length} to exclude them.
 #'
 #' @return A tibble.
+#'
+#' @examples
+#' \dontrun{
+#' silo_ncbi <- refdb_import_NCBI("Silo COI")
+#' }
+#'
 #' @export
 #'
 refdb_import_NCBI <- function(query,

@@ -13,6 +13,21 @@
 #' @return
 #' The function invisibly returns the file where the report was written.
 #'
+#' @examples
+#'
+#' \dontrun{
+#' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+#' lib <- refdb_set_fields(lib,
+#'                         taxonomy = c(family = "family_name",
+#'                             genus = "genus_name",
+#'                             species = "species_name"),
+#'                         sequence = "DNA_seq",
+#'                         marker = "marker")
+#' tmp <- tempfile()
+#'
+#' refdb_report(lib, tmp, view = FALSE)
+#' }
+#'
 #' @export
 #'
 refdb_report <- function(x, file = NULL, view = TRUE) {
@@ -57,6 +72,17 @@ refdb_report <- function(x, file = NULL, view = TRUE) {
 #' the pairs of taxonomic names sharing the same upstream taxonomy and for
 #' which the generalized Levenshtein (edit) distance is below
 #' the \code{tol} value.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+#' lib <- refdb_set_fields(lib,
+#'                         taxonomy = c(family = "family_name",
+#'                             genus = "genus_name",
+#'                             species = "species_name"),
+#'                         sequence = "DNA_seq",
+#'                         marker = "marker")
+#' refdb_check_tax_typo(lib)
+#'
 #' @export
 #'
 refdb_check_tax_typo <- function(x, tol = 1) {
@@ -106,6 +132,16 @@ refdb_check_tax_typo <- function(x, tol = 1) {
 #' @return A list of two-columns tibbles reporting for each taxonomic level
 #' the taxa with identical names but different upstream taxonomy.
 #'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+#' lib <- refdb_set_fields(lib,
+#'                         taxonomy = c(family = "family_name",
+#'                             genus = "genus_name",
+#'                             species = "species_name"),
+#'                         sequence = "DNA_seq",
+#'                         marker = "marker")
+#' refdb_check_tax_conflict(lib)
+#'
 #' @export
 #'
 refdb_check_tax_conflict <- function(x) {
@@ -149,6 +185,16 @@ refdb_check_tax_conflict <- function(x) {
 #'
 #' @return A list of two-columns tibbles reporting duplicated
 #' sequences with different taxonomy.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+#' lib <- refdb_set_fields(lib,
+#'                         taxonomy = c(family = "family_name",
+#'                             genus = "genus_name",
+#'                             species = "species_name"),
+#'                         sequence = "DNA_seq",
+#'                         marker = "marker")
+#' refdb_check_seq_conflict(lib)
 #'
 #' @export
 #'
@@ -243,6 +289,12 @@ refdb_check_seq_conflict <- function(x, na_omit = TRUE) {
 #' indicates the lowest taxonomic level for which the threshold has been
 #' exceeded and the second column "value_threshold_homogeneity" gives
 #' the computed median distance.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "homogeneity.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_check_seq_homogeneity(lib, levels = c(species = 0.05, genus = 0.1))
+#'
 #' @export
 #'
 refdb_check_seq_homogeneity <- function(x, levels, min_n_seq = 3) {

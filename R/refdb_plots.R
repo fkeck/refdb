@@ -93,8 +93,6 @@ igraph_from_taxo <- function(x, cols = NULL) {
 #' @param freq_labels a numeric vector of length two to adjust
 #' the number of printed labels (see Details).
 #'
-#' @details
-#' TODO
 #'
 #' Only the columns provided in the \code{cols} argument are represented
 #' in the treemap. Large labels are printed for the highest rank, while light
@@ -112,6 +110,12 @@ igraph_from_taxo <- function(x, cols = NULL) {
 #' @return
 #' A \pkg{ggplot2} (\pkg{ggraph}) object. This means the plot
 #' can be further customized using \pkg{ggplot2} compatible functions.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_plot_tax_treemap(lib)
+#'
 #' @export
 #'
 refdb_plot_tax_treemap <- function(x, cols = NULL,
@@ -192,6 +196,12 @@ refdb_plot_tax_treemap <- function(x, cols = NULL,
 #' @return
 #' A \pkg{ggplot2} (\pkg{ggraph}) object. This means the plot
 #' can be further customized using \pkg{ggplot2} compatible functions.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_plot_tax_tree(lib)
+#'
 #' @export
 #'
 refdb_plot_tax_tree <- function(x,
@@ -278,6 +288,11 @@ refdb_plot_tax_tree <- function(x,
 #' A ggplot object. This means the plot
 #' can be further customized using \pkg{ggplot2} compatible functions.
 #'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_plot_seqlen_hist(lib)
+#'
 #' @export
 #'
 refdb_plot_seqlen_hist <- function(x, remove_gaps = TRUE) {
@@ -297,7 +312,6 @@ refdb_plot_seqlen_hist <- function(x, remove_gaps = TRUE) {
     ggplot2::xlab("Sequence length (bp)") +
     ggplot2::ylab("Count") +
     ggplot2::theme_bw()
-
 }
 
 
@@ -314,6 +328,12 @@ refdb_plot_seqlen_hist <- function(x, remove_gaps = TRUE) {
 #'
 #' @return
 #' An interactive map object from the \pkg{leaflet} package.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' lib <- refdb_set_fields(lib, latitude = "lat", longitude = "lon")
+#' refdb_plot_map(lib)
 #'
 #' @export
 #'
@@ -367,6 +387,13 @@ refdb_plot_map <- function(x) {
 #' @param show_n an integer value indicating the number of taxa to show in each panel.
 #'
 #' @return A ggplot object.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' lib <- refdb_set_fields(lib, latitude = "lat", longitude = "lon")
+#' refdb_plot_tax_barplot(lib)
+#'
 #' @export
 #'
 refdb_plot_tax_barplot <- function(x, show_n = 10) {

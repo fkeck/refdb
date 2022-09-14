@@ -13,6 +13,11 @@
 #' @return
 #' No return value, called for side effects.
 #'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_export_dada2(lib, tempfile())
+#'
 #' @export
 #'
 refdb_export_dada2 <- function(x, file, mode = "taxonomy") {
@@ -56,6 +61,11 @@ refdb_export_dada2 <- function(x, file, mode = "taxonomy") {
 #'
 #' @return
 #' No return value, called for side effects.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_export_mothur(lib, tempfile())
 #'
 #' @export
 #'
@@ -121,6 +131,11 @@ refdb_export_mothur <- function(x, file) {
 #'
 #' @return
 #' No return value, called for side effects.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_export_idtaxa(lib, tempfile())
 #'
 #' @export
 #'

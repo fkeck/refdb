@@ -14,6 +14,13 @@
 #' @return The reference database with the NCBI taxonomy
 #' for the genus level and higher ranks.
 #' (the original taxonomy above the genus level is removed).
+#'
+#' @examples
+#' \dontrun{
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_set_ncbitax(lib)
+#' }
 #' @export
 #'
 #'
@@ -99,8 +106,9 @@ refdb_set_ncbitax <- function(x, min_level = "species", force_species_name = TRU
     sel <-
       !is.na(out[, x_taxo_sel_ori["species"], drop = TRUE]) &
       is.na(out[, taxo_field["species"], drop = TRUE])
-
-    out[, taxo_field["species"]][sel, 1] <- out[, x_taxo_sel_ori["species"], drop = TRUE][sel]
+    if(any(sel == TRUE)) {
+      out[, taxo_field["species"]][sel, 1] <- out[, x_taxo_sel_ori["species"], drop = TRUE][sel]
+    }
   }
 
   # Original taxonomy columns are removed
@@ -143,6 +151,9 @@ ncbi_taxo_rank <- function() {
 #'
 #' @return a vector of ordered ranks.
 #' @export
+#'
+#' @examples
+#' valid_taxo_rank()
 #'
 #' @references This is a simplified version of the
 #' list \code{rank_ref} available in \pkg{taxize}.

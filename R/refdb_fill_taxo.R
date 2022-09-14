@@ -17,6 +17,11 @@
 #' @seealso refdb_fill_tax_downstream to replace terminal NA values
 #' using upstream data.
 #'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_fill_tax_upstream(lib)
+#'
 #' @export
 #'
 refdb_fill_tax_upstream <- function(x, qualifier = "undef.") {
@@ -67,6 +72,11 @@ refdb_fill_tax_upstream <- function(x, qualifier = "undef.") {
 #'
 #' @seealso refdb_fill_tax_upstream to replace NA values
 #' using downstream data.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_fill_tax_downstream(lib)
 #'
 #' @export
 #'

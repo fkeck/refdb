@@ -18,15 +18,20 @@
 #' @param config_yaml a file path to a YAML file
 #'
 #' @details
-#' TODO
-#' taxonomy reordering
-#'
-#' NA to ignore, NULL to delete
-#'
-#' fields set using config_yaml always overwrite those set by arguments
+#' Taxonomy reordering. NA to ignore, NULL to delete.
+#' Fields set using config_yaml always overwrite those set by arguments
 #'
 #' @return
 #' The function returns \code{x} with updated attributes.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+#' lib <- refdb_set_fields(lib,
+#'                         taxonomy = c(family = "family_name",
+#'                             genus = "genus_name",
+#'                             species = "species_name"),
+#'                         sequence = "DNA_seq",
+#'                         marker = "marker")
 #'
 #' @export
 #'
@@ -148,6 +153,10 @@ refdb_set_fields <- function(x,
 #'
 #' @name fields_dbs
 #'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' refdb_set_fields_BOLD(lib)
+#'
 NULL
 
 #' @rdname fields_dbs
@@ -239,6 +248,11 @@ check_fields <- function(x,
 #' @param x a reference database with some fields to be saved.
 #' @param file a path to the file to write.
 #'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+#' tmp <- tempfile()
+#' refdb_write_fields(lib, tmp)
+#'
 #' @export
 #'
 refdb_write_fields <- function(x, file) {
@@ -260,6 +274,10 @@ refdb_write_fields <- function(x, file) {
 #'
 #' @return
 #' The list of fields is returned invisibly.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+#' refdb_get_fields(lib)
 #'
 #' @export
 #'
