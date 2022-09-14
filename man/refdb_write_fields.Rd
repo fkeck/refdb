@@ -17,3 +17,9 @@ using e.g. \code{refdb_set_fields} to a file.
 Data are saved in YAML and can be read again using the
 \code{config_yaml} argument of \code{refdb_set_fields}.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+tmp <- tempfile()
+refdb_write_fields(lib, tmp)
+
+}

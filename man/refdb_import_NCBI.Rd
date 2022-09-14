@@ -38,3 +38,9 @@ This error seems to appear with long sequences.
 You can try to decrease \code{max_seq_length} to exclude them.
 }
 
+\examples{
+\dontrun{
+silo_ncbi <- refdb_import_NCBI("Silo COI")
+}
+
+}

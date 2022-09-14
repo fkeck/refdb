@@ -22,3 +22,11 @@ A reference field (one ore more columns) must be set to use
 this function. If reference is not available (NA) for a record,
 the record is not dropped.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+lib$refs <- rep("REF_1", nrow(lib))
+lib <- refdb_set_fields(lib, reference = "refs")
+refdb_filter_ref_scope(lib, max_tax = "family_name")
+
+}

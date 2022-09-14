@@ -19,3 +19,9 @@ No return value, called for side effects.
 Write a reference database in formats which can be used
 with \code{Mothur}.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_export_mothur(lib, tempfile())
+
+}

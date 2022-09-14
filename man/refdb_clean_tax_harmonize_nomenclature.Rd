@@ -19,3 +19,9 @@ A reference database.
 \description{
 Harmonize taxonomic name nomenclature
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_clean_tax_harmonize_nomenclature(lib)
+
+}

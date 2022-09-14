@@ -32,3 +32,9 @@ A reference database.
 \description{
 Crop genetic sequences with a set of primers
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_clean_seq_crop_primers(lib, "AGT", "TTTA")
+
+}

@@ -18,3 +18,9 @@ A tibble (filtered reference database).
 \description{
 Filter records based on their taxonomic precision.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_filter_tax_precision(lib, min_tax = "family_name")
+
+}

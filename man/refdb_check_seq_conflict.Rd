@@ -19,3 +19,14 @@ sequences with different taxonomy.
 \description{
 Check for conflicts in sequences
 }
+\examples{
+lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+lib <- refdb_set_fields(lib,
+                        taxonomy = c(family = "family_name",
+                            genus = "genus_name",
+                            species = "species_name"),
+                        sequence = "DNA_seq",
+                        marker = "marker")
+refdb_check_seq_conflict(lib)
+
+}

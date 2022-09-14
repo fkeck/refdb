@@ -43,3 +43,9 @@ of a reference database as a tree.
 The underlying graph is computed using the non-exported function
 \code{igraph_from_taxo}.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_plot_tax_tree(lib)
+
+}

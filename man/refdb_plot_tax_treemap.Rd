@@ -14,18 +14,8 @@ to include in the treemap. If not provided (\code{NULL})
 the function tries to find a relevant subset of columns.}
 
 \item{freq_labels}{a numeric vector of length two to adjust
-the number of printed labels (see Details).}
-}
-\value{
-A \pkg{ggplot2} (\pkg{ggraph}) object. This means the plot
-can be further customized using \pkg{ggplot2} compatible functions.
-}
-\description{
-Represent the hierarchical structure of the taxonomic information
-of a reference database as a set of nested rectangles (treemap).
-}
-\details{
-TODO
+the number of printed labels (see Details).
+
 
 Only the columns provided in the \code{cols} argument are represented
 in the treemap. Large labels are printed for the highest rank, while light
@@ -38,5 +28,19 @@ for the highest rank (large labels) and the second value gives
 the threshold for the lowest rank (light text labels).
 
 The underlying graph is computed using the non-exported function
-\code{igraph_from_taxo}.
+\code{igraph_from_taxo}.}
+}
+\value{
+A \pkg{ggplot2} (\pkg{ggraph}) object. This means the plot
+can be further customized using \pkg{ggplot2} compatible functions.
+}
+\description{
+Represent the hierarchical structure of the taxonomic information
+of a reference database as a set of nested rectangles (treemap).
+}
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_plot_tax_treemap(lib)
+
 }

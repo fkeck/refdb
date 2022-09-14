@@ -49,10 +49,16 @@ Associate columns to fields so they are recognized
 and appropriately treated by refdb functions.
 }
 \details{
-TODO
-taxonomy reordering
+Taxonomy reordering. NA to ignore, NULL to delete.
+Fields set using config_yaml always overwrite those set by arguments
+}
+\examples{
+lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+lib <- refdb_set_fields(lib,
+                        taxonomy = c(family = "family_name",
+                            genus = "genus_name",
+                            species = "species_name"),
+                        sequence = "DNA_seq",
+                        marker = "marker")
 
-NA to ignore, NULL to delete
-
-fields set using config_yaml always overwrite those set by arguments
 }

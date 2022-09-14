@@ -19,3 +19,9 @@ can be further customized using \pkg{ggplot2} compatible functions.
 \description{
 Plot an histogram of sequence lengths
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_plot_seqlen_hist(lib)
+
+}

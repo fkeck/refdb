@@ -26,3 +26,9 @@ are not without value. The consequences of their deletion
 must be well understood by the user before using this function.
 }
 
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_clean_tax_remove_uncertainty(lib)
+
+}

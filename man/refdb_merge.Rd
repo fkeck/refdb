@@ -31,3 +31,10 @@ all the reference databases.
 Columns which are not associated to a field are not merged and are prefixed
 with the name of the object they originated from.
 }
+\examples{
+lib_1 <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib_1 <- refdb_set_fields_BOLD(lib_1)
+lib_2 <- lib_1
+refdb_merge(lib_1, lib_2)
+
+}

@@ -25,3 +25,8 @@ The function returns \code{x} with updated attributes.
 \description{
 Functions to set fields for various databases
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+refdb_set_fields_BOLD(lib)
+
+}

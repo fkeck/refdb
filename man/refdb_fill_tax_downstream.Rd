@@ -20,6 +20,12 @@ A reference database.
 Replace NA values in taxonomic classification
 using upstream ranks.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_fill_tax_downstream(lib)
+
+}
 \seealso{
 refdb_fill_tax_upstream to replace NA values
 using downstream data.

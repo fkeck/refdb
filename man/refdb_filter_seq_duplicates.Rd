@@ -17,3 +17,9 @@ Exclude duplicated sequences.
 This is based both on sequences and taxonomy.
 NA values are assumed to be comparable.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_filter_seq_duplicates(lib)
+
+}

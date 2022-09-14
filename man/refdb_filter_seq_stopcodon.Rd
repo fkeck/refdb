@@ -25,3 +25,9 @@ A tibble (filtered reference database).
 \description{
 Filter sequences based on their number of of stop codons.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_filter_seq_stopcodon(lib, code = 5)
+
+}

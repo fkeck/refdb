@@ -22,3 +22,9 @@ No return value, called for side effects.
 Write reference database in formats which can be used with the
 functions of the package \pkg{dada2}.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_export_dada2(lib, tempfile())
+
+}

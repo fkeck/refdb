@@ -12,6 +12,10 @@ a vector of ordered ranks.
 \description{
 Ranks considered as valid by refdb
 }
+\examples{
+valid_taxo_rank()
+
+}
 \references{
 This is a simplified version of the
 list \code{rank_ref} available in \pkg{taxize}.

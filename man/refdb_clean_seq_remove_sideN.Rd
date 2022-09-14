@@ -18,3 +18,9 @@ A reference database.
 \description{
 Remove repeated side N from genetic sequences
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_clean_seq_remove_sideN(lib)
+
+}

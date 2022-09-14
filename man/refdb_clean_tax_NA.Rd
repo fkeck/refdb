@@ -24,3 +24,9 @@ A reference database.
 \description{
 Convert missing taxonomic names to NA
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_clean_tax_NA(lib)
+
+}

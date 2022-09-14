@@ -44,3 +44,9 @@ and returned by the function
 if its median genetic distance from the other sequences is higher than
 the threshold set by the user (\code{levels} argument).
 }
+\examples{
+lib <- read.csv(system.file("extdata", "homogeneity.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_check_seq_homogeneity(lib, levels = c(species = 0.05, genus = 0.1))
+
+}

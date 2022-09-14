@@ -19,3 +19,10 @@ Generate a multipanel plot where, for each taxonomic level,
 a barplot represent the number of records available
 in the reference database for the most represented taxa.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+lib <- refdb_set_fields(lib, latitude = "lat", longitude = "lon")
+refdb_plot_tax_barplot(lib)
+
+}

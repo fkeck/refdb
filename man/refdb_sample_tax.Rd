@@ -20,4 +20,6 @@ A reference database.
 }
 \description{
 This function can be useful to keep a maximum of records per taxa.
+This function require dplyr dev version to work because of slice_sample.
+Will be exported once available.
 }

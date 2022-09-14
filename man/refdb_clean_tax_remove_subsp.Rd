@@ -19,3 +19,9 @@ A reference database.
 \description{
 Remove subspecific information from taxonomic names
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_clean_tax_remove_subsp(lib)
+
+}

@@ -15,6 +15,10 @@ associated with the \code{taxonomy} and \code{organism} fields.}
 }
 \value{
 A reference database.
+
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_clean_tax_remove_extra(lib)
 }
 \description{
 Remove extra words from taxonomic names

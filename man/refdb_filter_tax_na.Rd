@@ -19,3 +19,9 @@ the only representant of the upper clade.
 Note that the function maybe slow on large datasets.
 //EXPERIMENTAL//
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_filter_tax_na(lib)
+
+}

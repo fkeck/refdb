@@ -22,3 +22,19 @@ The function invisibly returns the file where the report was written.
 This function produce an HTML report to investigate potential issues
 in a reference database.
 }
+\examples{
+
+\dontrun{
+lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+lib <- refdb_set_fields(lib,
+                        taxonomy = c(family = "family_name",
+                            genus = "genus_name",
+                            species = "species_name"),
+                        sequence = "DNA_seq",
+                        marker = "marker")
+tmp <- tempfile()
+
+refdb_report(lib, tmp, view = FALSE)
+}
+
+}

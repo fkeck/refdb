@@ -50,6 +50,12 @@ strategy can be to sequentially download data for lower rank
 taxa. See \url{https://docs.ropensci.org/bold/#large-data}.
 }
 
+\examples{
+\dontrun{
+goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = FALSE)
+}
+
+}
 \seealso{
 link[bold]{bold_stats} and \link[bold]{bold_seqspec}
 from \pkg{bold} which are used internally.

@@ -21,3 +21,14 @@ the \code{tol} value.
 This function uses the generalized Levenshtein (edit) distance
 to identify possible issue with taxonomic names.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+lib <- refdb_set_fields(lib,
+                        taxonomy = c(family = "family_name",
+                            genus = "genus_name",
+                            species = "species_name"),
+                        sequence = "DNA_seq",
+                        marker = "marker")
+refdb_check_tax_typo(lib)
+
+}

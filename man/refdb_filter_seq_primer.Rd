@@ -28,3 +28,9 @@ A tibble (filtered reference database).
 \description{
 Filter sequences based on the presence of primers.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+refdb_filter_seq_primer(lib, "ACTA")
+
+}

@@ -18,3 +18,10 @@ the location of the records of a reference database.
 Note that only records with
 latitude and longitude data will be displayed.
 }
+\examples{
+lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+lib <- refdb_set_fields_BOLD(lib)
+lib <- refdb_set_fields(lib, latitude = "lat", longitude = "lon")
+refdb_plot_map(lib)
+
+}

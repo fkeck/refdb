@@ -18,3 +18,8 @@ The list of fields is returned invisibly.
 \description{
 Get fields of a reference database
 }
+\examples{
+lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
+refdb_get_fields(lib)
+
+}
