@@ -9,3 +9,4 @@ run_before_push.R
 ^docs$
 pkgdown
 cran-comments.md
+^CRAN-SUBMISSION$
