@@ -4,10 +4,12 @@
 \alias{get_ncbi_taxonomy}
 \title{Get NCBI taxonomy}
 \usage{
-get_ncbi_taxonomy(id)
+get_ncbi_taxonomy(id, verbose = TRUE)
 }
 \arguments{
 \item{id}{A vector of id for records in the NCBI Taxonomy database.}
+
+\item{verbose}{print information in the console.}
 }
 \value{
 A tibble with each row corresponding to an id and each column

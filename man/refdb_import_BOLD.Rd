@@ -13,7 +13,8 @@ refdb_import_BOLD(
   researchers = NULL,
   geo = NULL,
   ncbi_taxo = TRUE,
-  full = FALSE
+  full = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ replaced by the NCBI taxonomy using \code{\link{refdb_set_ncbitax}}.}
 \item{full}{if \code{TRUE} the complete data are returned for every records.
 If \code{FALSE} (the default) only a subset of the most
 important columns is returned.}
+
+\item{verbose}{print information in the console.}
 }
 \value{
 A tibble.

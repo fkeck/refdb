@@ -13,6 +13,7 @@
 #' @param max_seq_length a numeric giving the maximum length of sequences
 #' to retrieve. Useful to exclude complete genomes.
 #' @param seq_bin number of sequences to download at once.
+#' @param verbose print information in the console.
 #'
 #' @details
 #' This function uses several functions of the \pkg{rentrez}
@@ -36,7 +37,8 @@
 refdb_import_NCBI <- function(query,
                               full = FALSE,
                               max_seq_length = 10000,
-                              seq_bin = 200) {
+                              seq_bin = 200,
+                              verbose = TRUE) {
 
   ff <- tempfile("refdb_NCBI_", fileext = ".csv")
   fx <- tempfile("refdb_NCBI_", fileext = ".xml")
@@ -48,11 +50,11 @@ refdb_import_NCBI <- function(query,
                                 use_history = TRUE)
 
   if(req$count == 0) {
-    cat("No sequence found\n")
+    if(verbose) cat("No sequence found\n")
     return(NULL)
   }
 
-  cat("Downloading", req$count, "sequences from NCBI...\n")
+  if(verbose) cat("Downloading", req$count, "sequences from NCBI...\n")
 
   # Main loop to download and write the data
   for(seq_start in seq(0, req$count, seq_bin)){
@@ -61,7 +63,8 @@ refdb_import_NCBI <- function(query,
                                web_history = req$web_history,
                                rettype = "gb", retmode = "xml",
                                retmax = seq_bin, retstart = seq_start,
-                               delay_retry = 60, n_retry = 50)
+                               delay_retry = 60, n_retry = 50,
+                               verbose = verbose)
 
 
     if(is.na(recs)) {
@@ -82,7 +85,7 @@ refdb_import_NCBI <- function(query,
     taxo_id <- stringr::str_extract(taxo_id, "(?<=taxon:)[0-9]+")
     taxo_id <- tibble::tibble(taxonomy = NCBI_table$taxonomy, id = taxo_id)
     taxo_id <- taxo_id[!duplicated(taxo_id$taxonomy), ]
-    gtax <- get_ncbi_taxonomy_retry(taxo_id$id, delay_retry = 60, n_retry = 50)
+    gtax <- get_ncbi_taxonomy_retry(taxo_id$id, delay_retry = 60, n_retry = 50, verbose = verbose)
     taxo_id <- dplyr::left_join(taxo_id, gtax[, -ncol(gtax)], by = "id")
 
     NCBI_table <- dplyr::left_join(NCBI_table, taxo_id,
@@ -127,12 +130,13 @@ refdb_import_NCBI <- function(query,
                      file = ff,
                      append = TRUE,
                      col_names = FALSE)
-
-    cat("\r > ", seq_start + nrow(NCBI_table),
-        " (",
-        round((seq_start + nrow(NCBI_table))/req$count * 100, digits = 1),
-        "%) ",
-        "sequences downloaded.", sep = "")
+    if(verbose) {
+      cat("\r > ", seq_start + nrow(NCBI_table),
+          " (",
+          round((seq_start + nrow(NCBI_table))/req$count * 100, digits = 1),
+          "%) ",
+          "sequences downloaded.", sep = "")
+    }
 
   }
 
@@ -159,16 +163,17 @@ refdb_import_NCBI <- function(query,
 #' Download and parse NCBI taxonomy records
 #'
 #' @param id A vector of id for records in the NCBI Taxonomy database.
+#' @param verbose print information in the console.
 #'
 #' @return A tibble with each row corresponding to an id and each column
 #' to a taxonomic level.
-get_ncbi_taxonomy <- function(id) {
+get_ncbi_taxonomy <- function(id, verbose = TRUE) {
 
   ids <- split(id, ceiling(seq_along(id)/100))
 
   taxo_table <- lapply(ids, function(x) {
 
-    taxo <- entrez_fetch_retry("taxonomy", id = x, rettype = "xml")
+    taxo <- entrez_fetch_retry("taxonomy", id = x, rettype = "xml", verbose = verbose)
 
     taxo_xml <- xml2::read_xml(taxo)
     taxo_xml <- xml2::xml_children(taxo_xml)
@@ -275,7 +280,7 @@ process_geo_ncbi <- function(x, col = "lat_lon") {
 
 # Retry entrez_fetch
 # Will retry every delay_retry seconds for n_retry times
-entrez_fetch_retry <- function(..., delay_retry = 60, n_retry = 20) {
+entrez_fetch_retry <- function(..., delay_retry = 60, n_retry = 20, verbose = TRUE) {
 
   res <- "error"
 
@@ -294,11 +299,13 @@ entrez_fetch_retry <- function(..., delay_retry = 60, n_retry = 20) {
       rentrez::entrez_fetch(..., config = httr_conf)
     },
     error = function(cond) {
-      message("\nSomething went wrong:")
-      message(cond)
-      message("\n")
-      for (i in delay_retry:0) {cat("\rRetrying in", i, "s.  "); Sys.sleep(1)}
-      cat("\n")
+      if(verbose){
+        message("\nSomething went wrong:")
+        message(cond)
+        message("\n")
+        for (i in delay_retry:0) {cat("\rRetrying in", i, "s.  "); Sys.sleep(1)}
+        cat("\n")
+      }
       return("error")
     }
     )
@@ -315,7 +322,7 @@ entrez_fetch_retry <- function(..., delay_retry = 60, n_retry = 20) {
 
 # Another layer of security for large request
 # and which proved to be useful
-get_ncbi_taxonomy_retry <- function(id, delay_retry = 60, n_retry = 20) {
+get_ncbi_taxonomy_retry <- function(id, delay_retry = 60, n_retry = 20, verbose = TRUE) {
 
   res <- "error"
 
@@ -323,14 +330,16 @@ get_ncbi_taxonomy_retry <- function(id, delay_retry = 60, n_retry = 20) {
 
     res <- tryCatch({
       Sys.sleep(0.1)
-      get_ncbi_taxonomy(id)
+      get_ncbi_taxonomy(id, verbose = verbose)
     },
     error = function(cond) {
-      message("\nSomething went wrong:")
-      message(cond)
-      message("\n")
-      for (i in delay_retry:0) {cat("\rRetrying in", i, "s.  "); Sys.sleep(1)}
-      cat("\n")
+      if(verbose){
+        message("\nSomething went wrong:")
+        message(cond)
+        message("\n")
+        for (i in delay_retry:0) {cat("\rRetrying in", i, "s.  "); Sys.sleep(1)}
+        cat("\n")
+      }
       return("error")
     })
     n_retry <- n_retry - 1

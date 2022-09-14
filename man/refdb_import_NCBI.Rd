@@ -4,7 +4,13 @@
 \alias{refdb_import_NCBI}
 \title{Download and import NCBI Nucleotide records}
 \usage{
-refdb_import_NCBI(query, full = FALSE, max_seq_length = 10000, seq_bin = 200)
+refdb_import_NCBI(
+  query,
+  full = FALSE,
+  max_seq_length = 10000,
+  seq_bin = 200,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{query}{a character string with the query.}
@@ -16,6 +22,8 @@ the most important fields is included in the result.}
 to retrieve. Useful to exclude complete genomes.}
 
 \item{seq_bin}{number of sequences to download at once.}
+
+\item{verbose}{print information in the console.}
 }
 \value{
 A tibble.

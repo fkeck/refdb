@@ -15,6 +15,7 @@
 #' @param full if \code{TRUE} the complete data are returned for every records.
 #' If \code{FALSE} (the default) only a subset of the most
 #' important columns is returned.
+#' @param verbose print information in the console.
 #'
 #' @details
 #' This function uses several functions of the \pkg{bold}
@@ -49,7 +50,8 @@ refdb_import_BOLD <- function(taxon = NULL,
                               researchers = NULL,
                               geo = NULL,
                               ncbi_taxo = TRUE,
-                              full = FALSE) {
+                              full = FALSE,
+                              verbose = TRUE) {
 
   query_stats <- bold::bold_stats(taxon = taxon,
                                   ids = ids,
@@ -60,11 +62,11 @@ refdb_import_BOLD <- function(taxon = NULL,
                                   geo = geo)
 
   if(query_stats$total_records == 0) {
-    cat("No sequence found\n")
+    if(verbose) cat("No sequence found\n")
     return(NULL)
   }
 
-  cat("Downloading", query_stats$total_records, "sequences from BOLD...\n")
+  if(verbose) cat("Downloading", query_stats$total_records, "sequences from BOLD...\n")
 
   tryCatch(
     recs <- bold::bold_seqspec(taxon = taxon,

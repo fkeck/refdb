@@ -10,6 +10,7 @@
 #' should be replaced. Default is the finest level (\code{"species"}).
 #' @param force_species_name if \code{TRUE}, species not found in NCBI Taxonomy
 #' will keep their original names instead of NAs.
+#' @param verbose print information in the console.
 #'
 #' @return The reference database with the NCBI taxonomy
 #' for the genus level and higher ranks.
@@ -24,7 +25,7 @@
 #' @export
 #'
 #'
-refdb_set_ncbitax <- function(x, min_level = "species", force_species_name = TRUE) {
+refdb_set_ncbitax <- function(x, min_level = "species", force_species_name = TRUE, verbose = TRUE) {
 
   check_fields(x, "taxonomy")
   ncbi_taxo <- ncbi_taxo_rank()
@@ -58,7 +59,7 @@ refdb_set_ncbitax <- function(x, min_level = "species", force_species_name = TRU
       if(is.na(bt_i[lvl])) {
         ncbi_ids[i] <- NA
       } else {
-        cat("\rProcessing:", bt_i[lvl], rep(" ", 40))
+        if(verbose) cat("\rProcessing:", bt_i[lvl], rep(" ", 40))
         suppressMessages(
           uid <- taxize::get_uid_(bt_i[lvl], messages = FALSE)[[1]]$uid
         )
@@ -86,7 +87,7 @@ refdb_set_ncbitax <- function(x, min_level = "species", force_species_name = TRU
       }
     }
   }
-  cat("\n\n")
+  if(verbose) cat("\n\n")
 
   # Collect taxonomy for IDs
   bt_taxo <- get_ncbi_taxonomy(ncbi_ids)

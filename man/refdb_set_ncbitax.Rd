@@ -4,7 +4,12 @@
 \alias{refdb_set_ncbitax}
 \title{Replace the current taxonomy using the NCBI Taxonomy database}
 \usage{
-refdb_set_ncbitax(x, min_level = "species", force_species_name = TRUE)
+refdb_set_ncbitax(
+  x,
+  min_level = "species",
+  force_species_name = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{a reference database (tibble) with one or several columns
@@ -16,6 +21,8 @@ should be replaced. Default is the finest level (\code{"species"}).}
 
 \item{force_species_name}{if \code{TRUE}, species not found in NCBI Taxonomy
 will keep their original names instead of NAs.}
+
+\item{verbose}{print information in the console.}
 }
 \value{
 The reference database with the NCBI taxonomy
