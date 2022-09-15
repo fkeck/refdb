@@ -17,7 +17,7 @@
 #' (the original taxonomy above the genus level is removed).
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
 #' lib <- refdb_set_fields_BOLD(lib)
 #' refdb_set_ncbitax(lib)

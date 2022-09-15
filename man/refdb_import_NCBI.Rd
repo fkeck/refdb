@@ -47,7 +47,7 @@ You can try to decrease \code{max_seq_length} to exclude them.
 }
 
 \examples{
-\donttest{
+\dontrun{
 silo_ncbi <- refdb_import_NCBI("Silo COI")
 }
 

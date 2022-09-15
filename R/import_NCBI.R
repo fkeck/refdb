@@ -28,7 +28,7 @@
 #' @return A tibble.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' silo_ncbi <- refdb_import_NCBI("Silo COI")
 #' }
 #'

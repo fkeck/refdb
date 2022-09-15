@@ -54,7 +54,7 @@ taxa. See \url{https://docs.ropensci.org/bold/#large-data}.
 }
 
 \examples{
-\donttest{
+\dontrun{
 goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = FALSE)
 }
 
