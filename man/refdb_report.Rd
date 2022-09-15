@@ -24,8 +24,6 @@ in a reference database.
 }
 \examples{
 
-\donttest{
-
 lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
 lib <- refdb_set_fields(lib,
                         taxonomy = c(family = "family_name",
@@ -36,6 +34,5 @@ lib <- refdb_set_fields(lib,
 tmp <- tempfile()
 
 refdb_report(lib, tmp, view = FALSE)
-}
 
 }
