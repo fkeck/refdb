@@ -34,7 +34,7 @@
 #' from \pkg{bold} which are used internally.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = FALSE)
 #'}
 #'
