@@ -11,6 +11,9 @@ refdb_write_fields(x, file)
 
 \item{file}{a path to the file to write.}
 }
+\value{
+No return value, called for its side effects.
+}
 \description{
 This function can be used to save fields defined
 using e.g. \code{refdb_set_fields} to a file.

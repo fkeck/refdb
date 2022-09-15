@@ -248,6 +248,9 @@ check_fields <- function(x,
 #' @param x a reference database with some fields to be saved.
 #' @param file a path to the file to write.
 #'
+#' @return
+#' No return value, called for its side effects.
+#'
 #' @examples
 #' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
 #' tmp <- tempfile()

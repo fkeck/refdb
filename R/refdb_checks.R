@@ -15,7 +15,6 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #' lib <- read.csv(system.file("extdata", "ephem.csv", package = "refdb"))
 #' lib <- refdb_set_fields(lib,
 #'                         taxonomy = c(family = "family_name",
@@ -26,7 +25,6 @@
 #' tmp <- tempfile()
 #'
 #' refdb_report(lib, tmp, view = FALSE)
-#' }
 #'
 #' @export
 #'
@@ -34,6 +32,11 @@ refdb_report <- function(x, file = NULL, view = TRUE) {
 
   if (!requireNamespace("DT", quietly = TRUE)) {
     stop("Package \"DT\" needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
+
+  if (!requireNamespace("rmarkdown", quietly = TRUE)) {
+    stop("Package \"rmarkdown\" needed for this function to work. Please install it.",
          call. = FALSE)
   }
 

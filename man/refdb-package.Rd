@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Reference database manager offering a set of functions to import, organize, clean, filter, audit and export reference genetic data. Designed as an environment for semi-automatic and assisted construction of reference databases and to improve standardization and repeatability in barcoding and metabarcoding studies.
+Reference database manager offering a set of functions to import, organize, clean, filter, audit and export reference genetic data. Provide functions to download sequence data from Bold Systems (\url{https://www.boldsystems.org/}) and NCBI Genbank \url{https://www.ncbi.nlm.nih.gov/genbank/}. Designed as an environment for semi-automatic and assisted construction of reference databases and to improve standardization and repeatability in barcoding and metabarcoding studies.
 }
 \seealso{
 Useful links:
