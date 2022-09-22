@@ -48,8 +48,13 @@ refdb_report <- function(x, file = NULL, view = TRUE) {
   environment$x <- x
 
   template_path <- file.path(path.package("refdb"), "rmd_templates", "check_report.Rmd")
+  template_path_tmp <- tempfile(fileext = ".Rmd")
+  fc <- file.copy(template_path, to = template_path_tmp)
+  if(!fc) {
+    stop("Could not copy Rmarkdown template to temporary repository.")
+  }
 
-  rmarkdown::render(template_path,
+  rmarkdown::render(template_path_tmp,
                     output_format = "html_document",
                     output_file = file,
                     envir = environment)
