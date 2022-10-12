@@ -9,7 +9,8 @@ refdb_import_NCBI(
   full = FALSE,
   max_seq_length = 10000,
   seq_bin = 200,
-  verbose = TRUE
+  verbose = TRUE,
+  start = 0L
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ to retrieve. Useful to exclude complete genomes.}
 \item{seq_bin}{number of sequences to download at once.}
 
 \item{verbose}{print information in the console.}
+
+\item{start}{an integer giving the index where to start to download.
+For debugging purpose mainly.}
 }
 \value{
 A tibble.
