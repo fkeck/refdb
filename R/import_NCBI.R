@@ -14,6 +14,8 @@
 #' to retrieve. Useful to exclude complete genomes.
 #' @param seq_bin number of sequences to download at once.
 #' @param verbose print information in the console.
+#' @param start an integer giving the index where to start to download.
+#' For debugging purpose mainly.
 #'
 #' @details
 #' This function uses several functions of the \pkg{rentrez}
@@ -38,7 +40,8 @@ refdb_import_NCBI <- function(query,
                               full = FALSE,
                               max_seq_length = 10000,
                               seq_bin = 200,
-                              verbose = TRUE) {
+                              verbose = TRUE,
+                              start = 0L) {
 
   ff <- tempfile("refdb_NCBI_", fileext = ".csv")
   fx <- tempfile("refdb_NCBI_", fileext = ".xml")
@@ -53,11 +56,11 @@ refdb_import_NCBI <- function(query,
     if(verbose) cat("No sequence found\n")
     return(NULL)
   }
-
-  if(verbose) cat("Downloading", req$count, "sequences from NCBI...\n")
+  if(verbose && start > 0L) cat("Found", req$count, "sequences. Starting at", start, ".\n")
+  if(verbose) cat("Downloading", req$count - start, "sequences from NCBI...\n")
 
   # Main loop to download and write the data
-  for(seq_start in seq(0, req$count, seq_bin)){
+  for(seq_start in seq(start, req$count, seq_bin)){
 
     recs <- entrez_fetch_retry(db = "nuccore",
                                web_history = req$web_history,
@@ -80,9 +83,16 @@ refdb_import_NCBI <- function(query,
 
     NCBI_table <- make_ncbi_table(NCBI_xml)
 
-    taxo_id <- xml2::xml_text(xml2::xml_find_all(NCBI_xml, './/GBQualifier_name[text()="db_xref"]/following-sibling::GBQualifier_value'))
-    taxo_id <- taxo_id[stringr::str_detect(taxo_id, "taxon:[0-9]+")]
-    taxo_id <- stringr::str_extract(taxo_id, "(?<=taxon:)[0-9]+")
+    taxo_id <- lapply(NCBI_xml, function(x) {
+        res <- xml2::xml_find_all(x, './/GBQualifier_name[text()="db_xref"]/following-sibling::GBQualifier_value')
+        res <- xml2::xml_text(res)
+        res <- res[stringr::str_detect(res, "taxon:[0-9]+")]
+        res <- unique(res)
+        res <- stringr::str_extract(res, "(?<=taxon:)[0-9]+")
+        return(res)
+      })
+    taxo_id <- unlist(taxo_id)
+
     taxo_id <- tibble::tibble(taxonomy = NCBI_table$taxonomy, id = taxo_id)
     taxo_id <- taxo_id[!duplicated(taxo_id$taxonomy), ]
     gtax <- get_ncbi_taxonomy_retry(taxo_id$id, delay_retry = 60, n_retry = 50, verbose = verbose)
