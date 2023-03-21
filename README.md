@@ -20,3 +20,10 @@ remotes::install_github("fkeck/refdb")
 ```
 
 Find more about the package (manual, vignettes, etc.): [https://fkeck.github.io/refdb/](https://fkeck.github.io/refdb/)
+
+
+## Citation
+
+If you use the refdb package in your work, please cite:
+
+Keck, F., & Altermatt, F. (2023). Management of DNA reference libraries for barcoding and metabarcoding studies with the R package refdb. Molecular Ecology Resources, 23(2), 511-518. [https://doi.org/10.1111/1755-0998.13723](https://doi.org/10.1111/1755-0998.13723).
