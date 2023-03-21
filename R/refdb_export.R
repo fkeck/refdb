@@ -238,3 +238,60 @@ taxid_file <- function(x) {
   taxid <- paste(0:(length(index) - 1L), groups, index, level, rank, sep = "*")
   return(taxid)
 }
+
+
+
+#' Export reference database for USEARCH/VSEARCH
+#'
+#' Write a reference database in utax format.
+#'
+#' @param x a reference database.
+#' @param file a file path. This will be used to create a .fasta file.
+#' @param verbose print information in the console.
+#'
+#' @return
+#' No return value, called for side effects.
+#'
+#' @examples
+#' lib <- read.csv(system.file("extdata", "baetidae_bold.csv", package = "refdb"))
+#' lib <- refdb_set_fields_BOLD(lib)
+#' refdb_export_utax(lib, tempfile())
+#'
+#' @export
+#'
+refdb_export_utax <- function(x, file, verbose = TRUE) {
+
+  check_fields(x, what = c("sequence", "taxonomy", "id"))
+
+  col_tax <- attributes(x)$refdb_fields$taxonomy
+  col_id <- attributes(x)$refdb_fields$id
+  col_seq <- attributes(x)$refdb_fields$sequence
+
+  utax_tags <- c("kingdom" = "k",
+                 "domain" = "d",
+                 "phylum" = "p",
+                 "class" = "c",
+                 "order" = "o",
+                 "family" = "f",
+                 "genus" = "g",
+                 "species" = "s")
+if(verbose) {
+  if(any(!names(col_tax) %in% names(utax_tags))) {
+    warning(paste(names(col_tax)[!names(col_tax) %in% names(utax_tags)], collapse = ", "),
+            " not supported by utax format and was not included.")
+  }
+}
+  col_tax <- col_tax[names(col_tax) %in% names(utax_tags)]
+
+  x[, col_tax] <- apply(x[, col_tax], 2, function(x) stringr::str_replace_all(x, ",|;", "_"))
+
+  labs <- mapply(paste0, utax_tags[names(col_tax)], ":", x[, col_tax])
+  labs <- apply(labs, 1, paste0, collapse = ",")
+  labs <- paste0(x[[col_id]], ";tax=", labs, ";")
+
+  seqs <- x[[col_seq]]
+  names(seqs) <- labs
+
+  file_fas <- paste0(file, ".fasta")
+  bioseq::write_fasta(seqs, file = file_fas)
+}
