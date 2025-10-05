@@ -143,6 +143,16 @@ refdb_set_fields <- function(x,
 
 
 
+# TODO
+# Function to automatically fill the fields based on column names
+# Not very safe but would work in most of the case
+# and make things much easier.
+#
+# refdb_set_fields_auto <- function(x, exclude = NULL) {
+#
+#}
+
+
 
 #' Functions to set fields for various databases
 #'
