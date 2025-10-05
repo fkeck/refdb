@@ -28,6 +28,9 @@
 #' strategy can be to sequentially download data for lower rank
 #' taxa. See \url{https://docs.ropensci.org/bold/#large-data}.
 #'
+#' @section REMOVED
+#' This function is currently removed and not exported.
+#'
 #' @return A tibble.
 #'
 #' @seealso link[bold]{bold_stats} and \link[bold]{bold_seqspec}
@@ -36,90 +39,90 @@
 #' @examples
 #' \dontrun{
 #' goera_bold <- refdb_import_BOLD(taxon = "Goera pilosa", ncbi_taxo = FALSE)
-#'}
-#'
-#' @export
+#' }
 #'
 #'
 #'
-refdb_import_BOLD <- function(taxon = NULL,
-                              ids = NULL,
-                              bin = NULL,
-                              container = NULL,
-                              institutions = NULL,
-                              researchers = NULL,
-                              geo = NULL,
-                              ncbi_taxo = TRUE,
-                              full = FALSE,
-                              verbose = TRUE) {
+#'
+# refdb_import_BOLD <- function(taxon = NULL,
+#                               ids = NULL,
+#                               bin = NULL,
+#                               container = NULL,
+#                               institutions = NULL,
+#                               researchers = NULL,
+#                               geo = NULL,
+#                               ncbi_taxo = TRUE,
+#                               full = FALSE,
+#                               verbose = TRUE) {
+#
+#   query_stats <- bold::bold_stats(taxon = taxon,
+#                                   ids = ids,
+#                                   bin = bin,
+#                                   container = container,
+#                                   institutions = institutions,
+#                                   researchers = researchers,
+#                                   geo = geo)
+#
+#   if(query_stats$total_records == 0) {
+#     if(verbose) cat("No sequence found\n")
+#     return(NULL)
+#   }
+#
+#   if(verbose) cat("Downloading", query_stats$total_records, "sequences from BOLD...\n")
+#
+#   tryCatch(
+#     recs <- bold::bold_seqspec(taxon = taxon,
+#                                ids = ids,
+#                                bin = bin,
+#                                container = container,
+#                                institutions = institutions,
+#                                researchers = researchers,
+#                                geo = geo),
+#     error = function(c) {
+#       stop(
+#       "\nAn error occured while trying to download data from BOLD servers\n",
+#       "For large requests check the manual (?refdb_import_BOLD).\n"
+#       )
+#     }
+#   )
+#   out <- tibble::as_tibble(recs)
+#
+#
+#   out <- tibble::tibble(source = "BOLD", out)
+#
+#   if (full == FALSE) {
+#     out <- dplyr::select(out,
+#                          .data$source,
+#                          .data$sequenceID,
+#                          .data$markercode,
+#                          .data$phylum_name,
+#                          .data$class_name,
+#                          .data$order_name,
+#                          .data$family_name,
+#                          .data$subfamily_name,
+#                          .data$genus_name,
+#                          .data$species_name,
+#                          .data$subspecies_name, # Correspond to NCBI organism
+#                          .data$nucleotides,
+#                          .data$country,
+#                          .data$province_state,
+#                          .data$lat,
+#                          .data$lon)
+#   }
+#
+#   # Empty strings as NA
+#   out[out == ""] <- NA
+#
+#   out <- refdb_set_fields_BOLD(out)
+#   out <- refdb_set_fields(out,
+#                           latitude = "lat",
+#                           longitude = "lon")
+#
+#   if (ncbi_taxo) {
+#     out <- refdb_set_ncbitax(out)
+#   }
+#
+#   return(out)
+# }
 
-  query_stats <- bold::bold_stats(taxon = taxon,
-                                  ids = ids,
-                                  bin = bin,
-                                  container = container,
-                                  institutions = institutions,
-                                  researchers = researchers,
-                                  geo = geo)
-
-  if(query_stats$total_records == 0) {
-    if(verbose) cat("No sequence found\n")
-    return(NULL)
-  }
-
-  if(verbose) cat("Downloading", query_stats$total_records, "sequences from BOLD...\n")
-
-  tryCatch(
-    recs <- bold::bold_seqspec(taxon = taxon,
-                               ids = ids,
-                               bin = bin,
-                               container = container,
-                               institutions = institutions,
-                               researchers = researchers,
-                               geo = geo),
-    error = function(c) {
-      stop(
-      "\nAn error occured while trying to download data from BOLD servers\n",
-      "For large requests check the manual (?refdb_import_BOLD).\n"
-      )
-    }
-  )
-  out <- tibble::as_tibble(recs)
-
-
-  out <- tibble::tibble(source = "BOLD", out)
-
-  if (full == FALSE) {
-    out <- dplyr::select(out,
-                         .data$source,
-                         .data$sequenceID,
-                         .data$markercode,
-                         .data$phylum_name,
-                         .data$class_name,
-                         .data$order_name,
-                         .data$family_name,
-                         .data$subfamily_name,
-                         .data$genus_name,
-                         .data$species_name,
-                         .data$subspecies_name, # Correspond to NCBI organism
-                         .data$nucleotides,
-                         .data$country,
-                         .data$province_state,
-                         .data$lat,
-                         .data$lon)
-  }
-
-  # Empty strings as NA
-  out[out == ""] <- NA
-
-  out <- refdb_set_fields_BOLD(out)
-  out <- refdb_set_fields(out,
-                          latitude = "lat",
-                          longitude = "lon")
-
-  if (ncbi_taxo) {
-    out <- refdb_set_ncbitax(out)
-  }
-
-  return(out)
-}
 
