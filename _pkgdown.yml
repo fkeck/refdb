@@ -3,6 +3,7 @@ reference:
 - contents:
   - starts_with("refdb_import_")
   - starts_with("refdb_set_")
+  - refdb_get_fields
   - refdb_merge
 - title: Clean
 - contents:
@@ -23,3 +24,20 @@ reference:
 - contents:
   - starts_with("refdb_export_")
   - starts_with("refdb_write_")
+- title: Sample
+- contents:
+  - starts_with("refdb_sample_")
+- title: Fill
+- contents:
+  - starts_with("refdb_fill_")
+- title: Internals
+- contents:
+  - check_fields
+  - filter_scores
+  - get_ncbi_taxonomy
+  - igraph_from_taxo
+  - make_ncbi_table
+  - ncbi_taxo_rank
+  - process_geo_ncbi
+  - valid_taxo_rank
+  - xml_extract
